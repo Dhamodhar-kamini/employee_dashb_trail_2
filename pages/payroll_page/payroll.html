@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Dashboard</title>
+    
+    <!-- Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons: FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="payroll.css">
+    <link rel="stylesheet" href="../admin_page/admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+      <!-- 1. Sidebar Navigation (Detailed based on image) -->
+      <aside class="sidebar">
+        <div class="logo">
+          <!-- <i class="fas fa-chart-line"></i> -->
+          <!-- <span>OPPTY</span> -->
+          <img
+            class="opptyLogo"
+            src="../assets/opptylogo.png"
+            alt="OPPTY HRMS Logo"
+          />
+        </div>
+
+        <div class="sidebar-content">
+          <div class="menu-section main-menu">
+            <p class="menu-header">MAIN MENU</p>
+            <div class="menu-section main-menu">
+              <!-- Dashboard Parent -->
+              <a
+                href="javascript:void(0)"
+                class="menu-item active has-submenu"
+                id="dashboardMenu"
+              >
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+                <span class="hot-badge">Hot</span>
+                <i class="fas fa-chevron-down dropdown-icon"></i>
+              </a>
+
+              <!-- Submenu Items -->
+              <div class="submenu" id="dashboardSubmenu">
+                <a href="../admin_page/admin.html" class="menu-item"
+                  ><i class="fas fa-user-tie"></i
+                  ><span>Admin Dashboard</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-chart-line"></i
+                  ><span>Deals Dashboard</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-chart-bar"></i
+                  ><span>Leads Dashboard</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-chart-pie"></i><span>HR Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-money-bill-wave"></i
+                  ><span>Payroll Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="../recruitment/recruitment.html" class="menu-item"
+                  ><i class="fas fa-search"></i
+                  ><span>Recruitment Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-calendar-check"></i
+                  ><span>Attendance Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-calculator"></i
+                  ><span>Finance Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-laptop-code"></i
+                  ><span>IT Admin Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-archive"></i><span>Asset Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+                <a href="#" class="menu-item"
+                  ><i class="fas fa-headset"></i><span>Help Desk Dashboard</span
+                  ><span class="new-badge">NEW</span></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="menu-section applications-section">
+            <a href="#" class="menu-item has-submenu"
+              ><i class="fas fa-cubes"></i><span>Applications</span
+              ><i class="fas fa-chevron-right"></i
+            ></a>
+            <a href="#" class="menu-item has-submenu active-parent"
+              ><i class="fas fa-user-shield"></i
+              ><span style="font-weight: 600">Super Admin</span
+              ><i class="fas fa-chevron-down"></i
+            ></a>
+
+            <!-- Submenu Open (As seen in the image) -->
+            <div class="submenu">
+              <a href="#" class="menu-item submenu-item">Horizontal</a>
+              <a href="#" class="menu-item submenu-item">Detached</a>
+              <a href="#" class="menu-item submenu-item">Modern</a>
+              <a href="#" class="menu-item submenu-item">Two Column</a>
+              <a href="#" class="menu-item submenu-item">Hovered</a>
+              <a href="#" class="menu-item submenu-item">Boxed</a>
+              <a href="#" class="menu-item submenu-item">Horizontal Single</a>
+              <a href="#" class="menu-item submenu-item">Horizontal Overlay</a>
+              <a href="#" class="menu-item submenu-item">Horizontal Box</a>
+              <a href="#" class="menu-item submenu-item">Menu Aside</a>
+              <a href="#" class="menu-item submenu-item">Transparent</a>
+              <a href="#" class="menu-item submenu-item">Without Header</a>
+              <a href="#" class="menu-item submenu-item">RTL</a>
+              <a href="#" class="menu-item submenu-item">Dark</a>
+            </div>
+          </div>
+
+          <div class="menu-section projects-section">
+            <p class="menu-header">PROJECTS</p>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-users"></i><span>Clients</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-folder"></i><span>Projects</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+          </div>
+
+          <!-- CRM Section -->
+          <div class="menu-section crm-section">
+            <p class="menu-header">CRM</p>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-address-book"></i><span>Contacts</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-building"></i><span>Companies</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-hand-holding-usd"></i><span>Deals</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-project-diagram"></i><span>Pipeline</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-chart-area"></i><span>Analytics</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-bolt"></i><span>Activities</span></a
+            >
+          </div>
+
+          <!-- HRM Section (Collapsible) -->
+          <div class="menu-section hrm-section">
+            <p class="menu-header">HRM</p>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-users"></i><span>Employees</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-ticket-alt"></i><span>Tickets</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-star"></i><span>Holidays</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-calendar-check"></i><span>Attendance</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-graduation-cap"></i><span>Performance</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-chalkboard-teacher"></i><span>Training</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-user-clock"></i><span>Probation Management</span
+              ><span class="new-badge">NEW</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-file-signature"></i
+              ><span>Notice Period Tracker</span
+              ><span class="new-badge">NEW</span></a
+            >
+          </div>
+
+          <!-- Promotion/Resignation Section -->
+          <div class="menu-section promotion-section">
+            <a href="#" class="menu-item"
+              ><i class="fas fa-bullhorn"></i><span>Promotion</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-times-circle"></i><span>Resignation</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-calendar-times"></i><span>Termination</span></a
+            >
+          </div>
+
+          <!-- Recruitment Section -->
+          <div class="menu-section recruitment-section">
+            <p class="menu-header">RECRUITMENT</p>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-user-plus"></i><span>Jobs</span
+              ><span class="new-badge">NEW</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-user-tag"></i><span>Candidates</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-handshake"></i><span>Referrals</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-file-alt"></i><span>Resume Parsing</span
+              ><span class="new-badge">NEW</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-university"></i><span>Campus Hiring</span
+              ><span class="new-badge">NEW</span></a
+            >
+          </div>
+
+          <!-- Finance & Accounts -->
+          <div class="menu-section finance-section">
+            <p class="menu-header">FINANCE & ACCOUNTS</p>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-wallet"></i><span>Sales</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-book"></i><span>Accounting</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-tools"></i><span>Assets</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-history"></i><span>Reports</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+          </div>
+
+          <!-- Administration -->
+          <div class="menu-section admin-section">
+            <p class="menu-header">ADMINISTRATION</p>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-cogs"></i><span>Settings</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-file-code"></i><span>Pages</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-newspaper"></i><span>Blogs</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-map-marker-alt"></i><span>Locations</span
+              ><i class="fas fa-chevron-down expand-icon"></i
+            ></a>
+            <a href="#" class="menu-item"
+              ><i class="fas fa-quote-left"></i><span>Testimonials</span></a
+            >
+            <a href="#" class="menu-item"
+              ><i class="fas fa-question-circle"></i><span>FAQ's</span></a
+            >
+          </div>
+        </div>
+      </aside>
+
+      <!-- 2. Main Content Area -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search in HRMS" />
+            <span>CTRL + /</span>
+          </div>
+          <div class="header-icons">
+            <i class="fas fa-th-large"></i>
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+            <i class="fas fa-cog"></i>
+            <div class="user-profile">
+              <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+            </div>
+          </div>
+        </header>
+
+    
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Payroll Dashboard</h1>
+                <div class="breadcrumbs">
+                    <i class="fa-solid fa-house"></i>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Dashboard</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span class="active">Payroll Dashboard</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn-white"><i class="fa-regular fa-file-lines"></i> Monthly Report <i class="fa-solid fa-chevron-down"></i></button>
+                <button class="btn-white"><i class="fa-regular fa-calendar"></i> Feb 2026</button>
+                <button class="btn-white icon-only"><i class="fa-solid fa-chevron-up"></i></button>
+            </div>
+        </header>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-info">
+                <span class="status-dot"></span>
+                <span class="label">Payroll Status:</span>
+                <span class="badge badge-success">Processing</span>
+                <span class="divider">|</span>
+                <span class="label">Cut-off: Dec 25, 2024</span>
+                <span class="divider">|</span>
+                <span class="label">Payment Date: Dec 31, 2024</span>
+            </div>
+            <a class="payslip_navg" href="../payslip/payslip.html"><button class="btn-primary"><i class="fa-solid fa-bolt"></i> Run Payroll</button></a>
+            
+        </div>
+
+        <!-- Floating Settings Gear -->
+        
+        <!-- Main Grid Layout -->
+        <main class="dashboard-grid">
+            
+            <!-- Column 1 (Left Top) -->
+            <div class="col-left-top">
+                <!-- Overview Card (Dark) -->
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3>Overview</h3>
+                        <button class="icon-btn-light"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                    
+                    <div class="overview-main">
+                        <div class="ov-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div>
+                            <div class="ov-amount">$2,458,320</div>
+                            <div class="ov-label">Total Gross Payroll</div>
+                        </div>
+                        <div class="ov-net">
+                            <div class="ov-icon-sm"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <div>
+                                <div class="ov-amount-sm">$1,987,450</div>
+                                <div class="ov-label">Net Payable Amount</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-stats">
+                        <div class="glass-box">
+                            <div class="gb-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div class="gb-val">$1,987,450</div>
+                            <div class="gb-lbl">Total Deductions</div>
+                        </div>
+                        <div class="glass-box">
+                            <div class="gb-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <div class="gb-val">12</div>
+                            <div class="gb-lbl">Pending Approvals</div>
+                        </div>
+                        <div class="glass-box">
+                            <div class="gb-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="gb-val">24</div>
+                            <div class="gb-lbl">Total Payroll Errors</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Small Cards Grid -->
+                <div class="small-cards-grid">
+                    <!-- Card 1 -->
+                    <div class="card card-sm">
+                        <div class="card-header-sm">
+                            <div class="icon-circle dark"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                            <span>Highest Salary</span>
+                        </div>
+                        <div class="stat-val-row">
+                            <span class="stat-num">$24,500</span>
+                            <span class="trend up">+18% <i class="fa-solid fa-arrow-up"></i></span>
+                        </div>
+                        <div class="stat-sub">CTO - Engineering</div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="card card-sm">
+                        <div class="card-header-sm">
+                            <div class="icon-circle dark"><i class="fa-solid fa-coins"></i></div>
+                            <span>Variable Pay</span>
+                        </div>
+                        <div class="stat-val-row">
+                            <span class="stat-num">$284K</span>
+                            <span class="trend up">+18% <i class="fa-solid fa-arrow-up"></i></span>
+                        </div>
+                        <div class="stat-sub">Bonuses + Commissions</div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="card card-sm">
+                        <div class="card-header-sm">
+                            <div class="icon-circle dark"><i class="fa-solid fa-calculator"></i></div>
+                            <span>After Deduction</span>
+                        </div>
+                        <div class="stat-val-row">
+                            <span class="stat-num">$1.99M</span>
+                            <span class="trend down">-16% <i class="fa-solid fa-arrow-down"></i></span>
+                        </div>
+                        <div class="stat-sub">Employee take-home</div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="card card-sm">
+                        <div class="card-header-sm">
+                            <div class="icon-circle dark"><i class="fa-solid fa-users"></i></div>
+                            <span>Average Salary</span>
+                        </div>
+                        <div class="stat-val-row">
+                            <span class="stat-num">$78,450</span>
+                            <span class="trend up">+18% <i class="fa-solid fa-arrow-up"></i></span>
+                        </div>
+                        <div class="stat-sub">Median: $72,000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2 (Right Top - Tall) -->
+            <div class="col-right-top">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div>
+                            <h3>Salary Range Distribution</h3>
+                            <div class="sub-header">Average Salary <span class="text-dark-lg">$78,450</span></div>
+                        </div>
+                        <div class="header-actions">
+                            <span class="legend-dot"></span> Salary Range
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart Container -->
+                    <div class="chart-container-bar">
+                        <canvas id="salaryBarChart"></canvas>
+                    </div>
+
+                    <!-- Range List -->
+                    <div class="range-section">
+                        <div class="range-header">
+                            <h3>Range</h3>
+                            <span class="select-text">Last 7 Days <i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+                        <div class="range-list">
+                            <div class="range-item">
+                                <div class="ri-top"><span>$30k-50k</span> <span>285 (22.8%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 22.8%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$50k-80k</span> <span>478 (38.3%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 38.3%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$80k-120k</span> <span>342 (27.4%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 27.4%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$120k-180k</span> <span>98 (7.8%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 7.8%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$180k-250k</span> <span>45 (3.6%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 3.6%"></div></div>
+                            </div>
+                        </div>
+                        <div class="view-report">
+                            View Salary Report in realtime <button class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Row: Batch, Trend, Insurance -->
+            <div class="col-full row-middle">
+                
+                <!-- Batch Processing -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Batch Processing Status</h3>
+                        <button class="btn-xs-outline"><i class="fa-regular fa-calendar"></i> Monthly <i class="fa-solid fa-chevron-down"></i></button>
+                    </div>
+                    <div class="batch-content">
+                        <div class="batch-label">Combined Total</div>
+                        <div class="batch-total">$2,459,320 <span class="badge-pill">3 Batches</span></div>
+                        
+                        <div class="batch-cols">
+                            <div>
+                                <div class="b-head">1120 Employees</div>
+                                <div class="b-sub">$2,184,500</div>
+                            </div>
+                            <div>
+                                <div class="b-head">60 Employees</div>
+                                <div class="b-sub">$124,850</div>
+                            </div>
+                            <div>
+                                <div class="b-head">63 Employees</div>
+                                <div class="b-sub">$154,850</div>
+                            </div>
+                        </div>
+
+                        <div class="batch-visual">
+                            <div class="b-pill orange"></div>
+                            <div class="b-pill blue"></div>
+                            <div class="b-pill dark"></div>
+                        </div>
+                        <div class="batch-legend">
+                            <span><span class="dot orange"></span> Full Time</span>
+                            <span><span class="dot blue"></span> Part Time</span>
+                            <span><span class="dot dark"></span> Contractors</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>6 Months Tax & Deduction Trend</h3>
+                    </div>
+                    <div class="chart-container-line">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="trend-footer">
+                        <div class="tf-total">$1.71M <span class="circle-up"><i class="fa-solid fa-arrow-up"></i></span></div>
+                        <div class="tf-legend">
+                            <span><i class="fa-solid fa-circle-check" style="color: #1e3a8a"></i> Federal Tax</span>
+                            <span><i class="fa-solid fa-circle-check" style="color: #ff5b1e"></i> Deductions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insurance -->
+                <div class="card insurance-card">
+                    
+                    <!-- Life Insurance -->
+                    <div class="ins-row">
+                        <div class="ins-info">
+                            <h4>Life Insurance</h4>
+                            <span>Per Employee</span>
+                        </div>
+                        <div class="ins-graph">
+                            <div class="equalizer orange">
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="ins-val">$24.87</div>
+                        </div>
+                    </div>
+
+                    <!-- 401k -->
+                    <div class="ins-row">
+                        <div class="ins-info">
+                            <h4>401(k) Contribution</h4>
+                            <span>Per Employee</span>
+                        </div>
+                        <div class="ins-graph">
+                            <div class="equalizer blue">
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="ins-val">$10.47</div>
+                        </div>
+                    </div>
+
+                    <!-- Health -->
+                    <div class="ins-row">
+                        <div class="ins-info">
+                            <h4>Health Insurance</h4>
+                            <span>Per Employee</span>
+                        </div>
+                        <div class="ins-graph">
+                            <div class="equalizer yellow">
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="ins-val">$26.87</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Bottom Row: Pipeline & AI -->
+            <div class="col-full row-bottom">
+                
+                <!-- Pipeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Payroll Processing Pipeline</h3>
+                        <span class="badge-red-light">Processing 4 to 6</span>
+                    </div>
+                    <div class="progress-summary">
+                        <span>Overall Progress</span>
+                        <span>(40%)</span>
+                    </div>
+                    <div class="progress-track main"><div class="progress-fill dark" style="width: 40%"></div></div>
+
+                    <div class="pipeline-steps">
+                        <!-- Step 1 -->
+                        <div class="step">
+                            <div class="step-icon completed"><i class="fa-regular fa-circle-dot"></i></div>
+                            <div class="step-content">
+                                <div class="sc-head">
+                                    <h4>Data Validation</h4>
+                                    <span class="tag green">• Completed</span>
+                                    <div class="time-circle">2 Min</div>
+                                </div>
+                                <p>All employee records validated</p>
+                            </div>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="step">
+                            <div class="step-icon completed"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-content">
+                                <div class="sc-head">
+                                    <h4>Attendance Calculation</h4>
+                                    <span class="tag green">• Completed</span>
+                                    <div class="time-circle">4 Min</div>
+                                </div>
+                                <p>Working days and hours calculated</p>
+                            </div>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="step">
+                            <div class="step-icon completed"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-content">
+                                <div class="sc-head">
+                                    <h4>Salary Computation</h4>
+                                    <span class="tag green">• Completed</span>
+                                    <div class="time-circle">3 Min</div>
+                                </div>
+                                <p>Base salary + allowances calculated</p>
+                            </div>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="step">
+                            <div class="step-icon running"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                            <div class="step-content">
+                                <div class="sc-head">
+                                    <h4>Deductions Processing</h4>
+                                    <span class="tag blue">• Running</span>
+                                    <div class="time-circle empty"></div>
+                                </div>
+                                <p>Tax, PF, and other deductions</p>
+                            </div>
+                        </div>
+                        <!-- Step 5 -->
+                        <div class="step">
+                            <div class="step-icon pending"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-content">
+                                <div class="sc-head">
+                                    <h4>Final Verification</h4>
+                                    <span class="tag gray">• Pending</span>
+                                    <div class="time-circle empty"></div>
+                                </div>
+                                <p>Admin approval required</p>
+                            </div>
+                        </div>
+                        <!-- Step 6 -->
+                        <div class="step last">
+                            <div class="step-icon pending"><i class="fa-regular fa-circle"></i></div>
+                            <div class="step-content">
+                                <div class="sc-head">
+                                    <h4>Payment Generation</h4>
+                                    <span class="tag gray">• Pending</span>
+                                    <div class="time-circle empty"></div>
+                                </div>
+                                <p>Bank file creation</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-actions">
+                        <button class="btn-primary full-width"><i class="fa-solid fa-rotate-right"></i> Continue Processing</button>
+                        <button class="btn-outline full-width"><i class="fa-regular fa-file-pdf"></i> Export Report</button>
+                    </div>
+                </div>
+
+                <!-- AI Assistant -->
+                <div class="card ai-card">
+                    <div class="ai-header">
+                        <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div>
+                            <h3>How can i help you today</h3>
+                            <div class="ai-sub">AI Payroll Assistant</div>
+                        </div>
+                        <span class="status-online">• Online</span>
+                    </div>
+
+                    <div class="ai-section-title">Quick Actions</div>
+                    <div class="ai-chips">
+                        <span class="chip active">Calculate overtime pay</span>
+                        <span class="chip">Generate tax report</span>
+                        <span class="chip">Error Detection</span>
+                        <span class="chip">Compliance Monitoring</span>
+                        <span class="chip">Analyze salary trends</span>
+                        <span class="chip">Review payroll errors</span>
+                    </div>
+
+                    <div class="ai-section-title ai-assistant-label"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Assistant</div>
+                    <div class="ai-message">
+                        Hello! I'm your AI Payroll Assistant. I can help you with payroll calculations, tax questions, compliance issues. How can I assist you today?
+                        <div class="msg-time">11:45 PM</div>
+                    </div>
+
+                    <div class="ai-footer">
+                        <div class="ai-section-title">Suggested Questions</div>
+                        <div class="suggested-q">How do I process a bonus payment? What are the tax implications of workers?</div>
+                        
+                        <div class="chat-input-wrapper">
+                            <input type="text" placeholder="Ask me anything about payroll">
+                            <button class="send-btn"><i class="fa-regular fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Chart Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="payroll.js"></script>
+    <script src="../admin_page/admin.js"></script>
+
+</body>
+</html>
