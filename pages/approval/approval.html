@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Requests - SmartHR</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="approval.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <div class="dashboard-container">
+            <!-- 1. Sidebar Navigation (Detailed based on image) -->
+            <aside class="sidebar">
+                <div class="logo">
+                    <!-- <i class="fas fa-chart-line"></i> -->
+                    <!-- <span>OPPTY</span> -->
+                    <img class="opptyLogo" src="../assets/opptylogo.png" alt="OPPTY HRMS Logo" />
+                </div>
+
+                <div class="sidebar-content">
+                    <div class="menu-section main-menu">
+                        <p class="menu-header">MAIN MENU</p>
+
+                        <!-- Dashboard Parent -->
+                        <a href="javascript:void(0)" class="menu-item active has-submenu" id="dashboardMenu">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                            <span class="hot-badge">Hot</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+
+                        <!-- Submenu Items -->
+                        <div class="submenu" id="dashboardSubmenu">
+                            <a href="../admin_page/admin.html" class="menu-item"><i
+                                    class="fas fa-user-tie"></i><span>Admin Dashboard</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-user"></i><span>Employee
+                                    Dashboard</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-chart-line"></i><span>Deals
+                                    Dashboard</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-chart-bar"></i><span>Leads
+                                    Dashboard</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-chart-pie"></i><span>HR
+                                    Dashboard</span><span class="new-badge">NEW</span></a>
+                            <a href="../payroll_page/payroll.html" class="menu-item"><i
+                                    class="fas fa-money-bill-wave"></i><span>Payroll Dashboard</span><span
+                                    class="new-badge">NEW</span></a>
+                            <a href="./recruitment_dashb/recruitment.html" class="menu-item"><i
+                                    class="fas fa-search"></i><span>Recruitment Dashboard</span><span
+                                    class="new-badge">NEW</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-calendar-check"></i><span>Attendance
+                                    Dashboard</span><span class="new-badge">NEW</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-calculator"></i><span>Finance
+                                    Dashboard</span><span class="new-badge">NEW</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-laptop-code"></i><span>IT Admin
+                                    Dashboard</span><span class="new-badge">NEW</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-archive"></i><span>Asset
+                                    Dashboard</span><span class="new-badge">NEW</span></a>
+                            <a href="#" class="menu-item"><i class="fas fa-headset"></i><span>Help Desk
+                                    Dashboard</span><span class="new-badge">NEW</span></a>
+                        </div>
+                    </div>
+
+
+                    <div class="menu-section applications-section">
+                        <a href="#" class="menu-item has-submenu"><i
+                                class="fas fa-cubes"></i><span>Applications</span><i
+                                class="fas fa-chevron-right"></i></a>
+                        <a href="#" class="menu-item has-submenu active-parent"><i class="fas fa-user-shield"></i><span
+                                style="font-weight: 600">Super Admin</span><i class="fas fa-chevron-down"></i></a>
+
+                        <!-- Submenu Open (As seen in the image) -->
+                        <div class="submenu">
+                            <a href="#" class="menu-item submenu-item">Horizontal</a>
+                            <a href="#" class="menu-item submenu-item">Detached</a>
+                            <a href="#" class="menu-item submenu-item">Modern</a>
+                            <a href="#" class="menu-item submenu-item">Two Column</a>
+                            <a href="#" class="menu-item submenu-item">Hovered</a>
+                            <a href="#" class="menu-item submenu-item">Boxed</a>
+                            <a href="#" class="menu-item submenu-item">Horizontal Single</a>
+                            <a href="#" class="menu-item submenu-item">Horizontal Overlay</a>
+                            <a href="#" class="menu-item submenu-item">Horizontal Box</a>
+                            <a href="#" class="menu-item submenu-item">Menu Aside</a>
+                            <a href="#" class="menu-item submenu-item">Transparent</a>
+                            <a href="#" class="menu-item submenu-item">Without Header</a>
+                            <a href="#" class="menu-item submenu-item">RTL</a>
+                            <a href="#" class="menu-item submenu-item">Dark</a>
+                        </div>
+                    </div>
+
+                    <div class="menu-section projects-section">
+                        <p class="menu-header">PROJECTS</p>
+                        <a href="#" class="menu-item"><i class="fas fa-users"></i><span>Clients</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-folder"></i><span>Projects</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                    </div>
+
+                    <!-- CRM Section -->
+                    <div class="menu-section crm-section">
+                        <p class="menu-header">CRM</p>
+                        <a href="#" class="menu-item"><i class="fas fa-address-book"></i><span>Contacts</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-building"></i><span>Companies</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-hand-holding-usd"></i><span>Deals</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-project-diagram"></i><span>Pipeline</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-chart-area"></i><span>Analytics</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-bolt"></i><span>Activities</span></a>
+                    </div>
+
+                    <!-- HRM Section (Collapsible) -->
+                    <div class="menu-section hrm-section">
+                        <p class="menu-header">HRM</p>
+                        <a href="#" class="menu-item"><i class="fas fa-users"></i><span>Employees</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-ticket-alt"></i><span>Tickets</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-star"></i><span>Holidays</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-calendar-check"></i><span>Attendance</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-graduation-cap"></i><span>Performance</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-chalkboard-teacher"></i><span>Training</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-user-clock"></i><span>Probation
+                                Management</span><span class="new-badge">NEW</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-file-signature"></i><span>Notice Period
+                                Tracker</span><span class="new-badge">NEW</span></a>
+                    </div>
+
+                    <!-- Promotion/Resignation Section -->
+                    <div class="menu-section promotion-section">
+                        <a href="#" class="menu-item"><i class="fas fa-bullhorn"></i><span>Promotion</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-times-circle"></i><span>Resignation</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-calendar-times"></i><span>Termination</span></a>
+                    </div>
+
+                    <!-- Recruitment Section -->
+                    <div class="menu-section recruitment-section">
+                        <p class="menu-header">RECRUITMENT</p>
+                        <a href="#" class="menu-item"><i class="fas fa-user-plus"></i><span>Jobs</span><span
+                                class="new-badge">NEW</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-user-tag"></i><span>Candidates</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-handshake"></i><span>Referrals</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-file-alt"></i><span>Resume Parsing</span><span
+                                class="new-badge">NEW</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-university"></i><span>Campus Hiring</span><span
+                                class="new-badge">NEW</span></a>
+                    </div>
+
+                    <!-- Finance & Accounts -->
+                    <div class="menu-section finance-section">
+                        <p class="menu-header">FINANCE & ACCOUNTS</p>
+                        <a href="#" class="menu-item"><i class="fas fa-wallet"></i><span>Sales</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-book"></i><span>Accounting</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-tools"></i><span>Assets</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-history"></i><span>Reports</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                    </div>
+
+                    <!-- Administration -->
+                    <div class="menu-section admin-section">
+                        <p class="menu-header">ADMINISTRATION</p>
+                        <a href="#" class="menu-item"><i class="fas fa-cogs"></i><span>Settings</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-file-code"></i><span>Pages</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-newspaper"></i><span>Blogs</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-map-marker-alt"></i><span>Locations</span><i
+                                class="fas fa-chevron-down expand-icon"></i></a>
+                        <a href="#" class="menu-item"><i class="fas fa-quote-left"></i><span>Testimonials</span></a>
+                        <a href="#" class="menu-item"><i class="fas fa-question-circle"></i><span>FAQ's</span></a>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search in HRMS" />
+                    <span>CTRL + /</span>
+                </div>
+                <div class="header-icons">
+                    <i class="fas fa-th-large"></i>
+                    <i class="fas fa-bell"></i>
+                    <i class="fas fa-envelope"></i>
+                    <i class="fas fa-cog"></i>
+                    <div class="user-profile">
+                        <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+                    </div>
+                </div>
+            </header>
+
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Time Off Requests</h1>
+                    <ul class="breadcrumb">
+                        <li>Dashboard</li>
+                        <li>/</li>
+                        <li class="active">Leave Requests</li>
+                    </ul>
+                </div>
+                <div class="user-profile">
+                    <div class="icon-btn"><i class="fa-regular fa-bell"></i><span class="dot"></span></div>
+                    <img src="https://i.pravatar.cc/150?img=12" alt="Admin">
+                </div>
+            </header>
+
+            <!-- Filter Toolbar (From Image 3) -->
+            <div class="filter-bar">
+                <div class="filter-left">
+                    <div class="search-input">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search Time Off Request">
+                    </div>
+
+                    <div class="dropdown">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>Month Period</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+
+                    <div class="dropdown">
+                        <i class="fa-solid fa-filter"></i>
+                        <span>All Status</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="filter-right">
+                    <button class="btn-text"><i class="fa-solid fa-sliders"></i> General Setting</button>
+                    <div class="view-toggle">
+                        <button class="active"><i class="fa-solid fa-list"></i></button>
+                        <button><i class="fa-solid fa-border-all"></i></button>
+                    </div>
+                    <button class="btn-dark"><i class="fa-solid fa-check-double"></i> Approve all</button>
+                </div>
+            </div>
+
+            <!-- The Table Section -->
+            <div class="table-card">
+                <table class="leave-table">
+                    <thead>
+                        <tr>
+                            <th width="15%">Employee</th>
+                            <th width="12%">Time Off Type</th>
+                            <th width="18%">Start Date & End Date</th>
+                            <th width="25%">Reason</th>
+                            <th width="15%">Attachment</th>
+                            <th width="15%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaveTableBody">
+                        <!-- Javascript will inject rows here to keep code clean -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="approval.js"></script>
+</body>
+
+</html>

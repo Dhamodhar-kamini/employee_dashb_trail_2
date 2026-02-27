@@ -1,772 +1,1078 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OPPTY HRMS</title>
-    <link rel="stylesheet" href="admin.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
-  <body>
-    <div class="dashboard-container">
-      <!-- 1. Sidebar Navigation (Detailed based on image) -->
-      <aside class="sidebar">
-        <div class="logo">
-          <!-- <i class="fas fa-chart-line"></i> -->
-          <!-- <span>OPPTY</span> -->
-          <img
-            class="opptyLogo"
-            src="../assets/opptylogo.png"
-            alt="OPPTY HRMS Logo"
-          />
-        </div>
 
-        <div class="sidebar-content">
-          <div class="menu-section main-menu">
-            <p class="menu-header">MAIN MENU</p>
-            <div class="menu-section main-menu">
-              <!-- Dashboard Parent -->
-              <a
-                href="javascript:void(0)"
-                class="menu-item active has-submenu"
-                id="dashboardMenu"
-              >
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-                <span class="hot-badge">Hot</span>
-                <i class="fas fa-chevron-down dropdown-icon"></i>
-              </a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPPTY HRMS</title>
+  <link rel="stylesheet" href="admin.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
 
-              <!-- Submenu Items -->
-              <div class="submenu" id="dashboardSubmenu">
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-user-tie"></i
-                  ><span>Admin Dashboard</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-chart-line"></i
-                  ><span>Deals Dashboard</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-chart-bar"></i
-                  ><span>Leads Dashboard</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-chart-pie"></i><span>HR Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="../payroll_page/payroll.html" class="menu-item"
-                  ><i class="fas fa-money-bill-wave"></i
-                  ><span>Payroll Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="../recruitment/recruitment.html" class="menu-item"
-                  ><i class="fas fa-search"></i
-                  ><span>Recruitment Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-calendar-check"></i
-                  ><span>Attendance Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-calculator"></i
-                  ><span>Finance Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-laptop-code"></i
-                  ><span>IT Admin Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-archive"></i><span>Asset Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-headset"></i><span>Help Desk Dashboard</span
-                  ><span class="new-badge">NEW</span></a
-                >
-              </div>
-            </div>
-          </div>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="logo">
+        <img class="opptyLogo" src="../assets/opptylogo.png" alt="OPPTY HRMS Logo" />
+      </div>
+      <div class="sidebar-content">
+        <div class="menu-section main-menu">
+          <p class="menu-header">MAIN MENU</p>
 
-          <div class="menu-section applications-section">
-            <a href="#" class="menu-item has-submenu"
-              ><i class="fas fa-cubes"></i><span>Applications</span
-              ><i class="fas fa-chevron-right"></i
-            ></a>
-            <a href="#" class="menu-item has-submenu active-parent"
-              ><i class="fas fa-user-shield"></i
-              ><span style="font-weight: 600">Super Admin</span
-              ><i class="fas fa-chevron-down"></i
-            ></a>
-
-            <!-- Submenu Open (As seen in the image) -->
-            <div class="submenu">
-              <a href="#" class="menu-item submenu-item">Horizontal</a>
-              <a href="#" class="menu-item submenu-item">Detached</a>
-              <a href="#" class="menu-item submenu-item">Modern</a>
-              <a href="#" class="menu-item submenu-item">Two Column</a>
-              <a href="#" class="menu-item submenu-item">Hovered</a>
-              <a href="#" class="menu-item submenu-item">Boxed</a>
-              <a href="#" class="menu-item submenu-item">Horizontal Single</a>
-              <a href="#" class="menu-item submenu-item">Horizontal Overlay</a>
-              <a href="#" class="menu-item submenu-item">Horizontal Box</a>
-              <a href="#" class="menu-item submenu-item">Menu Aside</a>
-              <a href="#" class="menu-item submenu-item">Transparent</a>
-              <a href="#" class="menu-item submenu-item">Without Header</a>
-              <a href="#" class="menu-item submenu-item">RTL</a>
-              <a href="#" class="menu-item submenu-item">Dark</a>
-            </div>
-          </div>
-
-          <div class="menu-section projects-section">
-            <p class="menu-header">PROJECTS</p>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-users"></i><span>Clients</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-folder"></i><span>Projects</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-          </div>
-
-          <!-- CRM Section -->
-          <div class="menu-section crm-section">
-            <p class="menu-header">CRM</p>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-address-book"></i><span>Contacts</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-building"></i><span>Companies</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-hand-holding-usd"></i><span>Deals</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-project-diagram"></i><span>Pipeline</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-chart-area"></i><span>Analytics</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-bolt"></i><span>Activities</span></a
-            >
-          </div>
-
-          <!-- HRM Section (Collapsible) -->
-          <div class="menu-section hrm-section">
-            <p class="menu-header">HRM</p>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-users"></i><span>Employees</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-ticket-alt"></i><span>Tickets</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-star"></i><span>Holidays</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-calendar-check"></i><span>Attendance</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-graduation-cap"></i><span>Performance</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-chalkboard-teacher"></i><span>Training</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-user-clock"></i><span>Probation Management</span
-              ><span class="new-badge">NEW</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-file-signature"></i
-              ><span>Notice Period Tracker</span
-              ><span class="new-badge">NEW</span></a
-            >
-          </div>
-
-          <!-- Promotion/Resignation Section -->
-          <div class="menu-section promotion-section">
-            <a href="#" class="menu-item"
-              ><i class="fas fa-bullhorn"></i><span>Promotion</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-times-circle"></i><span>Resignation</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-calendar-times"></i><span>Termination</span></a
-            >
-          </div>
-
-          <!-- Recruitment Section -->
-          <div class="menu-section recruitment-section">
-            <p class="menu-header">RECRUITMENT</p>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-user-plus"></i><span>Jobs</span
-              ><span class="new-badge">NEW</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-user-tag"></i><span>Candidates</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-handshake"></i><span>Referrals</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-file-alt"></i><span>Resume Parsing</span
-              ><span class="new-badge">NEW</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-university"></i><span>Campus Hiring</span
-              ><span class="new-badge">NEW</span></a
-            >
-          </div>
-
-          <!-- Finance & Accounts -->
-          <div class="menu-section finance-section">
-            <p class="menu-header">FINANCE & ACCOUNTS</p>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-wallet"></i><span>Sales</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-book"></i><span>Accounting</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-tools"></i><span>Assets</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-history"></i><span>Reports</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-          </div>
-
-          <!-- Administration -->
-          <div class="menu-section admin-section">
-            <p class="menu-header">ADMINISTRATION</p>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-cogs"></i><span>Settings</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-file-code"></i><span>Pages</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-newspaper"></i><span>Blogs</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-map-marker-alt"></i><span>Locations</span
-              ><i class="fas fa-chevron-down expand-icon"></i
-            ></a>
-            <a href="#" class="menu-item"
-              ><i class="fas fa-quote-left"></i><span>Testimonials</span></a
-            >
-            <a href="#" class="menu-item"
-              ><i class="fas fa-question-circle"></i><span>FAQ's</span></a
-            >
-          </div>
-        </div>
-      </aside>
-
-      <!-- 2. Main Content Area -->
-      <main class="main-content">
-        <!-- Top Bar -->
-        <header class="top-bar">
-          <div class="search-bar">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search in HRMS" />
-            <span>CTRL + /</span>
-          </div>
-          <div class="header-icons">
-            <i class="fas fa-th-large"></i>
-            <i class="fas fa-bell"></i>
-            <i class="fas fa-envelope"></i>
-            <i class="fas fa-cog"></i>
-            <div class="user-profile">
-              <img src="../assets/profiledp.jpeg" alt="User Avatar" />
-            </div>
-          </div>
-        </header>
-
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-          <h1>Admin Dashboard</h1>
-          <div class="breadcrumbs">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
+          <a href="#" class="menu-item active">
+            <i class="fas fa-user-tie"></i>
             <span>Admin Dashboard</span>
+          </a>
+          <a href="../payroll_page/payroll.html" class="menu-item">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Payroll Dashboard</span>
+          </a>
+          <a href="../recruitment/recruitment.html" class="menu-item">
+            <i class="fas fa-search"></i>
+            <span>Recruitment Dashboard</span>
+          </a>
+          <a href="../approval/approval.html" class="menu-item">
+            <i class="fas fa-user"></i>
+            <span>Approval</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-address-book"></i>
+            <span>Contacts</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-users"></i>
+            <span>Employees</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-star"></i>
+            <span>Holidays</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>Attendance</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-signature"></i>
+            <span>Notice Period Tracker</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+
+    <!-- 2. Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search in HRMS" />
+          <span>CTRL + /</span>
+        </div>
+        <div class="header-icons">
+          <i class="fas fa-th-large"></i>
+          <i class="fas fa-bell"></i>
+          <i class="fas fa-envelope"></i>
+          <i class="fas fa-cog"></i>
+          <div class="user-profile">
+            <img src="../assets/profiledp.jpeg" alt="User Avatar" />
           </div>
-          <div class="action-buttons">
+        </div>
+      </header>
+
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <div class="breadcrumbs">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+          <span>Admin Dashboard</span>
+        </div>
+        <div class="action-buttons">
+          <button class="btn-icon">
+            <i class="fas fa-download"></i> Export
+          </button>
+          <button class="btn-icon">
+            <i class="far fa-calendar-alt"></i> Feb 2026
+          </button>
+          <button class="btn-primary emp-add-btn" id="empOpenBtn">
+            <i class="fas fa-calendar-plus"></i>
+            Add Employee
+          </button>
+
+          <!-- Modal Overlay -->
+          <!-- Modal Overlay -->
+          <div class="emp-modal-overlay" id="empModal">
+            <div class="emp-modal-box">
+              <span class="emp-close-btn" id="empCloseBtn">&times;</span>
+
+              <h2 class="emp-title">Add Employee</h2>
+
+              <form id="empForm" novalidate>
+                <!-- Employee Type Radio Buttons (From Image) -->
+                <div class="emp-group">
+                  <label>Is this an employee or Intern?</label>
+                  <div class="radio-group">
+                    <label class="radio-label">
+                      <input type="radio" name="empType" value="employee" checked />
+                      <span>Employee</span>
+                    </label>
+                    <label class="radio-label">
+                      <input type="radio" name="empType" value="contractor" />
+                      <span>Intern</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="emp-group">
+                  <label>Name <span>*</span></label>
+                  <input type="text" id="nameInput" placeholder="Enter name" required />
+                  <small class="error-msg"></small>
+                </div>
+                <div class="emp-group">
+                  <label>Emp ID <span>*</span></label>
+                  <input type="text" id="empIdInput" placeholder="Enter employee ID" required />
+                  <small class="error-msg"></small>
+                </div>
+
+                <!-- Email -->
+                <div class="emp-group">
+                  <label>Email <span>*</span></label>
+                  <input type="email" id="emailInput" placeholder="Enter email address" required />
+                  <small class="helper-text">The email they will use to log into the system.</small>
+                  <small class="error-msg"></small>
+                </div>
+
+                <!-- Password (Requested Addition) -->
+                <div class="emp-group">
+                  <label>Password <span>*</span></label>
+                  <input type="password" id="passwordInput" placeholder="Create a temporary password" required />
+                  <small class="error-msg"></small>
+                </div>
+
+                <!-- Hire Date -->
+                <div class="emp-group">
+                  <label>Hire Date <span>*</span></label>
+                  <input type="date" id="dateInput" required />
+                  <small class="helper-text">The first day of employment for this person.</small>
+                  <small class="error-msg"></small>
+                </div>
+
+                <!-- Job Title & Department Row -->
+                <div class="emp-row">
+                  <div class="emp-group">
+                    <label>Job Title</label>
+                    <input type="text" id="jobInput" placeholder="Enter Job Title" />
+                  </div>
+                  <div class="emp-group">
+                    <label>Department</label>
+                    <input type="text" id="deptInput" placeholder="Enter Department" />
+                  </div>
+                </div>
+
+                <!-- Manager -->
+                <div class="emp-group">
+                  <label>Manager</label>
+                  <select id="managerInput">
+                    <option value="">Please select manager</option>
+                    <option value="1">Narala Prasad Reddy</option>
+
+                  </select>
+                </div>
+
+                <!-- Salary -->
+                <div class="emp-group">
+                  <label>Annual Salary</label>
+                  <input type="number" id="salaryInput" placeholder="0" />
+                  <small class="helper-text">Annual salary is the current CTC. If monthly, multiply by
+                    12.</small>
+                  <small class="error-msg"></small>
+                </div>
+
+                <!-- Location -->
+                <div class="emp-group">
+                  <label>Location</label>
+                  <input type="text" id="locationInput" placeholder="Enter work location" />
+                </div>
+
+                <div class="emp-actions">
+                  <button type="button" class="emp-cancel-btn" id="empCancelBtn">
+                    Cancel
+                  </button>
+                  <button type="submit" class="emp-submit-btn">
+                    Add Employee
+                  </button>
+                  <!-- Success Modal -->
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="success-modal-overlay" id="successModal">
+        <div class="success-box">
+          <div class="success-icon-circle">
+            <i class="fas fa-check"></i>
+          </div>
+          <h2>Success!</h2>
+          <p>The new employee has been added successfully.</p>
+          <button class="success-btn" id="successOkBtn">Continue</button>
+        </div>
+      </div>
+
+      <!-- Welcome Card -->
+      <div class="welcome-card">
+        <img class="profile-lg" src="../assets/profiledp.jpeg" alt="Avatar" />
+        <h2>Welcome Back, DD <i class="fas fa-pencil-alt"></i></h2>
+        <p>
+          You have
+          <span class="highlight-pending">21 Pending Approvals</span> &
+          <span class="highlight-leave">14 Leave Requests</span>
+        </p>
+      </div>
+
+      <!-- Stat Cards Row 1 -->
+      <div class="stats-grid-1">
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-orange">
+            <i class="fas fa-user-clock"></i>
+          </div>
+          <p>Attendance Overview</p>
+          <h3>120/154</h3>
+          <a href="#" class="view-details-link attendance-trigger">View Details</a>
+        </div>
+
+        <!-- MODAL POPUP (Styled like the Permission Request Table) -->
+        <div id="detailModal" class="modal">
+          <div class="modal-content modal-table-view">
+            <div class="modal-header">
+              <h2 id="modalTitle">Attendance Detail Log</h2>
+              <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                  </tr>
+                </thead>
+                <tbody id="modalTableBody">
+                  <!-- Rows populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-blue">
+            <i class="fas fa-project-diagram"></i>
+          </div>
+          <p>Total No of Projects</p>
+          <h3>90/125</h3>
+          <a href="#">View All</a>
+        </div>
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-teal">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <p>Total No of Tasks</p>
+          <h3>96/100</h3>
+          <a href="#">View All</a>
+        </div>
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-purple">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <p>New Hire</p>
+          <h3>45/48</h3>
+          <a href="#">View All</a>
+        </div>
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-red">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <p>Earnings</p>
+          <h3>$21,445</h3>
+          <a href="#">View All</a>
+        </div>
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-green">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <p>Profit This Week</p>
+          <h3>$5,544</h3>
+          <a href="#">View All</a>
+        </div>
+        <div class="stat-card">
+          <div class="icon-circle bg-icon-yellow">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <p>Job Applicants</p>
+          <h3>98</h3>
+          <a href="#">View All</a>
+        </div>
+      </div>
+
+      <!-- Main Content Grid (Rows 2 & 3 - 3 Columns Structure) -->
+      <div class="main-grid-row grid-row-2-3">
+        <!-- Employees By Department (Span 2) -->
+        <div class="card large-card" id="employees-dept">
+          <div class="card-header">
+            <h3>Employees By Department</h3>
             <button class="btn-icon">
-              <i class="fas fa-download"></i> Export
+              <i class="far fa-calendar-alt"></i> This Week
             </button>
+          </div>
+          <div class="chart-body">
+            <div class="bar-chart">
+              <div class="bar-group">
+                <label>UI/UX</label>
+                <div class="bar" style="width: 70%"></div>
+                <span class="value">120</span>
+              </div>
+              <div class="bar-group">
+                <label>Development</label>
+                <div class="bar" style="width: 95%"></div>
+                <span class="value">110</span>
+              </div>
+              <div class="bar-group">
+                <label>Management</label>
+                <div class="bar" style="width: 75%"></div>
+                <span class="value">90</span>
+              </div>
+              <div class="bar-group">
+                <label>HR</label>
+                <div class="bar" style="width: 15%"></div>
+                <span class="value">30</span>
+              </div>
+              <div class="bar-group">
+                <label>Testing</label>
+                <div class="bar" style="width: 40%"></div>
+                <span class="value">55</span>
+              </div>
+            </div>
+            <p class="increase-note">
+              <span class="dot red"></span> No of Employees increased by
+              <strong>+20%</strong> from last Week
+            </p>
+          </div>
+        </div>
+
+        <!-- Attendance Overview (Span 1) -->
+        <div class="card medium-card" id="attendance-overview">
+          <div class="card-header">
+            <h3>Attendance Overview</h3>
             <button class="btn-icon">
-              <i class="far fa-calendar-alt"></i> Feb 2026
+              <i class="far fa-calendar-alt"></i> Today
             </button>
-            <button class="btn-primary emp-add-btn" id="empOpenBtn">
-              <i class="fas fa-calendar-plus"></i>
-              Add Employee
-            </button>
-
-            <!-- Modal Overlay -->
-            <!-- Modal Overlay -->
-            <div class="emp-modal-overlay" id="empModal">
-              <div class="emp-modal-box">
-                <span class="emp-close-btn" id="empCloseBtn">&times;</span>
-
-                <h2 class="emp-title">Add Employee</h2>
-
-                <form id="empForm" novalidate>
-                  <!-- Employee Type Radio Buttons (From Image) -->
-                  <div class="emp-group">
-                    <label>Is this an employee or Intern?</label>
-                    <div class="radio-group">
-                      <label class="radio-label">
-                        <input
-                          type="radio"
-                          name="empType"
-                          value="employee"
-                          checked
-                        />
-                        <span>Employee</span>
-                      </label>
-                      <label class="radio-label">
-                        <input type="radio" name="empType" value="contractor" />
-                        <span>Intern</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <!-- Full Name -->
-                  <div class="emp-group">
-                    <label>Name <span>*</span></label>
-                    <input
-                      type="text"
-                      id="nameInput"
-                      placeholder="Enter name"
-                      required
-                    />
-                    <small class="error-msg"></small>
-                  </div>
-                  <div class="emp-group">
-                    <label>Emp ID <span>*</span></label>
-                    <input
-                      type="text"
-                      id="empIdInput"
-                      placeholder="Enter employee ID"
-                      required
-                    />
-                    <small class="error-msg"></small>
-                  </div>
-
-                  <!-- Email -->
-                  <div class="emp-group">
-                    <label>Email <span>*</span></label>
-                    <input
-                      type="email"
-                      id="emailInput"
-                      placeholder="Enter email address"
-                      required
-                    />
-                    <small class="helper-text"
-                      >The email they will use to log into the system.</small
-                    >
-                    <small class="error-msg"></small>
-                  </div>
-
-                  <!-- Password (Requested Addition) -->
-                  <div class="emp-group">
-                    <label>Password <span>*</span></label>
-                    <input
-                      type="password"
-                      id="passwordInput"
-                      placeholder="Create a temporary password"
-                      required
-                    />
-                    <small class="error-msg"></small>
-                  </div>
-
-                  <!-- Hire Date -->
-                  <div class="emp-group">
-                    <label>Hire Date <span>*</span></label>
-                    <input type="date" id="dateInput" required />
-                    <small class="helper-text"
-                      >The first day of employment for this person.</small
-                    >
-                    <small class="error-msg"></small>
-                  </div>
-
-                  <!-- Job Title & Department Row -->
-                  <div class="emp-row">
-                    <div class="emp-group">
-                      <label>Job Title</label>
-                      <input
-                        type="text"
-                        id="jobInput"
-                        placeholder="Enter Job Title"
-                      />
-                    </div>
-                    <div class="emp-group">
-                      <label>Department</label>
-                      <input
-                        type="text"
-                        id="deptInput"
-                        placeholder="Enter Department"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Manager -->
-                  <div class="emp-group">
-                    <label>Manager</label>
-                    <select id="managerInput">
-                      <option value="">Please select manager</option>
-                      <option value="1">Narala Prasad Reddy</option>
-                      
-                    </select>
-                  </div>
-
-                  <!-- Salary -->
-                  <div class="emp-group">
-                    <label>Annual Salary</label>
-                    <input type="number" id="salaryInput" placeholder="0" />
-                    <small class="helper-text"
-                      >Annual salary is the current CTC. If monthly, multiply by
-                      12.</small
-                    >
-                    <small class="error-msg"></small>
-                  </div>
-
-                  <!-- Location -->
-                  <div class="emp-group">
-                    <label>Location</label>
-                    <input
-                      type="text"
-                      id="locationInput"
-                      placeholder="Enter work location" />
-                  </div>
-
-                  <div class="emp-actions">
-                    <button
-                      type="button"
-                      class="emp-cancel-btn"
-                      id="empCancelBtn"
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" class="emp-submit-btn">
-                      Add Employee
-                    </button>
-                    <!-- Success Modal -->
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="success-modal-overlay" id="successModal">
-          <div class="success-box">
-            <div class="success-icon-circle">
-              <i class="fas fa-check"></i>
-            </div>
-            <h2>Success!</h2>
-            <p>The new employee has been added successfully.</p>
-            <button class="success-btn" id="successOkBtn">Continue</button>
-          </div>
-        </div>
-
-        <!-- Welcome Card -->
-        <div class="welcome-card">
-          <img class="profile-lg" src="../assets/profiledp.jpeg" alt="Avatar" />
-          <h2>Welcome Back, DD <i class="fas fa-user"></i></h2>
-          <p>
-            You have
-            <span class="highlight-pending">21 Pending Approvals</span> &
-            <span class="highlight-leave">14 Leave Requests</span>
-          </p>
-        </div>
-
-        <!-- Stat Cards Row 1 -->
-        <div class="stats-grid-1">
-          <div class="stat-card">
-            <div class="icon-circle bg-icon-orange">
-              <i class="fas fa-user-clock"></i>
-            </div>
-            <p>Attendance Overview</p>
-            <h3>120/154</h3>
-            <a href="#" class="view-details-link attendance-trigger"
-              >View Details</a
-            >
           </div>
 
-          <!-- MODAL POPUP (Styled like the Permission Request Table) -->
-          <div id="detailModal" class="modal">
-            <div class="modal-content modal-table-view">
-              <div class="modal-header">
-                <h2 id="modalTitle">Attendance Detail Log</h2>
-                <span class="close-btn">&times;</span>
-              </div>
-              <div class="modal-body">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Employee</th>
-                      <th>Date</th>
-                      <th>Check In</th>
-                      <th>Check Out</th>
-                    </tr>
-                  </thead>
-                  <tbody id="modalTableBody">
-                    <!-- Rows populated by JS -->
-                  </tbody>
-                </table>
+          <div class="chart-body attendance-chart">
+            <div class="chart-wrapper">
+              <svg viewBox="0 0 200 120" class="arc-svg">
+                <!-- Background Arc -->
+                <path id="arc-bg" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#e9ecef" stroke-width="18"
+                  stroke-linecap="round" />
+
+                <!-- Dynamic Progress Arcs -->
+                <path id="arc-present" fill="none" stroke="#28a745" stroke-width="18" stroke-linecap="round" />
+                <path id="arc-late" fill="none" stroke="#ffc107" stroke-width="18" stroke-linecap="round" />
+                <path id="arc-absent" fill="none" stroke="#dc3545" stroke-width="18" stroke-linecap="round" />
+                <path id="arc-wfh" fill="none" stroke="#007bff" stroke-width="18" stroke-linecap="round" />
+              </svg>
+
+              <div class="chart-center">
+                <p>Total</p>
+                <strong id="totalCount">0</strong>
               </div>
             </div>
-            
-          </div>
 
-          
-          
-        </div>
-
-        <!-- Main Content Grid (Rows 2 & 3 - 3 Columns Structure) -->
-        <div class="main-grid-row grid-row-2-3">
-          <!-- Employees By Department (Span 2) -->
-          <div class="card large-card" id="employees-dept">
-            <div class="card-header">
-              <h3>Employees By Department</h3>
-              <button class="btn-icon">
-                <i class="far fa-calendar-alt"></i> This Week
-              </button>
-            </div>
-            <div class="chart-body">
-              <div class="bar-chart">
-                <div class="bar-group">
-                  <label>UI/UX</label>
-                  <div class="bar" style="width: 70%"></div>
-                  <span class="value">120</span>
-                </div>
-                <div class="bar-group">
-                  <label>Development</label>
-                  <div class="bar" style="width: 95%"></div>
-                  <span class="value">110</span>
-                </div>
-                <div class="bar-group">
-                  <label>Management</label>
-                  <div class="bar" style="width: 75%"></div>
-                  <span class="value">90</span>
-                </div>
-                <div class="bar-group">
-                  <label>HR</label>
-                  <div class="bar" style="width: 15%"></div>
-                  <span class="value">30</span>
-                </div>
-                <div class="bar-group">
-                  <label>Testing</label>
-                  <div class="bar" style="width: 40%"></div>
-                  <span class="value">55</span>
-                </div>
-              </div>
-              <p class="increase-note">
-                <span class="dot red"></span> No of Employees increased by
-                <strong>+20%</strong> from last Week
+            <div class="legend">
+              <p>
+                <span class="dot green"></span> Present
+                <span id="pPresent"></span>
+              </p>
+              <p>
+                <span class="dot yellow"></span> Late <span id="pLate"></span>
+              </p>
+              <p>
+                <span class="dot red"></span> Absent
+                <span id="pAbsent"></span>
+              </p>
+              <p>
+                <span class="dot blue"></span> WFH <span id="pWFH"></span>
               </p>
             </div>
           </div>
 
-          
+          <a href="#" class="view-details-link">View Details</a>
+        </div>
 
-          <!-- Clock In/Out (Span 1) -->
-          
-
-          <!-- Employee Status (Span 1) -->
-          <div class="card medium-card" id="employee-status">
-            <div class="card-header">
-              <h3>Employee Status</h3>
+        <!-- Clock In/Out (Span 1) -->
+        <div class="card medium-card" id="clock-inout">
+          <div class="card-header">
+            <h3>Clock-In/Out</h3>
+            <div class="header-controls">
+              <select>
+                <option>All Departments</option>
+              </select>
               <button class="btn-icon">
-                <i class="far fa-calendar-alt"></i> This Week
+                <i class="far fa-calendar-alt"></i> Today
               </button>
             </div>
-            <div class="card-body">
-              <div class="total-employee">
-                <p>Total Employee</p>
-                <span class="count">154</span>
+          </div>
+          <div class="card-body user-list">
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Dhamodhar </strong><small>Web Designer</small>
               </div>
-              <div class="status-bars">
-                <div class="bar-row">
-                  <span class="dot color-yellow"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 48%; background-color: orange"
-                  ></div>
-                  <span class="label">Fulltime (48%)</span
-                  ><span class="value">112</span>
-                </div>
-                <div class="bar-row">
-                  <span class="dot color-red"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 22%; background-color: var(--color-red)"
-                  ></div>
-                  <span class="label">WFO (22%)</span
-                  ><span class="value">12</span>
-                </div>
-                <div class="bar-row">
-                  <span class="dot color-blue"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 20%; background-color: var(--color-blue)"
-                  ></div>
-                  <span class="label">WFH (20%)</span
-                  ><span class="value">112</span>
-                </div>
-                <div class="bar-row">
-                  <span class="dot color-pink"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 20%; background-color: var(--color-pink)"
-                  ></div>
-                  <span class="label">Internship (20%)</span
-                  ><span class="value">04</span>
-                </div>
+              <span class="time-badge green"><i class="fas fa-clock"></i> 09:15</span>
+            </div>
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Balaji </strong><small>Project Manager</small>
               </div>
-
-              <a href="#" class="view-details-link employee-trigger"
-                >View All Employees</a
-              >
+              <span class="time-badge green"><i class="fas fa-clock"></i> 09:36</span>
+            </div>
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Saleem </strong><small>Web Developer</small>
+              </div>
+              <span class="time-badge green"><i class="fas fa-clock"></i> 09:15</span>
+            </div>
+            <div class="user-entry late">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Siddu </strong><small>Marketing Head</small>
+              </div>
+              <span class="time-badge red">30 Min</span>
+              <span class="time-badge green">08:35</span>
             </div>
           </div>
-          <!-- UPDATE YOUR EXISTING CARD LINK -->
+          <a href="#" class="view-details-link">View All Attendance</a>
+        </div>
 
-          <!-- ADD THIS MODAL MARKUP TO YOUR PAGE BODY -->
-         <div id="employeeModal" class="modal">
-    <div class="modal-content large-modal">
-        <div class="modal-header custom-header">
-            <h2>Employee Details</h2>
-            
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="employeeSearch" placeholder="Search..."/>
+        <!-- Employee Status (Span 1) -->
+        <div class="card medium-card" id="employee-status">
+          <div class="card-header">
+            <h3>Employee Status</h3>
+            <button class="btn-icon">
+              <i class="far fa-calendar-alt"></i> This Week
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="total-employee">
+              <p>Total Employee</p>
+              <span class="count">154</span>
             </div>
-            
-            <!-- CHANGED ID HERE to avoid conflict with dashboard button -->
-            <button class="btn-primary emp-add-btn" id="addEmpFromTableBtn">
+            <div class="status-bars">
+              <div class="bar-row">
+                <span class="dot color-yellow"></span>
+                <div class="bar-fill" style="width: 48%; background-color: orange"></div>
+                <span class="label">Fulltime (48%)</span><span class="value">112</span>
+              </div>
+              <div class="bar-row">
+                <span class="dot color-red"></span>
+                <div class="bar-fill" style="width: 22%; background-color: var(--color-red)"></div>
+                <span class="label">WFO (22%)</span><span class="value">12</span>
+              </div>
+              <div class="bar-row">
+                <span class="dot color-blue"></span>
+                <div class="bar-fill" style="width: 20%; background-color: var(--color-blue)"></div>
+                <span class="label">WFH (20%)</span><span class="value">112</span>
+              </div>
+              <div class="bar-row">
+                <span class="dot color-pink"></span>
+                <div class="bar-fill" style="width: 20%; background-color: var(--color-pink)"></div>
+                <span class="label">Internship (20%)</span><span class="value">04</span>
+              </div>
+            </div>
+
+            <a href="#" class="view-details-link employee-trigger">View All Employees</a>
+          </div>
+        </div>
+        <!-- UPDATE YOUR EXISTING CARD LINK -->
+
+        <!-- ADD THIS MODAL MARKUP TO YOUR PAGE BODY -->
+        <div id="employeeModal" class="modal">
+          <div class="modal-content large-modal">
+            <div class="modal-header custom-header">
+              <h2>Employee Details</h2>
+
+              <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="employeeSearch" placeholder="Search..." />
+              </div>
+
+              <!-- CHANGED ID HERE to avoid conflict with dashboard button -->
+              <button class="btn-primary emp-add-btn" id="addEmpFromTableBtn">
                 <i class="fas fa-calendar-plus"></i>
                 Add Employee
-            </button>
-            
-            <span class="close-employee-btn">&times;</span>
-        </div>
+              </button>
 
-        <div class="modal-body">
-            <table class="employee-table">
+              <span class="close-employee-btn">&times;</span>
+            </div>
+
+            <div class="modal-body">
+              <table class="employee-table">
                 <thead>
-                    <tr>
-                        <th>Emp Id</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Position</th>
-                        <th>Salary</th>
-                    </tr>
+                  <tr>
+                    <th>Emp Id</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                  </tr>
                 </thead>
                 <tbody id="employeeTableBody">
-                    <!-- Javascript will populate rows here -->
+                  <!-- Javascript will populate rows here -->
                 </tbody>
-            </table>
-        </div>
-    </div>
-</div>     
-        </div>
-        <div class="main-grid-row grid-row-5">
-          <!-- Birthdays (Span 1) -->
-          <div class="card quarter-card" id="birthdays">
-            <div class="card-header">
-              <h3>Birthdays</h3>
-              <a href="#">View All</a>
-            </div>
-            <div class="card-body birthday-list">
-              <h4>Today</h4>
-              <div class="birthday-entry highlighted">
-                <img style="width:35px; height:35px; border-radius:50%;"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Andrew Jermia</strong><small>IOS Developer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
-
-              <h4>Tomorrow</h4>
-              <div class="birthday-entry">
-                <img style="width:35px; height:35px; border-radius:50%;"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Mary Zeen</strong><small>UI/UX Designer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
-              <div class="birthday-entry">
-                <img style="width:35px; height:35px; border-radius:50%;"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Antony Lewis</strong><small>Android Developer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
-              <h4>25 Jan 2025</h4>
-              <div class="birthday-entry">
-                <img style="width:35px; height:35px; border-radius:50%;"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Doglas Martini</strong><small>.Net Developer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
+              </table>
             </div>
           </div>
         </div>
 
-        
-        <!-- Footer -->
-        <footer class="dashboard-footer">
-          <p>2026@oppty</p>
-          <p>Designed & Developed By Oppty</p>
-        </footer>
-      </main>
-    </div>
+        <!-- Jobs Applicants (Span 1) -->
+        <div class="card medium-card" id="job-applicants">
+          <div class="card-header">
+            <div class="tabs">
+              <button class="tab-btn" data-tab="openings">Openings</button>
+              <button class="tab-btn active" data-tab="applicants">
+                Applicants
+              </button>
+            </div>
+            <a href="#">View All</a>
+          </div>
+          <div class="card-body user-list" id="applicant-list-content">
+            <!-- Content populated by JS/Default -->
+          </div>
+        </div>
 
-    <script src="admin.js"></script>
-  </body>
+        <!-- Employees List (Span 1) -->
+        <div class="card medium-card" id="employees-list">
+          <div class="card-header">
+            <h3>Employees</h3>
+            <a href="#">View All</a>
+          </div>
+          <div class="card-body user-list">
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Dhamodhar </strong><small> Web Developer</small>
+              </div>
+              <span class="badge finance">Finance</span>
+            </div>
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Saleem </strong><small>Web Developer</small>
+              </div>
+              <span class="badge development">Development</span>
+            </div>
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Siddu </strong><small>Backend Developer</small>
+              </div>
+              <span class="badge marketing">Marketing</span>
+            </div>
+            <div class="user-entry">
+              <img src="../assets/profiledp.jpeg" />
+              <div class="user-info">
+                <strong>Balaji </strong><small>Project Manager</small>
+              </div>
+              <span class="badge manager">Manager</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4 (4 Columns Structure) -->
+      <div class="main-grid-row grid-row-4">
+        <!-- Sales Overview (Span 2) -->
+        <div class="card wide-card" id="sales-overview">
+          <div class="card-header">
+            <h3>Sales Overview</h3>
+            <div class="legend-inline">
+              <span class="dot color-orange"></span> Income
+              <span class="dot color-grey"></span> Expenses
+            </div>
+            <a href="#">View All</a>
+          </div>
+          <div class="card-body chart-container">
+            <div class="sales-chart">
+              <div class="bar-column" style="height: 40%">
+                <span>40</span>
+              </div>
+              <div class="bar-column" style="height: 25%">
+                <span>25</span>
+              </div>
+              <div class="bar-column" style="height: 45%">
+                <span>45</span>
+              </div>
+              <div class="bar-column" style="height: 80%">
+                <span>80</span>
+              </div>
+              <div class="bar-column" style="height: 85%">
+                <span>85</span>
+              </div>
+              <div class="bar-column" style="height: 90%">
+                <span>90</span>
+              </div>
+              <div class="bar-column" style="height: 75%">
+                <span>75</span>
+              </div>
+              <div class="bar-column" style="height: 80%">
+                <span>80</span>
+              </div>
+              <div class="bar-column" style="height: 65%">
+                <span>65</span>
+              </div>
+              <div class="bar-column" style="height: 78%">
+                <span>78</span>
+              </div>
+              <div class="bar-column" style="height: 50%">
+                <span>50</span>
+              </div>
+              <div class="bar-column" style="height: 40%">
+                <span>40</span>
+              </div>
+            </div>
+            <div class="x-axis">
+              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects (Tall Card - Span 1) -->
+        <div class="card tall-card" id="projects-list">
+          <div class="card-header">
+            <h3>Projects</h3>
+            <button class="btn-icon">
+              <i class="far fa-calendar-alt"></i> September
+            </button>
+          </div>
+          <div class="card-body table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Team</th>
+                  <th>Hours</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PRO-001</td>
+                  <td>Office Management App</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><img
+                      style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" />
+                  </td>
+                  <td>15/255 Hrs</td>
+                  <td><span class="dot red"></span> High</td>
+                </tr>
+                <tr>
+                  <td>PRO-002</td>
+                  <td>Clinic Management</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><img
+                      style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><span class="count">+1</span>
+                  </td>
+                  <td>15/255 Hrs</td>
+                  <td><span class="dot green"></span> Low</td>
+                </tr>
+                <tr>
+                  <td>PRO-003</td>
+                  <td>Educational Platform</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><img
+                      style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" />
+                  </td>
+                  <td>40/255 Hrs</td>
+                  <td><span class="dot yellow"></span> Medium</td>
+                </tr>
+                <tr>
+                  <td>PRO-004</td>
+                  <td>Chat & Call Mobile App</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><img
+                      style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" />
+                  </td>
+                  <td>35/155 Hrs</td>
+                  <td><span class="dot red"></span> High</td>
+                </tr>
+                <tr>
+                  <td>PRO-005</td>
+                  <td>Travel Planning Website</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><img
+                      style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" />
+                  </td>
+                  <td>50/235 Hrs</td>
+                  <td><span class="dot yellow"></span> Medium</td>
+                </tr>
+                <tr>
+                  <td>PRO-006</td>
+                  <td>Service Booking Software</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><img
+                      style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" />
+                  </td>
+                  <td>40/255 Hrs</td>
+                  <td><span class="dot green"></span> Low</td>
+                </tr>
+                <tr>
+                  <td>PRO-008</td>
+                  <td>Travel Planning Website</td>
+                  <td>
+                    <img style="width:20px; height:20px; border-radius:50%; margin-right:5px;"
+                      src="../assets/profiledp.jpeg" /><span class="count">+2</span>
+                  </td>
+                  <td>15/255 Hrs</td>
+                  <td><span class="dot yellow"></span> Medium</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tasks Statistics (Span 1) -->
+        <div class="card medium-card" id="tasks-stats">
+          <div class="card-header">
+            <h3>Tasks Statistics</h3>
+            <button class="btn-icon">
+              <i class="far fa-calendar-alt"></i> This Week
+            </button>
+          </div>
+          <div class="card-body chart-container">
+            <div class="task-arc-container">
+              <!-- Complex Arc Chart Simulation -->
+              <svg viewBox="0 0 100 50" class="task-arc">
+                <path d="M 50, 50 A 40 40 0 0 1 83 34" fill="none" stroke="#f1c40f" stroke-width="10"
+                  stroke-dasharray="45, 300"></path>
+                <path d="M 50, 50 A 40 40 0 0 1 65 17" fill="none" stroke="#3498db" stroke-width="10"
+                  stroke-dasharray="19, 300"></path>
+                <path d="M 50, 50 A 40 40 0 0 1 35 17" fill="none" stroke="#e74c3c" stroke-width="10"
+                  stroke-dasharray="30, 300"></path>
+                <path d="M 50, 50 A 40 40 0 0 1 17 34" fill="none" stroke="#2ecc71" stroke-width="10"
+                  stroke-dasharray="76, 300"></path>
+              </svg>
+              <div class="chart-center">
+                <p>Total Tasks</p>
+                <strong>124/165</strong>
+              </div>
+            </div>
+            <div class="task-legend">
+              <p><span class="dot color-yellow"></span> Ongoing 24%</p>
+              <p><span class="dot color-blue"></span> On Hold 10%</p>
+              <p><span class="dot color-red"></span> Overdue 16%</p>
+              <p><span class="dot color-green"></span> Ongoing 40%</p>
+            </div>
+            <div class="task-summary">
+              <strong>389/689 hrs</strong>
+              <span>Spent on Overall Tasks This Week</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 5 (4 Columns Structure) -->
+      <div class="main-grid-row grid-row-5">
+        <!-- Schedules (Span 1) -->
+        <div class="card quarter-card" id="schedules">
+          <div class="card-header">
+            <h3>Schedules</h3>
+            <a href="#">View All</a>
+          </div>
+          <div class="card-body">
+            <div class="schedule-item">
+              <span class="badge schedule-ui-ux">UI/UX Designer</span>
+              <h4>Interview Candidates - UI/UX Designer</h4>
+              <p>
+                <i class="far fa-calendar-alt"></i> Thu, 15 Feb 2025
+                <i class="fas fa-clock"></i> 01:00 PM - 02:20 PM
+              </p>
+              <div class="team-avatars">
+                <img style="width:25px; height:25px; border-radius:50%; margin-right:5px;"
+                  src="../assets/profiledp.jpeg" /><img
+                  style="width:25px; height:25px; border-radius:50%; margin-right:5px;"
+                  src="../assets/profiledp.jpeg" /><img
+                  style="width:25px; height:25px; border-radius:50%; margin-right:5px;"
+                  src="../assets/profiledp.jpeg" />
+                <span class="count">+3</span>
+              </div>
+              <button class="join-btn">Join Meeting</button>
+            </div>
+            <div class="schedule-item">
+              <span class="badge schedule-ios">IOS Developer</span>
+              <h4>Interview Candidates - IOS Developer</h4>
+              <p>
+                <i class="far fa-calendar-alt"></i> Thu, 15 Feb 2025
+                <i class="fas fa-clock"></i> 02:00 PM - 04:20 PM
+              </p>
+              <div class="team-avatars">
+                <img style="width:25px; height:25px; border-radius:50%; margin-right:5px;"
+                  src="../assets/profiledp.jpeg" /><img
+                  style="width:25px; height:25px; border-radius:50%; margin-right:5px;"
+                  src="../assets/profiledp.jpeg" /><img
+                  style="width:25px; height:25px; border-radius:50%; margin-right:5px;"
+                  src="../assets/profiledp.jpeg" />
+                <span class="count">+3</span>
+              </div>
+              <button class="join-btn">Join Meeting</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities (Span 1) -->
+        <div class="card quarter-card" id="recent-activities">
+          <div class="card-header">
+            <h3>Recent Activities</h3>
+            <a href="#">View All</a>
+          </div>
+          <div class="card-body activity-list">
+            <div class="activity-item">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <p>
+                <strong>Matt Morgan</strong> Added New Project
+                <strong>HRMS Dashboard</strong>
+              </p>
+              <span class="time">05:30 PM</span>
+            </div>
+            <div class="activity-item">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <p><strong>Jay Ze</strong> Commented on Uploaded Document</p>
+              <span class="time">05:00 PM</span>
+            </div>
+            <div class="activity-item">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <p><strong>Mary Donald</strong> Approved Task Projects</p>
+              <span class="time">05:30 PM</span>
+            </div>
+            <div class="activity-item">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <p>
+                <strong>George David</strong> Requesting Access to Module
+                Tickets
+              </p>
+              <span class="time">06:00 PM</span>
+            </div>
+            <div class="activity-item">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <p><strong>Aaron Zeen</strong> Downloaded App Reportss</p>
+              <span class="time">06:30 PM</span>
+            </div>
+            <div class="activity-item">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <p><strong>Hendry Daniel</strong> Completed New Project HMS</p>
+              <span class="time">05:30 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ToDo List (Span 1) -->
+        <div class="card quarter-card" id="todo-list">
+          <div class="card-header">
+            <h3>Todo</h3>
+            <div class="header-controls">
+              <button class="btn-icon">
+                <i class="far fa-calendar-alt"></i> Today
+              </button>
+              <button class="btn-primary add-btn">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body todo-list-items">
+            <div class="todo-item color-light-grey">
+              <i class="fas fa-list-ul"></i> Add Holidays
+            </div>
+            <div class="todo-item color-pink">
+              <i class="fas fa-list-ul"></i> Add Meeting to Client
+            </div>
+            <div class="todo-item color-lavender">
+              <i class="fas fa-list-ul"></i> Chat with Adrian
+            </div>
+            <div class="todo-item color-purple">
+              <i class="fas fa-list-ul"></i> Management Call
+            </div>
+            <div class="todo-item color-light-blue">
+              <i class="fas fa-list-ul"></i> Add Payroll
+            </div>
+            <div class="todo-item color-light-grey">
+              <i class="fas fa-list-ul"></i> Add Policy for Increment
+            </div>
+          </div>
+        </div>
+
+        <!-- Birthdays (Span 1) -->
+        <div class="card quarter-card" id="birthdays">
+          <div class="card-header">
+            <h3>Birthdays</h3>
+            <a href="#">View All</a>
+          </div>
+          <div class="card-body birthday-list">
+            <h4>Today</h4>
+            <div class="birthday-entry highlighted">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <div>
+                <strong>Andrew Jermia</strong><small>IOS Developer</small>
+              </div>
+              <button class="send-btn">
+                <i class="fas fa-envelope"></i> Send
+              </button>
+            </div>
+
+            <h4>Tomorrow</h4>
+            <div class="birthday-entry">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <div>
+                <strong>Mary Zeen</strong><small>UI/UX Designer</small>
+              </div>
+              <button class="send-btn">
+                <i class="fas fa-envelope"></i> Send
+              </button>
+            </div>
+            <div class="birthday-entry">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <div>
+                <strong>Antony Lewis</strong><small>Android Developer</small>
+              </div>
+              <button class="send-btn">
+                <i class="fas fa-envelope"></i> Send
+              </button>
+            </div>
+            <h4>25 Jan 2025</h4>
+            <div class="birthday-entry">
+              <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+              <div>
+                <strong>Doglas Martini</strong><small>.Net Developer</small>
+              </div>
+              <button class="send-btn">
+                <i class="fas fa-envelope"></i> Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices (Full Width) -->
+      <div class="card invoices-card">
+        <div class="card-header">
+          <h3>Invoices</h3>
+          <div class="header-controls">
+            <select>
+              <option>Invoices</option>
+            </select>
+            <button class="btn-icon">
+              <i class="far fa-calendar-alt"></i> This Week
+            </button>
+          </div>
+        </div>
+        <div class="card-body table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Payment</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+                </td>
+                <td>
+                  <strong>Redesign Website</strong><br />#INVOO2 • Logistics
+                </td>
+                <td>$3560</td>
+                <td><span class="status-badge unpaid">Unpaid</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <img style="width:35px; height:35px; border-radius:50%;" src="../assets/profiledp.jpeg" />
+                </td>
+                <td>
+                  <strong>Module Completion</strong><br />#INVOO5 • Yip Corp
+                </td>
+                <td>$4175</td>
+                <td><span class="status-badge unpaid">Unpaid</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <img style="width:35px; height:35px; border-radius:50%;"
+                    src="https://via.placeholder.com/35/28A745/ffffff?text=E" />
+                </td>
+                <td>
+                  <strong>Change on Emp Module</strong><br />#INVOO3 • Ignis
+                  LLP
+                </td>
+                <td>$6985</td>
+                <td><span class="status-badge unpaid">Unpaid</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://via.placeholder.com/35/DC3545/ffffff?text=I" />
+                </td>
+                <td>
+                  <strong>Changes on the Board</strong><br />#INVOO2 • Ignis
+                  LLP
+                </td>
+                <td>$1457</td>
+                <td><span class="status-badge unpaid">Unpaid</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://via.placeholder.com/35/6f42c1/ffffff?text=H" />
+                </td>
+                <td>
+                  <strong>Hospital Management</strong><br />#INVOO6 • HCL Corp
+                </td>
+                <td>$6458</td>
+                <td><span class="status-badge paid">Paid</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <a href="#" class="view-details-link">View All</a>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        <p>2026@oppty</p>
+        <p>Designed & Developed By Oppty</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+
 </html>

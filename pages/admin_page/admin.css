@@ -35,57 +35,38 @@ body {
 
 /* --- Main Layout --- */
 .dashboard-container {
-  display: flex;
+  display: flex; /* Forces children (sidebar & main-content) to be side-by-side */
+  width: 100%;
   min-height: 100vh;
 }
 
 /* --- Sidebar --- */
-/* .sidebar {
-  width: var(--sidebar-width);
-  background-color: var(--card-bg);
-  padding: 20px 15px;
-  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.08);
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-} */
-
 .sidebar {
-  width: var(--sidebar-width);
+  width: var(--sidebar-width); /* 280px */
   background-color: var(--card-bg);
   padding: 20px 15px;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.08);
-  flex-shrink: 0;
+  flex-shrink: 0; /* PREVENTS SIDEBAR FROM SHRINKING */
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  z-index: 100;
 
   /* Hide scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-.sidebar::-webkit-scrollbar {
-  display: none;
+/* --- Main Content Fix --- */
+.main-content {
+  flex-grow: 1; /* Makes this take up all remaining space to the right */
+  min-width: 0;  /* Crucial: prevents content from pushing sidebar out of view */
+  padding: 30px;
+  background-color: #f8f9fb;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  padding: 10px 0 30px 10px;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--color-blue);
-}
-.logo .opptyLogo {
-  width: 170px;
-  height: 50px;
-  margin-right: 10px;
-}
-
+/* --- Cleaned Menu Styles (Removed Dropdown Bloat) --- */
 .menu-header {
   font-size: 0.75rem;
   color: #6c757d;
@@ -106,94 +87,28 @@ body {
   font-size: 0.88rem;
   transition: background-color 0.2s;
 }
+
 .menu-item i {
-  margin-right: 10px;
-  width: 18px;
+  margin-right: 12px;
+  width: 20px;
+  text-align: center;
   font-size: 1.1rem;
   color: #666;
 }
+
 .menu-item:hover,
 .menu-item.active {
   background-color: #e9f2ff;
-  color: orangered;
+  color: #FF5B1E; /* Standardized Orangered */
   font-weight: 600;
 }
-.menu-item.active i {
-  color: orangered;
+
+.menu-item.active i, .menu-item:hover i {
+  color: #FF5B1E;
 }
 
-.has-submenu {
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.dropdown-icon {
-  margin-left: auto;
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-/* Hide submenu initially */
-.submenu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease;
-  padding-left: 15px;
-}
-
-/* When open */
-.submenu.open {
-  max-height: 1000px; /* enough height */
-}
-
-/* Rotate arrow */
-.has-submenu.open .dropdown-icon {
-  transform: rotate(180deg);
-}
-
-/* Slight indent for submenu items */
-.submenu .menu-item {
-  font-size: 0.85rem;
-  padding: 7px 12px;
-}
-
-.hot-badge,
-.new-badge {
-  font-size: 0.65rem;
-  padding: 2px 5px;
-  border-radius: 4px;
-  margin-left: auto;
-  font-weight: 600;
-}
-.hot-badge {
-  background-color: var(--color-red);
-  color: white;
-}
-.new-badge {
-  background-color: #eb581e;
-  color: white;
-}
-
-/* Submenu specific styling */
-.submenu {
-  padding-left: 15px;
-}
-.submenu-item {
-  font-size: 0.8rem;
-  padding: 6px 12px;
-  color: #666;
-}
-.active-parent {
-  font-weight: 600;
-  background-color: #f1f3f5;
-}
-.active-parent i.fa-chevron-down {
-  transform: rotate(0deg);
-}
-.expand-icon {
-  transform: rotate(270deg);
-  margin-left: auto;
-} /* Chevron right */
+/* I HAVE REMOVED THE .submenu, .has-submenu, and .dropdown-icon 
+   classes here because they cause layout shifts when not used. */
 
 /* --- Main Content --- */
 .main-content {
@@ -640,13 +555,10 @@ body {
 
 /* --- Stat Cards Row 1 --- */
 .stats-grid-1 {
-  /* display: grid;
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-  gap: 15px; */
-  display: flex;
-  justify-content: center;
+  gap: 15px;
   margin-bottom: 25px;
-  align-items: center;
 }
 
 .stat-card {
@@ -654,10 +566,6 @@ body {
   background: var(--card-bg);
   border-radius: 8px;
   box-shadow: var(--shadow-light);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 25%;
 }
 .stat-card p {
   font-size: 0.8rem;
