@@ -172,189 +172,6 @@ document.getElementById("dashboardMenu").addEventListener("click", function () {
   this.classList.toggle("open");
 });
 
-// // popup section
-// document.addEventListener('DOMContentLoaded', () => {
-//     // --- DOM Elements ---
-//     const empModal = document.getElementById("empModal");
-//     const empOpenBtn = document.getElementById("empOpenBtn");
-//     const empCloseBtn = document.getElementById("empCloseBtn");
-//     const empCancelBtn = document.getElementById("empCancelBtn");
-//     const empForm = document.getElementById("empForm");
-
-//     // Success Modal Elements
-//     const successModal = document.getElementById("successModal");
-//     const successOkBtn = document.getElementById("successOkBtn");
-
-//     // --- Modal Open/Close Logic ---
-
-//     // Open Form
-//     if(empOpenBtn) empOpenBtn.onclick = () => empModal.style.display = "flex";
-
-//     // Close Form Function
-//     const closeFormModal = () => {
-//         empModal.style.display = "none";
-//         resetForm();
-//     };
-
-//     if(empCloseBtn) empCloseBtn.onclick = closeFormModal;
-//     if(empCancelBtn) empCancelBtn.onclick = closeFormModal;
-
-//     // Close Modals on Outside Click
-//     window.addEventListener("click", function(e){
-//         if(e.target === empModal){
-//             closeFormModal();
-//         }
-//         if(e.target === successModal){
-//             successModal.style.display = "none";
-//             resetForm();
-//         }
-//     });
-
-//     // --- Validation Utilities ---
-
-//     const setError = (element, message) => {
-//         const inputControl = element.parentElement;
-//         const errorDisplay = inputControl.querySelector('.error-msg');
-
-//         if(errorDisplay) {
-//             errorDisplay.innerText = message;
-//             errorDisplay.style.display = 'block';
-//         }
-//         element.classList.add('input-error');
-//     }
-
-//     const setSuccess = (element) => {
-//         const inputControl = element.parentElement;
-//         const errorDisplay = inputControl.querySelector('.error-msg');
-
-//         if(errorDisplay) {
-//             errorDisplay.innerText = '';
-//             errorDisplay.style.display = 'none';
-//         }
-//         element.classList.remove('input-error');
-//     }
-
-//     const isValidEmail = (email) => {
-//         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-//         return re.test(String(email).toLowerCase());
-//     }
-
-//     // --- Main Validation Logic ---
-//     const validateInputs = () => {
-//         let isValid = true;
-
-//         const name = document.getElementById('nameInput');
-//         const empId = document.getElementById('empIdInput');
-//         const email = document.getElementById('emailInput');
-//         const password = document.getElementById('passwordInput');
-//         const hireDate = document.getElementById('dateInput');
-//         const salary = document.getElementById('salaryInput');
-
-//         // Name
-//         if(name.value.trim() === '') {
-//             setError(name, 'Full name is required');
-//             isValid = false;
-//         } else {
-//             setSuccess(name);
-//         }
-//         if(empId.value.trim() === '') {
-//             setError(empId, 'Employee ID is required');
-//             isValid = false;
-//         } else if (isNaN(empId.value.trim()) || empId.value.trim().length < 3) {
-//             setError(empId, 'Employee ID must be numeric and at least 5 characters long');
-//             isValid = false;
-//         } else {
-//             setSuccess(empId);
-//         }
-
-//         // Email
-//         if(email.value.trim() === '') {
-//             setError(email, 'Email is required');
-//             isValid = false;
-//         } else if (!isValidEmail(email.value.trim())) {
-//             setError(email, 'Provide a valid email address');
-//             isValid = false;
-//         } else {
-//             setSuccess(email);
-//         }
-
-//         // Password
-//         if(password.value.trim() === '') {
-//             setError(password, 'Password is required');
-//             isValid = false;
-//         } else if (password.value.trim().length < 6) {
-//             setError(password, 'Password must be at least 6 characters');
-//             isValid = false;
-//         } else {
-//             setSuccess(password);
-//         }
-
-//         // Date
-//         if(hireDate.value === '') {
-//             setError(hireDate, 'Hire date is required');
-//             isValid = false;
-//         } else {
-//             setSuccess(hireDate);
-//         }
-
-//         // Salary
-//         if(salary.value !== '' && salary.value < 0) {
-//             setError(salary, 'Salary cannot be negative');
-//             isValid = false;
-//         } else {
-//             setSuccess(salary);
-//         }
-
-//         return isValid;
-//     };
-
-//     // --- Form Submission & Success Logic ---
-
-//     empForm.addEventListener("submit", function(e){
-//         e.preventDefault();
-
-//         if(validateInputs()) {
-//             // 1. Gather Data (for backend/console)
-//             const formData = {
-//                 type: document.querySelector('input[name="empType"]:checked').value,
-//                 name: document.getElementById('nameInput').value,
-//                 empId: document.getElementById('empIdInput').value,
-//                 email: document.getElementById('emailInput').value,
-//                 password: document.getElementById('passwordInput').value,
-//                 jobTitle: document.getElementById('jobInput').value,
-//                 department: document.getElementById('deptInput').value,
-//                 salary: document.getElementById('salaryInput').value,
-//                 location: document.getElementById('locationInput').value
-//             };
-
-//             console.log("Employee Data Submitted:", formData);
-
-//             // 2. Hide the Form Modal
-//             empModal.style.display = "none";
-
-//             // 3. Show the Success Modal (Replacing the alert)
-//             if(successModal) {
-//                 successModal.style.display = "flex";
-//             }
-//         }
-//     });
-
-//     // Close Success Modal on "Continue" button click
-//     if(successOkBtn) {
-//         successOkBtn.onclick = () => {
-//             successModal.style.display = "none";
-//             resetForm(); // Clear the form data now that we are done
-//         };
-//     }
-
-//     // --- Helper: Reset Form ---
-//     function resetForm() {
-//         empForm.reset();
-//         // Remove error styles
-//         const inputs = empForm.querySelectorAll('input, select');
-//         inputs.forEach(input => setSuccess(input));
-//     }
-// });
 
 //attendance details modal
 document.addEventListener("DOMContentLoaded", () => {
@@ -362,82 +179,82 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalTableBody = document.getElementById("modalTableBody");
   const closeBtn = document.querySelector(".close-btn");
 
-  // Dummy Data
+  // UPDATED DATA: Removed 'status'
   const ATTENDANCE_LOG_DATA = [
     {
       id: 21918,
       name: "Dhamodhar Kamini",
       role: "Graphic Designer",
       date: "26-02-2026",
-      checkIn: "8h 0m",
-      permission: "07:00 PM",
-      status: "Pending",
+      checkIn: "09:00 AM",
+      checkOut: "07:00 PM",
+      duration: "8h 0m",
     },
     {
       id: 37189,
       name: "Denny Malik",
       role: "IT Support",
       date: "22-08-2024",
-      duration: "4h 0m",
-      permission: "Appointment",
-      status: "Rejected",
+      checkIn: "08:00 AM",
+      checkOut: "05:00 PM",
+      duration: "9h 0m",
     },
     {
       id: 41521,
       name: "Silvia Cintia Bakri",
       role: "Product Designer",
       date: "15-07-2024",
-      duration: "8h 0m",
-      permission: "Annual Leave",
-      status: "Approved",
+      checkIn: "09:30 AM",
+      checkOut: "06:00 PM",
+      duration: "8h 30m",
     },
     {
       id: 12781,
       name: "Bambang Pramudi",
       role: "Customer Support",
       date: "10-08-2024",
-      duration: "1h 30m",
-      permission: "Late Entry",
-      status: "Pending",
+      checkIn: "08:00 AM",
+      checkOut: "05:30 PM",
+      duration: "9h 30m",
     },
   ];
 
   function renderAttendanceModal(data) {
     let html = "";
-    data.forEach((item) => {
-      const statusClass = item.status.toLowerCase();
 
-      // Logic for the color of the avatar border based on status
-      const colorCode =
-        statusClass === "approved"
-          ? "66BB6A"
-          : statusClass === "rejected"
-            ? "EF5350"
-            : "42A5F5";
+    if (!data || data.length === 0) {
+      // Adjusted colspan since the status column is gone
+      modalTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data available</td></tr>';
+      detailModal.style.display = "block";
+      return;
+    }
+
+    data.forEach((item) => {
+      // Fixed color since status is removed (Standard Blue)
+      const colorCode = "42A5F5"; 
 
       html += `
                 <tr>
                     <td>#${item.id}</td>
                     <td class="employee-cell">
-                        <img src="https://ui-avatars.com/api/?name=${item.name}&background=${colorCode}&color=fff" alt="${item.name}">
-                        <div class="employee-info">
-                            <strong>${item.name}</strong>
-                            <small>${item.role}</small>
+                        <div style="display: flex; align-items: center;">
+                            <img 
+                                src="https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=${colorCode}&color=fff" 
+                                alt="${item.name}"
+                                style="width: 35px; height: 35px; border-radius: 50%; margin-right: 10px;"
+                            >
+                            <div class="employee-info">
+                                <strong style="display: block; font-size: 14px;">${item.name}</strong>
+                                <small style="color: #666; font-size: 12px;">${item.role}</small>
+                            </div>
                         </div>
                     </td>
                     <td>${item.date}</td>
-                    <td>${item.duration}</td>
-                    <td>${item.permission}</td>
-                    <td class="action-cell">
-                        ${
-                          item.status === "Pending"
-                            ? `<div class="action-buttons">
-                                <button class="approve-btn">Approve</button>
-                                <button class="x-btn"><i class="fas fa-times"></i></button>
-                             </div>`
-                            : `<span class="status-badge ${statusClass}">${item.status}</span>`
-                        }
+                    <td>
+                        <div style="font-size: 13px;">In: ${item.checkIn}</div>
+                        <div style="font-size: 13px;">Out: ${item.checkOut}</div>
                     </td>
+                    <td>${item.duration}</td>
                 </tr>
             `;
     });
@@ -449,8 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     detailModal.style.display = "none";
   }
 
-  // --- THE FIX IS HERE ---
-  // We select based on the class 'attendance-trigger'
+  // Trigger Logic
   const attendanceLink = document.querySelector(".attendance-trigger");
 
   if (attendanceLink) {
@@ -459,12 +275,13 @@ document.addEventListener("DOMContentLoaded", () => {
       renderAttendanceModal(ATTENDANCE_LOG_DATA);
     });
   } else {
-    console.error("Attendance link not found! Check your HTML classes.");
+    console.warn("Element with class '.attendance-trigger' not found.");
   }
 
-  // Modal controls
+  // Close Button Logic
   if (closeBtn) closeBtn.onclick = closeModal;
 
+  // Click outside to close
   window.onclick = (event) => {
     if (event.target === detailModal) {
       closeModal();

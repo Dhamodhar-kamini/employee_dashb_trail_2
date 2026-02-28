@@ -104,57 +104,7 @@ body {
   color: orangered;
 }
 
-.has-submenu {
-  justify-content: space-between;
-  cursor: pointer;
-}
 
-.dropdown-icon {
-  margin-left: auto;
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-/* Hide submenu initially */
-.submenu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease;
-  padding-left: 15px;
-}
-
-/* When open */
-.submenu.open {
-  max-height: 1000px; /* enough height */
-}
-
-/* Rotate arrow */
-.has-submenu.open .dropdown-icon {
-  transform: rotate(180deg);
-}
-
-/* Slight indent for submenu items */
-.submenu .menu-item {
-  font-size: 0.85rem;
-  padding: 7px 12px;
-}
-
-.hot-badge,
-.new-badge {
-  font-size: 0.65rem;
-  padding: 2px 5px;
-  border-radius: 4px;
-  margin-left: auto;
-  font-weight: 600;
-}
-.hot-badge {
-  background-color: var(--color-red);
-  color: white;
-}
-.new-badge {
-  background-color: #eb581e;
-  color: white;
-}
 
 /* Submenu specific styling */
 .submenu {

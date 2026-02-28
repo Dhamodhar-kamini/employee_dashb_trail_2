@@ -22,8 +22,12 @@ body {
   color: var(--text-main);
   font-size: 13px;
 }
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
 .container {
-  max-width: 1800px;
+  max-width: 1900px;
   margin: 0 auto;
   padding: 20px;
 }
