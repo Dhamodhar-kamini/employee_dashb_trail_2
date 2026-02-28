@@ -617,10 +617,15 @@ body {
   color: #666;
 }
 .highlight-pending {
+  color: orangered;
+}
+.highlight-pending a {
   color: var(--color-yellow);
+  text-decoration: none;
+  font-weight: 500;
 }
 .highlight-leave {
-  color: var(--color-blue);
+  color: black;
 }
 
 /* --- Stat Cards Row 1 --- */
