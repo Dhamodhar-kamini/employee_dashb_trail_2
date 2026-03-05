@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === CONFIGURATION ===
     // Change this to the name of your next page (e.g. 'timesheet.html')
-    const REDIRECT_URL = "admin.html"; 
+    const REDIRECT_URL = "../admin_page/admin.html"; 
 
     loginForm.addEventListener('submit', function(e) {
         // Prevent the form from refreshing the page

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departmental Distribution</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div class="chart-widget">
+        <!-- Visualization -->
+        <div class="chart-container">
+            <svg class="donut-chart" viewBox="0 0 100 100">
+                <!-- Base Circle (Background) -->
+                <!-- We used a circle with radius 40. Circumference is approx 251.2 -->
+                <circle cx="50" cy="50" r="40" stroke="#eee" stroke-width="20" fill="none"></circle>
+                <!-- Segments will be injected here by JS -->
+            </svg>
+            
+            <div class="chart-center-text">
+                <span class="total-number" id="totalDisplay">0</span>
+                <span class="total-label">Total</span>
+            </div>
+        </div>
+
+        <!-- Data Details -->
+        <div class="chart-legend">
+            <div class="legend-header">
+                <h3>Workforce Distribution</h3>
+                <p>Active employees by department</p>
+            </div>
+            
+            <ul class="legend-list" id="legendList">
+                <!-- List items will be injected here by JS -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

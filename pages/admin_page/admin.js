@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       id: 37189,
-      name: "Denny Malik",
+      name: "Saleem",
       role: "IT Support",
       date: "22-08-2024",
       checkIn: "08:00 AM",
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       id: 41521,
-      name: "Silvia Cintia Bakri",
+      name: "Manikanta",
       role: "Product Designer",
       date: "15-07-2024",
       checkIn: "09:30 AM",
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       id: 12781,
-      name: "Bambang Pramudi",
+      name: "Siddartha",
       role: "Customer Support",
       date: "10-08-2024",
       checkIn: "08:00 AM",
@@ -289,123 +289,23 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 });
 
-//employee details status modal
-// document.addEventListener('DOMContentLoaded', () => {
-//     // DOM Elements
-//     const employeeModal = document.getElementById('employeeModal');
-//     const tableBody = document.getElementById('employeeTableBody');
-//     const searchInput = document.getElementById('employeeSearch');
-//     const closeBtn = document.querySelector('.close-employee-btn');
-//     const triggerBtn = document.querySelector('.employee-trigger');
-
-//     // Data matching the reference image
-//     const EMPLOYEES = [
-//         { id: 1, name: "Emily", email: "emily.thompson23@gmail.com", position: "Web Developer", emp_id:"EMP001", salary: "₹70,000" },
-//         { id: 2, name: "Michael", email: "m.johnson87@gmail.com", position: "Mobile Developer", emp_id:"EMP002", salary: "₹65,000" },
-//         { id: 3, name: "Jessica", email: "jessica.carter89@yahoo.com", position: "QA", status: "Active", emp_id:"EMP003", salary: "₹55,000" },
-//         { id: 4, name: "Olivia", email: "olivia.brooks91@outlook.com", position: "UX/UI designer", emp_id:"EMP004", salary: "₹68,000" },
-//         { id: 5, name: "Ethan", email: "ethan.miller22@protonmail.com", position: "Graphic designer", emp_id:"EMP005", salary: "₹52,000" },
-//         { id: 6, name: "Jacob",  email: "jacob.anderson77@hotmail.com", position: "Sales manager", emp_id:"EMP006", salary: "₹72,000" },
-//         { id: 7, name: "Sophia", email: "sophia.m@gmail.com", position: "Content Writer", emp_id:"EMP007", salary: "₹50,000" },
-//         { id: 8, name: "Daniel", email: "dan.wilson@tech.com", position: "Project Manager", emp_id:"EMP008", salary: "$75,000" },
-//     ];
-
-//     // Function to Render Table
-//     function renderTable(data) {
-//         let html = '';
-//         if(data.length === 0) {
-//             html = '<tr><td colspan="6" style="text-align:center;">No employees found</td></tr>';
-//         } else {
-//             data.forEach(emp => {
-//                 const badgeClass = emp.status === 'Active' ? 'badge-active' : 'badge-inactive';
-
-//                 html += `
-//                     <tr>
-//                         <td>${emp.emp_id}</td>
-//                         <td>${emp.name}</td>
-
-//                         <td>${emp.email}</td>
-//                         <td>${emp.position}</td>
-//                         <td>${emp.salary}</td>
-
-//                     </tr>
-//                 `;
-//             });
-//         }
-//         tableBody.innerHTML = html;
-//     }
-
-//     // Event: Open Modal
-//     if (triggerBtn) {
-//         triggerBtn.addEventListener('click', (e) => {
-//             e.preventDefault();
-//             renderTable(EMPLOYEES); // Render all data initially
-//             employeeModal.style.display = "block";
-//         });
-//     }
-
-// // Event: Search Functionality
-// if (searchInput) {
-//     searchInput.addEventListener('keyup', (e) => {
-//         const term = e.target.value.toLowerCase();
-
-//         const filtered = EMPLOYEES.filter(emp =>
-//             // This checks if the user's typed text exists inside the employee's name
-//             emp.name.toLowerCase().includes(term)
-//         );
-
-//         renderTable(filtered);
-//     });
-// }
-
-//     // Event: Close Modal
-//     if(closeBtn) {
-//         closeBtn.onclick = () => {
-//             employeeModal.style.display = "none";
-//             searchInput.value = ''; // Reset search on close
-//         };
-//     }
-
-//     // Close on clicking outside
-//     window.onclick = (event) => {
-//         if (event.target === employeeModal) {
-//             employeeModal.style.display = "none";
-//             if(searchInput) searchInput.value = '';
-//         }
-//     };
-// });
 
 //testing employee details status modal
 document.addEventListener("DOMContentLoaded", () => {
-  // =========================================================
-  // 1. SHARED DATA 
-  // (I standardized IDs to "001" format to match your request)
-  // =========================================================
-  const EMPLOYEES = [
-    // { id: 1, name: "Emily", email: "emily.thompson23@gmail.com", position: "Web Developer", emp_id: "001", salary: "$70,000" },
-    // { id: 2, name: "Michael", email: "m.johnson87@gmail.com", position: "Mobile Developer", emp_id: "002", salary: "$65,000" },
-    // { id: 3, name: "Jessica", email: "jessica.carter89@yahoo.com", position: "QA", status: "Active", emp_id: "003", salary: "$55,000" },
-    // { id: 4, name: "Olivia", email: "olivia.brooks91@outlook.com", position: "UX/UI designer", emp_id: "004", salary: "$68,000" },
-    // { id: 5, name: "Ethan", email: "ethan.miller22@protonmail.com", position: "Graphic designer", emp_id: "005", salary: "$52,000" },
-    // { id: 6, name: "Jacob", email: "jacob.anderson77@hotmail.com", position: "Sales manager", emp_id: "006", salary: "$72,000" },
-    // { id: 7, name: "Sophia", email: "sophia.m@gmail.com", position: "Content Writer", emp_id: "007", salary: "$50,000" },
-    // { id: 8, name: "Daniel", email: "dan.wilson@tech.com", position: "Project Manager", emp_id: "008", salary: "$75,000" },
-  ];
+  // Initialize with some dummy data if you want, or leave empty
+  const EMPLOYEES = [];
 
-  // =========================================================
-  // 2. DOM ELEMENTS
-  // =========================================================
   // Table Elements
   const employeeModal = document.getElementById("employeeModal");
   const tableBody = document.getElementById("employeeTableBody");
   const searchInput = document.getElementById("employeeSearch");
   const closeEmployeeBtn = document.querySelector(".close-employee-btn");
-  const triggerEmployeeBtn = document.querySelector(".employee-trigger"); 
-  const addEmpFromTableBtn = document.getElementById("addEmpFromTableBtn"); // Button inside table
+  const triggerEmployeeBtn = document.querySelector(".employee-trigger");
+  const addEmpFromTableBtn = document.getElementById("addEmpFromTableBtn");
 
   // Form Elements
   const empModal = document.getElementById("empModal");
-  const empOpenBtn = document.getElementById("empOpenBtn"); // Dashboard button
+  const empOpenBtn = document.getElementById("empOpenBtn"); 
   const empCloseBtn = document.getElementById("empCloseBtn");
   const empCancelBtn = document.getElementById("empCancelBtn");
   const empForm = document.getElementById("empForm");
@@ -415,20 +315,72 @@ document.addEventListener("DOMContentLoaded", () => {
   const successOkBtn = document.getElementById("successOkBtn");
 
   // =========================================================
-  // 3. TABLE FUNCTIONS
+  // 1. DASHBOARD STATS LOGIC (NEW CODE)
+  // =========================================================
+  function updateDashboardStats() {
+    const total = EMPLOYEES.length;
+    
+    // Initialize counters
+    let counts = {
+        Fulltime: 0,
+        WFO: 0,
+        WFH: 0,
+        Internship: 0
+    };
+
+    // Count employees by type
+    EMPLOYEES.forEach(emp => {
+        if(counts[emp.type] !== undefined) {
+            counts[emp.type]++;
+        }
+    });
+
+    // Update Total on Dashboard
+    const totalEl = document.getElementById("totalEmpCount");
+    if(totalEl) totalEl.innerText = total;
+
+    // Helper function to update specific bar
+    const updateBar = (typeKey, barId, labelId, valId) => {
+        const count = counts[typeKey];
+        const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+        
+        // Update Width
+        const barEl = document.getElementById(barId);
+        if(barEl) barEl.style.width = percent + "%";
+
+        // Update Label Text
+        const labelEl = document.getElementById(labelId);
+        if(labelEl) labelEl.innerText = `${typeKey} (${percent}%)`;
+
+        // Update Count Value
+        const valEl = document.getElementById(valId);
+        if(valEl) valEl.innerText = count < 10 ? "0" + count : count;
+    };
+
+    // Run updates for all 4 types
+    updateBar("Fulltime", "bar-fulltime", "label-fulltime", "val-fulltime");
+    updateBar("WFO", "bar-wfo", "label-wfo", "val-wfo");
+    updateBar("WFH", "bar-wfh", "label-wfh", "val-wfh");
+    updateBar("Internship", "bar-intern", "label-intern", "val-intern");
+  }
+
+  // =========================================================
+  // 2. TABLE FUNCTIONS
   // =========================================================
   function renderTable(data) {
     let html = "";
     if (data.length === 0) {
-      html = '<tr><td colspan="5" style="text-align:center;">No employees found</td></tr>';
+      html = '<tr><td colspan="6" style="text-align:center;">No employees found</td></tr>';
     } else {
       data.forEach((emp) => {
+        // Added Type Column
         html += `
             <tr>
                 <td>${emp.emp_id}</td>
                 <td>${emp.name}</td>
                 <td>${emp.email}</td>
                 <td>${emp.position}</td>
+                <td>${emp.type}</td> <!-- Show Type in table -->
                 <td>${emp.salary}</td>
             </tr>
         `;
@@ -465,33 +417,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (closeEmployeeBtn) closeEmployeeBtn.onclick = closeTableModal;
 
-
   // =========================================================
-  // 4. FORM OPEN/CLOSE LOGIC
+  // 3. FORM LOGIC
   // =========================================================
-  
-  // A. Open from Main Dashboard
   if (empOpenBtn) empOpenBtn.onclick = () => (empModal.style.display = "flex");
 
-  // B. Open from Inside Table (The fix you asked for)
   if (addEmpFromTableBtn) {
       addEmpFromTableBtn.onclick = () => {
-          // We do NOT close employeeModal here. We just open the form on top.
           empModal.style.display = "flex";      
       }
   }
 
-  // Close Form Logic
-  const closeAddModal = () => {
-    empModal.style.display = "none";
-  };
-
+  const closeAddModal = () => { empModal.style.display = "none"; };
   if (empCloseBtn) empCloseBtn.onclick = () => { closeAddModal(); resetForm(); };
   if (empCancelBtn) empCancelBtn.onclick = () => { closeAddModal(); resetForm(); };
 
-
   // =========================================================
-  // 5. VALIDATION
+  // 4. VALIDATION & SUBMIT
   // =========================================================
   const setError = (element, message) => {
     const inputControl = element.parentElement;
@@ -507,14 +449,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputControl = element.parentElement;
     const errorDisplay = inputControl.querySelector(".error-msg");
     if (errorDisplay) {
-      errorDisplay.innerText = "";
       errorDisplay.style.display = "none";
     }
     element.classList.remove("input-error");
-  };
-
-  const isValidEmail = (email) => {
-    return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(String(email).toLowerCase());
   };
 
   const validateInputs = () => {
@@ -522,73 +459,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = document.getElementById("nameInput");
     const empId = document.getElementById("empIdInput");
     const email = document.getElementById("emailInput");
-    const password = document.getElementById("passwordInput");
-    const hireDate = document.getElementById("dateInput");
-    const salary = document.getElementById("salaryInput");
-
-    if (name.value.trim() === "") { setError(name, "Name is required"); isValid = false; } else { setSuccess(name); }
-    if (empId.value.trim() === "") { setError(empId, "Employee ID is required"); isValid = false; } else if (isNaN(empId.value.trim()) || empId.value.trim().length < 3) { setError(empId, "Employee ID must be numeric and at least 3 characters long"); isValid = false; } else { setSuccess(empId); }
-    if (email.value.trim() === "") { setError(email, "Email is required"); isValid = false; } else if (!isValidEmail(email.value.trim())) { setError(email, "Invalid email"); isValid = false; } else { setSuccess(email); }
-    if (password.value.trim() === "") { setError(password, "Password required"); isValid = false; } else if (password.value.trim().length < 6) { setError(password, "Min 6 chars"); isValid = false; } else { setSuccess(password); }
-    if (hireDate.value === "") { setError(hireDate, "Date required"); isValid = false; } else { setSuccess(hireDate); }
-    if (salary.value !== "" && salary.value < 0) { setError(salary, "Invalid salary"); isValid = false; } else { setSuccess(salary); }
-
+    
+    // Basic validation
+    if (name.value.trim() === "") { setError(name, "Name required"); isValid = false; } else { setSuccess(name); }
+    if (empId.value.trim() === "") { setError(empId, "ID required"); isValid = false; } else { setSuccess(empId); }
+    if (email.value.trim() === "") { setError(email, "Email required"); isValid = false; } else { setSuccess(email); }
+    
     return isValid;
   };
 
-  // =========================================================
-  // 6. SUBMIT & UPDATE LOGIC
-  // =========================================================
   empForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
     if (validateInputs()) {
-      // 1. Get Values
       const nameVal = document.getElementById("nameInput").value;
       const empIdVal = document.getElementById("empIdInput").value;
       const emailVal = document.getElementById("emailInput").value;
       const jobVal = document.getElementById("jobInput").value;
       const salaryVal = document.getElementById("salaryInput").value;
-
-      // 2. ID GENERATION (Fixed)
-      const empIdNum = parseInt(empIdVal);
-      // Look at the last ID in the array (e.g., "008") and add 1
       
-    //   const lastEmp = EMPLOYEES[EMPLOYEES.length - 1];
-    //   const lastIdNum = lastEmp ? parseInt(lastEmp.empIdVal) : 0;
-    
-    //   const newIdNum = lastIdNum + 1;
-      // Pad with zeros: 9 -> "009"
-      const newEmpId = String(empIdNum).padStart(3, "0");
+      // Get the new Type Value
+      const typeVal = document.getElementById("typeInput").value; 
 
-      // 3. Format Salary
+      const empIdNum = parseInt(empIdVal);
+      const newEmpId = String(empIdNum).padStart(3, "0");
       const formattedSalary = salaryVal ? "₹" + parseInt(salaryVal).toLocaleString() : "₹0";
 
-      // 4. Create Object
       const newEmployee = {
         id: empIdNum,
         name: nameVal,
         email: emailVal,
         position: jobVal || "Not Specified",
-        emp_id: newEmpId, // Uses the generated ID
+        type: typeVal, // Save the type
+        emp_id: newEmpId, 
         salary: formattedSalary,
       };
 
-      // 5. Update Array
+      // Update Data
       EMPLOYEES.push(newEmployee);
-      console.log("New Employee Added:", newEmployee);
-
-      // 6. Refresh Table (Background table updates instantly)
+      
+      // Update UI
+      updateDashboardStats(); // <--- THIS UPDATES THE BARS
       renderTable(EMPLOYEES);
-
-      // 7. Handle Modals
-      closeAddModal(); // Close the form
-      if (successModal) successModal.style.display = "flex"; // Show success
-      // Note: We do NOT close employeeModal (table) here
+      
+      closeAddModal();
+      if (successModal) successModal.style.display = "flex"; 
     }
   });
 
-  // Success Button Action
   if (successOkBtn) {
     successOkBtn.onclick = () => {
       successModal.style.display = "none";
@@ -596,25 +514,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // =========================================================
-  // 7. GLOBAL CLICK HANDLER (Smart Closing)
-  // =========================================================
   window.onclick = function (e) {
-    // If clicking outside Add Form
-    if (e.target === empModal) {
-      closeAddModal();
-      resetForm();
-    }
-    // If clicking outside Table (Only if Add Form is NOT open)
-    // This prevents closing the table when you are actually clicking the Add Form overlay
-    if (e.target === employeeModal && empModal.style.display !== "flex") {
-      closeTableModal();
-    }
-    // If clicking outside Success
-    if (e.target === successModal) {
-      successModal.style.display = "none";
-      resetForm();
-    }
+    if (e.target === empModal) { closeAddModal(); resetForm(); }
+    if (e.target === employeeModal && empModal.style.display !== "flex") { closeTableModal(); }
+    if (e.target === successModal) { successModal.style.display = "none"; resetForm(); }
   };
 
   function resetForm() {
@@ -622,4 +525,120 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputs = empForm.querySelectorAll("input, select");
     inputs.forEach((input) => setSuccess(input));
   }
+
+  // Initial call to set bars to 0
+  updateDashboardStats();
+});
+
+
+
+// header icons section
+/* --- Toggle the Popup --- */
+function hdr_toggleProfilePopup() {
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    dropdown.classList.toggle("show");
+}
+
+/* --- Logout Logic --- */
+function hdr_logoutUser() {
+    // 1. (Optional) Clear session storage/tokens here
+    // sessionStorage.clear();
+    // localStorage.clear();
+
+    // 2. Redirect to Login Page
+    window.location.href = "../adminlogin/adminlogin.html";
+}
+
+/* --- Close Popup when clicking outside --- */
+window.onclick = function(event) {
+    // If the click is NOT inside the profile wrapper
+    if (!event.target.closest(".hdr-profile-wrapper")) {
+        const dropdown = document.getElementById("hdrProfileDropdown");
+        if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    }
+}
+
+
+// employee distribution chart
+// 1. DATA CONFIGURATION (With updated var names)
+const dd_departmentData = [
+    { name: "IT & Dev", count: 85, color: "var(--dd-col-it)", class: "dd-bg-it" },
+    { name: "Content Writers", count: 120, color: "var(--dd-col-content)", class: "dd-bg-content" },
+    { name: "HR Team", count: 25, color: "var(--dd-col-hr)", class: "dd-bg-hr" },
+    { name: "Management", count: 15, color: "var(--dd-col-mgmt)", class: "dd-bg-mgmt" }
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Selectors using Unique Class/IDs
+    const dd_svgChart = document.querySelector('.dd-donut-svg');
+    const dd_legendList = document.getElementById('ddLegendList');
+    const dd_totalDisplay = document.getElementById('ddTotalDisplay');
+
+    // 2. CALCULATE TOTAL
+    const total = dd_departmentData.reduce((sum, item) => sum + item.count, 0);
+    
+    // Animate Total Number
+    let currentCount = 0;
+    const interval = setInterval(() => {
+        const increment = Math.ceil(total / 50);
+        currentCount += increment;
+        
+        if(currentCount >= total) {
+            currentCount = total;
+            clearInterval(interval);
+        }
+        dd_totalDisplay.innerText = currentCount;
+    }, 20);
+
+    // 3. RENDER CHART & LEGEND
+    let cumulativePercent = 0;
+
+    dd_departmentData.forEach(dept => {
+        // --- A. Render Legend Item ---
+        const percentage = ((dept.count / total) * 100).toFixed(1);
+        
+        const li = document.createElement('li');
+        li.className = 'dd-legend-item';
+        li.innerHTML = `
+            <div class="dd-item-left">
+                <span class="dd-color-dot ${dept.class}"></span>
+                <div>
+                    <span class="dd-dept-name">${dept.name}</span>
+                    <span class="dd-dept-percent">${percentage}%</span>
+                </div>
+            </div>
+            <span class="dd-dept-count">${dept.count}</span>
+        `;
+        dd_legendList.appendChild(li);
+
+        // --- B. Render SVG Segment ---
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        const radius = 40;
+        const circumference = 2 * Math.PI * radius;
+        const segmentLength = (dept.count / total) * circumference;
+        
+        circle.setAttribute("cx", "50");
+        circle.setAttribute("cy", "50");
+        circle.setAttribute("r", radius);
+        circle.setAttribute("class", "dd-donut-segment"); // Unique class
+        circle.setAttribute("stroke", dept.color);
+        
+        // Calculate offset
+        const offset = -1 * (cumulativePercent / 100) * circumference;
+
+        // Set initial state for animation
+        circle.style.strokeDasharray = `0 ${circumference}`;
+        circle.style.strokeDashoffset = offset;
+        
+        dd_svgChart.appendChild(circle);
+
+        // Trigger Animation
+        setTimeout(() => {
+            circle.style.strokeDasharray = `${segmentLength} ${circumference}`;
+        }, 100);
+
+        cumulativePercent += (dept.count / total) * 100;
+    });
 });

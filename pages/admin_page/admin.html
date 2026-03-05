@@ -45,35 +45,32 @@
               <!-- Submenu Items -->
               <div class="submenu" id="dashboardSubmenu">
                 <a href="../admin_page/admin.html" class="menu-item"
-                  ><i class="fas fa-user-tie"></i><span>Admin Dashboard</span></a
+                  ><i class="fas fa-user-tie"></i
+                  ><span>Admin Dashboard</span></a
                 >
-                <a href="#" class="menu-item"
+                <a href="../employeedashb/employee.html" class="menu-item"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
                   ><i class="fas fa-check-circle"></i><span>Approval</span></a
                 >
-                
-                
+
                 <a href="../payroll_page/payroll.html" class="menu-item"
                   ><i class="fas fa-money-bill-wave"></i
-                  ><span>Payroll Dashboard</span
-                  ></a
+                  ><span>Payroll Dashboard</span></a
                 >
                 <a href="../recruitment/recruitment.html" class="menu-item"
                   ><i class="fas fa-search"></i
-                  ><span>Recruitment Dashboard</span
-                  ></a
+                  ><span>Recruitment Dashboard</span></a
                 >
-                <a href="#" class="menu-item"
+                <a href="../attendance/attendance.html" class="menu-item"
                   ><i class="fas fa-calendar-check"></i
-                  ><span>Attendance Dashboard</span
-                  ></a
+                  ><span>Attendance Dashboard</span></a
                 >
-                
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-headset"></i><span>Help Desk Dashboard</span
-                  ></a
+
+                <a href="../helpdesk/helpdesk.html" class="menu-item"
+                  ><i class="fas fa-headset"></i
+                  ><span>Help Desk Dashboard</span></a
                 >
               </div>
             </div>
@@ -91,12 +88,32 @@
             <span>CTRL + /</span>
           </div>
           <div class="header-icons">
+            <!-- Existing Icons -->
             <i class="fas fa-th-large"></i>
             <i class="fas fa-bell"></i>
             <i class="fas fa-envelope"></i>
             <i class="fas fa-cog"></i>
-            <div class="user-profile">
-              <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+
+            <!-- MODIFIED PROFILE SECTION -->
+            <div class="hdr-profile-wrapper">
+              <!-- Profile Image (Clickable) -->
+              <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+                <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+              </div>
+
+              <!-- The Popup Menu -->
+              <div class="hdr-popup-menu" id="hdrProfileDropdown">
+                <!-- Optional Header info -->
+                <div class="hdr-popup-header">
+                  <p><strong>Employee Profile</strong></p>
+                  <span class="hdr-email-text">user@example.com</span>
+                </div>
+
+                <!-- Logout Button -->
+                <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -226,13 +243,31 @@
                     </div>
                   </div>
 
+                  <div class="emp-group">
+                    <label>Employment Status Type <span>*</span></label>
+                    <select
+                      id="typeInput"
+                      style="
+                        width: 100%;
+                        height: 40px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        padding: 0 10px;
+                      "
+                    >
+                      <option value="Fulltime">Full Time</option>
+                      <option value="WFO">Work From Office (WFO)</option>
+                      <option value="WFH">Work From Home (WFH)</option>
+                      <option value="Internship">Internship</option>
+                    </select>
+                  </div>
+
                   <!-- Manager -->
                   <div class="emp-group">
                     <label>Manager</label>
                     <select id="managerInput">
                       <option value="">Please select manager</option>
                       <option value="1">Narala Prasad Reddy</option>
-                      
                     </select>
                   </div>
 
@@ -253,7 +288,8 @@
                     <input
                       type="text"
                       id="locationInput"
-                      placeholder="Enter work location" />
+                      placeholder="Enter work location"
+                    />
                   </div>
 
                   <div class="emp-actions">
@@ -291,12 +327,173 @@
           <h2>Welcome Back, DD</h2>
           <p>
             You have
-            <span class="highlight-pending"><a href="#" class="highlight-pending">21 Pending Approvals</a></span> &
+            <span class="highlight-pending"
+              ><a href="../approval/approval.html" class="highlight-pending"
+                >21 Pending Approvals</a
+              ></span
+            >
+            &
             <span class="highlight-leave">14 Leave Requests</span>
           </p>
         </div>
 
         <!-- Stat Cards Row 1 -->
+
+        <!-- Main Content Grid (Rows 2 & 3 - 3 Columns Structure) -->
+        <div class="main-grid-row grid-row-2-3">
+          <!-- Employees By Department (Span 2) -->
+          <div class="dd-widget-card">
+            <!-- Left: Visualization -->
+            <div class="dd-viz-container">
+              <svg class="dd-donut-svg" viewBox="0 0 100 100">
+                <!-- Base Circle -->
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#eee"
+                  stroke-width="20"
+                  fill="none"
+                ></circle>
+                <!-- Segments injected via JS -->
+              </svg>
+
+              <div class="dd-center-content">
+                <span class="dd-total-number" id="ddTotalDisplay">0</span>
+                <span class="dd-total-label">Total</span>
+              </div>
+            </div>
+
+            <!-- Right: Data Details -->
+            <div class="dd-legend-section">
+              <div class="dd-legend-header">
+                <h3>Workforce Distribution</h3>
+                <p>Active employees by department</p>
+              </div>
+
+              <ul class="dd-legend-list" id="ddLegendList">
+                <!-- List items injected via JS -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Clock In/Out (Span 1) -->
+
+          <!-- Employee Status (Span 1) -->
+          <div class="card medium-card" id="employee-status">
+            <div class="card-header">
+              <h3>Employee Status</h3>
+            </div>
+            <div class="card-body">
+              <div class="total-employee">
+                <p>Total Employee</p>
+                <!-- Added ID here -->
+                <span class="count" id="totalEmpCount">0</span>
+              </div>
+              <div class="status-bars">
+                <!-- Fulltime -->
+                <div class="bar-row">
+                  <span class="dot color-yellow"></span>
+                  <!-- Added ID to bar-fill -->
+                  <div
+                    class="bar-fill"
+                    id="bar-fulltime"
+                    style="width: 0%; background-color: orange"
+                  ></div>
+                  <!-- Added IDs to label and value -->
+                  <span class="label" id="label-fulltime">Fulltime (0%)</span>
+                  <span class="value" id="val-fulltime">0</span>
+                </div>
+
+                <!-- WFO -->
+                <div class="bar-row">
+                  <span class="dot color-red"></span>
+                  <div
+                    class="bar-fill"
+                    id="bar-wfo"
+                    style="width: 0%; background-color: var(--color-red)"
+                  ></div>
+                  <span class="label" id="label-wfo">WFO (0%)</span>
+                  <span class="value" id="val-wfo">0</span>
+                </div>
+
+                <!-- WFH -->
+                <div class="bar-row">
+                  <span class="dot color-blue"></span>
+                  <div
+                    class="bar-fill"
+                    id="bar-wfh"
+                    style="width: 0%; background-color: var(--color-blue)"
+                  ></div>
+                  <span class="label" id="label-wfh">WFH (0%)</span>
+                  <span class="value" id="val-wfh">0</span>
+                </div>
+
+                <!-- Internship -->
+                <div class="bar-row">
+                  <!-- <span class="dot color-pink"></span> -->
+                  <div
+                    class="bar-fill"
+                    id="bar-intern"
+                    style="width: 0%; background-color: var(--color-pink)"
+                  ></div>
+                  <span class="label" id="label-intern">Internship (0%)</span>
+                  <span class="value" id="val-intern">0</span>
+                </div>
+              </div>
+
+              <a href="#" class="view-details-link employee-trigger"
+                >View All Employees</a
+              >
+            </div>
+          </div>
+          <!-- UPDATE YOUR EXISTING CARD LINK -->
+
+          <!-- ADD THIS MODAL MARKUP TO YOUR PAGE BODY -->
+          <div id="employeeModal" class="modal">
+            <div class="modal-content large-modal">
+              <div class="modal-header custom-header">
+                <h2>Employee Details</h2>
+
+                <div class="search-wrapper">
+                  <i class="fas fa-search"></i>
+                  <input
+                    type="text"
+                    id="employeeSearch"
+                    placeholder="Search..."
+                  />
+                </div>
+
+                <!-- CHANGED ID HERE to avoid conflict with dashboard button -->
+                <button class="btn-primary emp-add-btn" id="addEmpFromTableBtn">
+                  <i class="fas fa-calendar-plus"></i>
+                  Add Employee
+                </button>
+
+                <span class="close-employee-btn">&times;</span>
+              </div>
+
+              <div class="modal-body">
+                <table class="employee-table">
+                  <thead>
+                    <tr>
+                      <th>Emp Id</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Position</th>
+                      <th>Salary</th>
+                    </tr>
+                  </thead>
+                  <tbody id="employeeTableBody">
+                    <!-- Javascript will populate rows here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- attendance overview card -->
         <div class="stats-grid-1">
           <div class="stat-card">
             <div class="icon-circle bg-icon-orange">
@@ -333,157 +530,9 @@
                 </table>
               </div>
             </div>
-            
           </div>
-
-          
-          
         </div>
 
-        <!-- Main Content Grid (Rows 2 & 3 - 3 Columns Structure) -->
-        <div class="main-grid-row grid-row-2-3">
-          <!-- Employees By Department (Span 2) -->
-          <div class="card large-card" id="employees-dept">
-            <div class="card-header">
-              <h3>Employees By Department</h3>
-              
-            </div>
-            <div class="chart-body">
-              <div class="bar-chart">
-                <div class="bar-group">
-                  <label>UI/UX</label>
-                  <div class="bar" style="width: 70%"></div>
-                  <span class="value">120</span>
-                </div>
-                <div class="bar-group">
-                  <label>Development</label>
-                  <div class="bar" style="width: 95%"></div>
-                  <span class="value">110</span>
-                </div>
-                <div class="bar-group">
-                  <label>Management</label>
-                  <div class="bar" style="width: 75%"></div>
-                  <span class="value">90</span>
-                </div>
-                <div class="bar-group">
-                  <label>HR</label>
-                  <div class="bar" style="width: 15%"></div>
-                  <span class="value">30</span>
-                </div>
-                <div class="bar-group">
-                  <label>Testing</label>
-                  <div class="bar" style="width: 40%"></div>
-                  <span class="value">55</span>
-                </div>
-              </div>
-              <p class="increase-note">
-                <span class="dot red"></span> No of Employees increased by
-                <strong>+20%</strong> from last Week
-              </p>
-            </div>
-          </div>
-
-          
-
-          <!-- Clock In/Out (Span 1) -->
-          
-
-          <!-- Employee Status (Span 1) -->
-          <div class="card medium-card" id="employee-status">
-            <div class="card-header">
-              <h3>Employee Status</h3>
-              
-            </div>
-            <div class="card-body">
-              <div class="total-employee">
-                <p>Total Employee</p>
-                <span class="count">154</span>
-              </div>
-              <div class="status-bars">
-                <div class="bar-row">
-                  <span class="dot color-yellow"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 48%; background-color: orange"
-                  ></div>
-                  <span class="label">Fulltime (48%)</span
-                  ><span class="value">112</span>
-                </div>
-                <div class="bar-row">
-                  <span class="dot color-red"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 22%; background-color: var(--color-red)"
-                  ></div>
-                  <span class="label">WFO (22%)</span
-                  ><span class="value">12</span>
-                </div>
-                <div class="bar-row">
-                  <span class="dot color-blue"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 20%; background-color: var(--color-blue)"
-                  ></div>
-                  <span class="label">WFH (20%)</span
-                  ><span class="value">112</span>
-                </div>
-                <div class="bar-row">
-                  <span class="dot color-pink"></span>
-                  <div
-                    class="bar-fill"
-                    style="width: 20%; background-color: var(--color-pink)"
-                  ></div>
-                  <span class="label">Internship (20%)</span
-                  ><span class="value">04</span>
-                </div>
-              </div>
-
-              <a href="#" class="view-details-link employee-trigger"
-                >View All Employees</a
-              >
-            </div>
-          </div>
-          <!-- UPDATE YOUR EXISTING CARD LINK -->
-
-          <!-- ADD THIS MODAL MARKUP TO YOUR PAGE BODY -->
-         <div id="employeeModal" class="modal">
-    <div class="modal-content large-modal">
-        <div class="modal-header custom-header">
-            <h2>Employee Details</h2>
-            
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="employeeSearch" placeholder="Search..."/>
-            </div>
-            
-            <!-- CHANGED ID HERE to avoid conflict with dashboard button -->
-            <button class="btn-primary emp-add-btn" id="addEmpFromTableBtn">
-                <i class="fas fa-calendar-plus"></i>
-                Add Employee
-            </button>
-            
-            <span class="close-employee-btn">&times;</span>
-        </div>
-
-        <div class="modal-body">
-            <table class="employee-table">
-                <thead>
-                    <tr>
-                        <th>Emp Id</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Position</th>
-                        <th>Salary</th>
-                    </tr>
-                </thead>
-                <tbody id="employeeTableBody">
-                    <!-- Javascript will populate rows here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>     
-        </div>
         <div class="main-grid-row grid-row-5">
           <!-- Birthdays (Span 1) -->
           <div class="card quarter-card" id="birthdays">
@@ -494,7 +543,8 @@
             <div class="card-body birthday-list">
               <h4>Today</h4>
               <div class="birthday-entry highlighted">
-                <img style="width:35px; height:35px; border-radius:50%;"
+                <img
+                  style="width: 35px; height: 35px; border-radius: 50%"
                   src="../assets/profiledp.jpeg"
                 />
                 <div>
@@ -507,7 +557,8 @@
 
               <h4>Tomorrow</h4>
               <div class="birthday-entry">
-                <img style="width:35px; height:35px; border-radius:50%;"
+                <img
+                  style="width: 35px; height: 35px; border-radius: 50%"
                   src="../assets/profiledp.jpeg"
                 />
                 <div>
@@ -518,7 +569,8 @@
                 </button>
               </div>
               <div class="birthday-entry">
-                <img style="width:35px; height:35px; border-radius:50%;"
+                <img
+                  style="width: 35px; height: 35px; border-radius: 50%"
                   src="../assets/profiledp.jpeg"
                 />
                 <div>
@@ -530,7 +582,8 @@
               </div>
               <h4>25 Jan 2025</h4>
               <div class="birthday-entry">
-                <img style="width:35px; height:35px; border-radius:50%;"
+                <img
+                  style="width: 35px; height: 35px; border-radius: 50%"
                   src="../assets/profiledp.jpeg"
                 />
                 <div>
@@ -544,7 +597,6 @@
           </div>
         </div>
 
-        
         <!-- Footer -->
         <footer class="dashboard-footer">
           <p>2026@oppty</p>

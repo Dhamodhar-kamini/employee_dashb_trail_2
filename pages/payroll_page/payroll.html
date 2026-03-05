@@ -48,7 +48,7 @@
                 <a href="../admin_page/admin.html" class="menu-item"
                   ><i class="fas fa-user-tie"></i><span>Admin Dashboard</span></a
                 >
-                <a href="#" class="menu-item"
+                <a href="../employeedashb/employee.html" class="menu-item"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
@@ -66,13 +66,13 @@
                   ><span>Recruitment Dashboard</span
                   ></a
                 >
-                <a href="#" class="menu-item"
+                <a href="../attendance/attendance.html" class="menu-item"
                   ><i class="fas fa-calendar-check"></i
                   ><span>Attendance Dashboard</span
                   ></a
                 >
                 
-                <a href="#" class="menu-item"
+                <a href="../helpdesk/helpdesk.html" class="menu-item"
                   ><i class="fas fa-headset"></i><span>Help Desk Dashboard</span
                   ></a
                 >
@@ -92,14 +92,36 @@
             <span>CTRL + /</span>
           </div>
           <div class="header-icons">
-            <i class="fas fa-th-large"></i>
-            <i class="fas fa-bell"></i>
-            <i class="fas fa-envelope"></i>
-            <i class="fas fa-cog"></i>
-            <div class="user-profile">
-              <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+    <!-- Existing Icons -->
+    <i class="fas fa-th-large"></i>
+    <i class="fas fa-bell"></i>
+    <i class="fas fa-envelope"></i>
+    <i class="fas fa-cog"></i>
+
+    <!-- MODIFIED PROFILE SECTION -->
+    <div class="hdr-profile-wrapper">
+        
+        <!-- Profile Image (Clickable) -->
+        <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+            <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+        </div>
+
+        <!-- The Popup Menu -->
+        <div class="hdr-popup-menu" id="hdrProfileDropdown">
+            <!-- Optional Header info -->
+            <div class="hdr-popup-header">
+                <p><strong>Employee Profile</strong></p>
+                <span class="hdr-email-text">user@example.com</span>
             </div>
-          </div>
+            
+            <!-- Logout Button -->
+            <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+    </div>
+</div>
         </header>
 
     

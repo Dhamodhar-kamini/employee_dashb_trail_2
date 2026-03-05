@@ -11,7 +11,7 @@
   --shadow-medium: 0 3px 10px rgba(0, 0, 0, 0.08);
 
   /* Specific Colors from Image */
-  --color-orange: #fd7e14;
+  --color-orange: #e87518;
   --color-red: #dc3545;
   --color-green: #28a745;
   --color-blue: #007bff;
@@ -222,23 +222,112 @@ body {
   padding-left: 8px;
 }
 
+/* --- Header Icons Layout --- */
 .header-icons {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between icons */
 }
 
 .header-icons i {
-  font-size: 1.1rem;
-  margin-left: 22px;
-  color: #666;
-  cursor: pointer;
+    font-size: 18px;
+    color: #555;
+    cursor: pointer;
+    transition: 0.2s;
 }
+
+.header-icons i:hover {
+    color: #000;
+}
+
+/* --- Profile Wrapper --- */
+/* This is crucial for positioning the dropdown relative to the image */
+.hdr-profile-wrapper {
+    position: relative; 
+    display: inline-block;
+}
+
+/* --- User Profile Image --- */
 .user-profile img {
-  border-radius: 50%;
-  margin-left: 22px;
-  cursor: pointer;
-  width: 35px;
-  height: 35px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.2s;
+}
+
+.user-profile img:hover {
+    border-color: #007bff; /* Blue border on hover */
+    transform: scale(1.05);
+}
+
+/* --- The Popup Menu (Hidden by default) --- */
+.hdr-popup-menu {
+    position: absolute;
+    top: 55px; /* Distance from the image */
+    right: 0;  /* Aligns to the right edge of the image */
+    width: 200px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: none; /* Hidden initially */
+    z-index: 1000;
+    border: 1px solid #eee;
+    overflow: hidden;
+    animation: hdrFadeIn 0.2s ease-in-out;
+}
+
+/* Class added by JS to show the menu */
+.hdr-popup-menu.show {
+    display: block;
+}
+
+/* --- Popup Content Styles --- */
+.hdr-popup-header {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.hdr-popup-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.hdr-email-text {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* --- Logout Button --- */
+.hdr-logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    color: #dc3545; /* Red color for logout */
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s;
+}
+
+.hdr-logout-btn:hover {
+    background-color: #fff5f5;
+}
+
+/* --- Animation --- */
+@keyframes hdrFadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Dashboard Header & Actions --- */
@@ -704,10 +793,11 @@ body {
   display: grid;
   gap: 20px;
   margin-bottom: 20px;
+  align-items: center;
 }
 /* Define structure for readability */
 .grid-row-2-3 {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
 .grid-row-4 {
   grid-template-columns: repeat(4, 1fr);
@@ -742,6 +832,9 @@ body {
 }
 
 /* --- General Card Styling & Sub-Elements --- */
+#employee-status {
+  height: 85%; /* Taller card for employee status */
+}
 .card {
   background: var(--card-bg);
   border-radius: 10px;
@@ -1685,5 +1778,167 @@ thead th {
     .employee-table th:nth-child(4), .employee-table td:nth-child(4)  /* Email */
     {
         display: none; 
+    }
+}
+
+
+/* employees chart */
+/* --- SCOPED VARIABLES FOR WIDGET --- */
+.dd-widget-card {
+    --dd-bg-color: #ffffff;
+    --dd-text-main: #1c1e21;
+    --dd-text-secondary: #606770;
+    
+    /* Specific Colors */
+    --dd-col-it: #2962ff;       /* Blue */
+    --dd-col-content: #00bfa5;  /* Teal */
+    --dd-col-hr: #ff9100;       /* Orange */
+    --dd-col-mgmt: #37474f;     /* Slate */
+
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+/* 1. LAYOUT CONTAINER */
+.dd-widget-card {
+    background: var(--dd-bg-color);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    max-width: 800px;
+    width: 90%;
+    margin: 20px auto; /* Centered for demo */
+}
+
+/* 2. CHART SECTION (Left) */
+.dd-viz-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    flex-shrink: 0;
+}
+
+.dd-donut-svg {
+    transform: rotate(-90deg); /* Start at top */
+    width: 100%;
+    height: 100%;
+}
+
+.dd-donut-segment {
+    fill: none;
+    stroke-width: 20;
+    stroke-linecap: butt; 
+    transition: stroke-dasharray 1s ease-out;
+}
+
+/* Center Text */
+.dd-center-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.dd-total-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dd-text-main);
+    line-height: 1;
+}
+
+.dd-total-label {
+    font-size: 0.85rem;
+    color: var(--dd-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* 3. LEGEND SECTION (Right) */
+.dd-legend-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.dd-legend-header h3 {
+    font-size: 1.2rem;
+    color: var(--dd-text-main);
+    margin-bottom: 5px;
+}
+
+.dd-legend-header p {
+    font-size: 0.9rem;
+    color: var(--dd-text-secondary);
+}
+
+.dd-legend-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.dd-legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.dd-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dd-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+}
+
+.dd-dept-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dd-text-main);
+}
+
+.dd-dept-percent {
+    font-size: 0.85rem;
+    color: var(--dd-text-secondary);
+    margin-left: 8px;
+}
+
+.dd-dept-count {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dd-text-main);
+}
+
+/* Specific Helper Classes */
+.dd-bg-it { background-color: var(--dd-col-it); }
+.dd-bg-content { background-color: var(--dd-col-content); }
+.dd-bg-hr { background-color: var(--dd-col-hr); }
+.dd-bg-mgmt { background-color: var(--dd-col-mgmt); }
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .dd-widget-card {
+        flex-direction: column;
+        padding: 30px 20px;
+        gap: 30px;
     }
 }

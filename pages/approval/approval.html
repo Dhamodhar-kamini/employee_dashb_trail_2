@@ -1,179 +1,203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leave Requests - SmartHR</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="approval.css">
-    <link rel="stylesheet" href="../admin_page/admin.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="approval.css" />
+    <link rel="stylesheet" href="../admin_page/admin.css" />
+  </head>
 
-<body>
-
+  <body>
     <div class="app-container">
-        <!-- SIDEBAR -->
-        <div class="dashboard-container">
-            <!-- 1. Sidebar Navigation (Detailed based on image) -->
-            <aside class="sidebar">
-        <div class="logo">
-          <!-- <i class="fas fa-chart-line"></i> -->
-          <!-- <span>OPPTY</span> -->
-          <img
-            class="opptyLogo"
-            src="../assets/opptylogo.png"
-            alt="OPPTY HRMS Logo"
-          />
-        </div>
+      <!-- SIDEBAR -->
+      <div class="dashboard-container">
+        <!-- 1. Sidebar Navigation (Detailed based on image) -->
+        <aside class="sidebar">
+          <div class="logo">
+            <!-- <i class="fas fa-chart-line"></i> -->
+            <!-- <span>OPPTY</span> -->
+            <img
+              class="opptyLogo"
+              src="../assets/opptylogo.png"
+              alt="OPPTY HRMS Logo"
+            />
+          </div>
 
-        <div class="sidebar-content">
-          <div class="menu-section main-menu">
-            <p class="menu-header">MAIN MENU</p>
+          <div class="sidebar-content">
             <div class="menu-section main-menu">
-              <!-- Dashboard Parent -->
-              <a
-                href="javascript:void(0)"
-                class="menu-item active has-submenu"
-                id="dashboardMenu"
-              >
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-              </a>
+              <p class="menu-header">MAIN MENU</p>
+              <div class="menu-section main-menu">
+                <!-- Dashboard Parent -->
+                <a
+                  href="javascript:void(0)"
+                  class="menu-item active has-submenu"
+                  id="dashboardMenu"
+                >
+                  <i class="fas fa-tachometer-alt"></i>
+                  <span>Dashboard</span>
+                </a>
 
-              <!-- Submenu Items -->
-              <div class="submenu" id="dashboardSubmenu">
-                <a href="../admin_page/admin.html" class="menu-item"
-                  ><i class="fas fa-user-tie"></i><span>Admin Dashboard</span></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
-                >
-                <a href="../approval/approval.html" class="menu-item"
-                  ><i class="fas fa-check-circle"></i><span>Approval</span></a
-                >
-                
-                
-                <a href="../payroll_page/payroll.html" class="menu-item"
-                  ><i class="fas fa-money-bill-wave"></i
-                  ><span>Payroll Dashboard</span
-                  ></a
-                >
-                <a href="../recruitment/recruitment.html" class="menu-item"
-                  ><i class="fas fa-search"></i
-                  ><span>Recruitment Dashboard</span
-                  ></a
-                >
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-calendar-check"></i
-                  ><span>Attendance Dashboard</span
-                  ></a
-                >
-                
-                <a href="#" class="menu-item"
-                  ><i class="fas fa-headset"></i><span>Help Desk Dashboard</span
-                  ></a
-                >
+                <!-- Submenu Items -->
+                <div class="submenu" id="dashboardSubmenu">
+                  <a href="../admin_page/admin.html" class="menu-item"
+                    ><i class="fas fa-user-tie"></i
+                    ><span>Admin Dashboard</span></a
+                  >
+                  <a href="../employeedashb/employee.html" class="menu-item"
+                    ><i class="fas fa-user"></i
+                    ><span>Employee Dashboard</span></a
+                  >
+                  <a href="../approval/approval.html" class="menu-item"
+                    ><i class="fas fa-check-circle"></i><span>Approval</span></a
+                  >
+
+                  <a href="../payroll_page/payroll.html" class="menu-item"
+                    ><i class="fas fa-money-bill-wave"></i
+                    ><span>Payroll Dashboard</span></a
+                  >
+                  <a href="../recruitment/recruitment.html" class="menu-item"
+                    ><i class="fas fa-search"></i
+                    ><span>Recruitment Dashboard</span></a
+                  >
+                  <a href="../attendance/attendance.html" class="menu-item"
+                    ><i class="fas fa-calendar-check"></i
+                    ><span>Attendance Dashboard</span></a
+                  >
+
+                  <a href="../helpdesk/helpdesk.html" class="menu-item"
+                    ><i class="fas fa-headset"></i
+                    ><span>Help Desk Dashboard</span></a
+                  >
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search in HRMS" />
+            <span>CTRL + /</span>
+          </div>
+          <div class="header-icons">
+            <!-- Existing Icons -->
+            <i class="fas fa-th-large"></i>
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+            <i class="fas fa-cog"></i>
 
-        </div>
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Bar -->
-            <header class="top-bar">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search in HRMS" />
-                    <span>CTRL + /</span>
-                </div>
-                <div class="header-icons">
-                    <i class="fas fa-th-large"></i>
-                    <i class="fas fa-bell"></i>
-                    <i class="fas fa-envelope"></i>
-                    <i class="fas fa-cog"></i>
-                    <div class="user-profile">
-                        <img src="../assets/profiledp.jpeg" alt="User Avatar" />
-                    </div>
-                </div>
-            </header>
+            <!-- MODIFIED PROFILE SECTION -->
+            <div class="hdr-profile-wrapper">
+              <!-- Profile Image (Clickable) -->
+              <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+                <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+              </div>
 
-            <!-- Top Header -->
-            <header class="top-header">
-                <div class="page-title">
-                    <h1>Time Off Requests</h1>
-                    <ul class="breadcrumb">
-                        <li>Dashboard</li>
-                        <li>/</li>
-                        <li class="active">Leave Requests</li>
-                    </ul>
+              <!-- The Popup Menu -->
+              <div class="hdr-popup-menu" id="hdrProfileDropdown">
+                <!-- Optional Header info -->
+                <div class="hdr-popup-header">
+                  <p><strong>Employee Profile</strong></p>
+                  <span class="hdr-email-text">user@example.com</span>
                 </div>
-                <div class="user-profile">
+
+                <!-- Logout Button -->
+                <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Top Header -->
+        <header class="top-header">
+          <div class="page-title">
+            <h1>Time Off Requests</h1>
+            <ul class="breadcrumb">
+              <li>Dashboard</li>
+              <li>/</li>
+              <li class="active">Leave Requests</li>
+            </ul>
+          </div>
+          <!-- <div class="user-profile">
                     <div class="icon-btn"><i class="fa-regular fa-bell"></i><span class="dot"></span></div>
                     <img src="https://i.pravatar.cc/150?img=12" alt="Admin">
-                </div>
-            </header>
+                </div> -->
+        </header>
 
-            <!-- Filter Toolbar (From Image 3) -->
-            <div class="filter-bar">
-                <div class="filter-left">
-                    <div class="search-input">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Search Time Off Request">
-                    </div>
-
-                    <div class="dropdown">
-                        <i class="fa-regular fa-calendar"></i>
-                        <span>Month Period</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-
-                    <div class="dropdown">
-                        <i class="fa-solid fa-filter"></i>
-                        <span>All Status</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                </div>
-
-                <div class="filter-right">
-                    <button class="btn-text"><i class="fa-solid fa-sliders"></i> General Setting</button>
-                    <div class="view-toggle">
-                        <button class="active"><i class="fa-solid fa-list"></i></button>
-                        <button><i class="fa-solid fa-border-all"></i></button>
-                    </div>
-                    <button class="btn-dark"><i class="fa-solid fa-check-double"></i> Approve all</button>
-                </div>
+        <!-- Filter Toolbar (From Image 3) -->
+        <div class="filter-bar">
+          <div class="filter-left">
+            <div class="search-input">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" placeholder="Search Time Off Request" />
             </div>
 
-            <!-- The Table Section -->
-            <div class="table-card">
-                <table class="leave-table">
-                    <thead>
-                        <tr>
-                            <th width="15%">Employee</th>
-                            <th width="12%">Leave Type</th>
-                            <th width="18%">From & To</th>
-                            <th width="25%">Reason</th>
-                            <th width="15%">Attachment</th>
-                            <th width="15%">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaveTableBody">
-                        <!-- Javascript will inject rows here to keep code clean -->
-                    </tbody>
-                </table>
+            <div class="dropdown">
+              <i class="fa-regular fa-calendar"></i>
+              <span>Month Period</span>
+              <i class="fa-solid fa-chevron-down"></i>
             </div>
 
-        </main>
+            <div class="dropdown">
+              <i class="fa-solid fa-filter"></i>
+              <span>All Status</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+
+          <div class="filter-right">
+            <button class="btn-text">
+              <i class="fa-solid fa-sliders"></i> General Setting
+            </button>
+            <div class="view-toggle">
+              <button class="active"><i class="fa-solid fa-list"></i></button>
+              <button><i class="fa-solid fa-border-all"></i></button>
+            </div>
+            <button class="btn-dark">
+              <i class="fa-solid fa-check-double"></i> Approve all
+            </button>
+          </div>
+        </div>
+
+        <!-- The Table Section -->
+        <div class="table-card">
+          <table class="leave-table">
+            <thead>
+              <tr>
+                <th width="15%">Employee</th>
+                <th width="12%">Leave Type</th>
+                <th width="18%">From & To</th>
+                <th width="25%">Reason</th>
+                <th width="15%">Attachment</th>
+                <th width="15%">Action</th>
+              </tr>
+            </thead>
+            <tbody id="leaveTableBody">
+              <!-- Javascript will inject rows here to keep code clean -->
+            </tbody>
+          </table>
+        </div>
+      </main>
     </div>
 
     <script src="approval.js"></script>
-</body>
-
+    <script src="../admin_page/admin.js"></script>
+  </body>
 </html>
