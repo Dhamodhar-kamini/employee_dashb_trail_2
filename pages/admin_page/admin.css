@@ -1009,7 +1009,7 @@ body {
 /* --- Main Content Grid Layouts --- */
 .main-grid-row {
   display: grid;
-  gap: 20px;
+  gap: 30px;
   margin-bottom: 20px;
   align-items: center;
 }
@@ -1021,7 +1021,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
 }
 .grid-row-5 {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(1, 1fr);
 }
 
 /* Sizing */
@@ -1366,6 +1366,513 @@ thead th {
   border-radius: 6px;
   margin-top: 15px;
 }
+
+
+/* birthcard and policy */
+/* Birthday */
+/* --- Birthday Carousel Styles --- */
+.birthday-card {
+    /* 1. Beautiful Gradient Background */
+    background: linear-gradient(135deg, #ffffff 40%, #faf9f9 100%);
+    
+    /* 2. Soft Border to define edges */
+    border: 1px solid #FFE5D9;
+    
+    /* Remove the top border, the gradient is enough distinction */
+    border-top: none; 
+
+    /* Keep existing layout */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    border-radius: 16px;
+    
+    /* 3. Soft Orange Shadow */
+    box-shadow: 0 10px 40px rgba(255, 91, 30, 0.1);
+}
+
+.bday-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.bday-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.nav-arrow {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    color: #666;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.nav-arrow:hover {
+    background: #FF5B1E; /* Your Brand Color */
+    color: white;
+    border-color: #FF5B1E;
+}
+
+/* Profile Area */
+.birthday-profile {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.birthday-profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+
+.birthday-profile h3 {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #222;
+}
+
+.birthday-profile p {
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+}
+
+.bday-date-badge {
+    display: inline-block;
+    background: #FFF5F1;
+    color: #FF5B1E;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+/* Simple Fade Animation */
+.fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Action Buttons (Keep your existing styles if you have them) */
+.birthday-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.wish-btn {
+    flex: 1;
+    background: #FF5B1E;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.view-btn {
+    flex: 1;
+    background: #f0f0f0;
+    color: #555;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.view-btn{
+
+background:white;
+color:#222;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+
+}
+
+/* --- MODAL OVERLAY (Shared) --- */
+/* --- MODAL OVERLAY (Shared Base) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Default Dim */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Base Level */
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- MODAL CARD BASE --- */
+.modal-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    transform: scale(0.9);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    max-width: 90%;
+}
+
+.modal-overlay.active .modal-card {
+    transform: scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    z-index: 10;
+}
+
+/* --- 1. WISH MODAL STYLING --- */
+/* IMPORTANT: Fix to make Wish Popup appear ON TOP of View All Popup */
+#wishModal {
+    z-index: 1100; /* Higher than .modal-overlay (1000) */
+    background: rgba(0, 0, 0, 0.7); /* Slightly darker to focus */
+}
+
+.wish-card {
+    width: 400px;
+    padding: 30px;
+    text-align: center;
+}
+
+.wish-header-icon {
+    width: 70px;
+    height: 70px;
+    background: #FFF5F1;
+    color: #FF5B1E;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 15px auto;
+    border: 4px solid #fff;
+    box-shadow: 0 5px 15px rgba(255, 91, 30, 0.2);
+}
+
+.wish-card h3 {
+    margin: 10px 0 5px;
+    color: #333;
+    font-size: 22px;
+}
+
+.wish-card p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.highlight-name {
+    color: #FF5B1E;
+    font-weight: 700;
+}
+
+textarea#wishMessage {
+    width: 100%;
+    height: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: none;
+    font-family: inherit;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+textarea#wishMessage:focus {
+    border-color: #FF5B1E;
+}
+
+.btn-send-wish {
+    width: 100%;
+    padding: 12px;
+    background: #FF5B1E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-send-wish:hover {
+    background: #e04a14;
+}
+
+/* --- 2. VIEW ALL MODAL STYLING --- */
+.list-card {
+    width: 450px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 { margin: 0; font-size: 18px; }
+
+.bday-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.bday-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f9f9f9;
+    transition: 0.2s;
+    border-radius: 8px;
+}
+
+.bday-item:hover {
+    background: #fcfcfc;
+}
+
+.bday-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bday-left img {
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.bday-info h4 { margin: 0; font-size: 14px; color: #333; }
+.bday-info span { font-size: 12px; color: #888; }
+
+.btn-mini-wish {
+    padding: 6px 12px;
+    background: #FFF5F1;
+    color: #FF5B1E;
+    border: 1px solid #FF5B1E;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-mini-wish:hover {
+    background: #FF5B1E;
+    color: white;
+}
+
+/* --- SUCCESS MODAL STYLING --- */
+
+/* Ensure Success Modal is on top of everything */
+#successWishModal {
+    z-index: 1200; 
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.success-card {
+    width: 350px;
+    padding: 40px 30px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+/* Icon Animation Container */
+.success-icon-container {
+    width: 80px;
+    height: 80px;
+    background: #dcfce7; /* Light Green */
+    color: #22c55e; /* Success Green */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    margin: 0 auto 20px auto;
+    position: relative;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-card h3 {
+    margin: 0 0 10px;
+    color: #333;
+    font-size: 20px;
+}
+
+.success-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.btn-success-close {
+    width: 100%;
+    padding: 12px;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    transition: 0.2s;
+}
+
+.btn-success-close:hover {
+    background: #16a34a;
+    transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Simple CSS Confetti Dots around icon */
+.confetti-piece {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: confettiPop 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.confetti-piece:nth-child(2) { background: #FF5B1E; top: 0; left: 50%; transform: translate(-50%, -20px); }
+.confetti-piece:nth-child(3) { background: #00CFE8; top: 50%; right: 0; transform: translate(20px, -50%); }
+.confetti-piece:nth-child(4) { background: #FF9F43; bottom: 0; left: 20%; transform: translate(0, 20px); }
+
+@keyframes confettiPop {
+    0% { opacity: 1; transform: translate(0,0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+
+
+/* Leave */
+
+.leave-card{
+
+background:#1f5664;
+color:white;
+padding:22px 25px;
+border-radius:16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+
+}
+
+.leave-left h3{
+
+margin:0;
+font-size:18px;
+
+}
+
+.leave-left p{
+
+margin-top:5px;
+font-size:13px;
+opacity:0.8;
+
+}
+
+/* Holiday */
+
+.holiday-card{
+
+background:#ffc107;
+padding:22px 25px;
+border-radius:16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+
+}
+
+.holiday-left h3{
+
+margin:0;
+font-size:18px;
+
+}
+
+.holiday-left p{
+
+margin-top:5px;
+font-size:13px;
+
+}
+
+.small-btn{
+
+background:white;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+font-weight:500;
+
+}
+
+.small-btn:hover{
+
+background:#f1f1f1;
+
+}
+
 
 /* --- Row 5 Cards --- */
 .schedule-item,

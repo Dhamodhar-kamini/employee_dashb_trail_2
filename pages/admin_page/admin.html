@@ -6,6 +6,12 @@
     <title>OPPTY HRMS</title>
     <link rel="stylesheet" href="admin.css" />
     <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/opptylogo2.png"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
@@ -506,8 +512,8 @@
             >
           </div> -->
 
-          <!-- MODAL POPUP (Styled like the Permission Request Table) -->
-          <!-- <div id="detailModal" class="modal">
+        <!-- MODAL POPUP (Styled like the Permission Request Table) -->
+        <!-- <div id="detailModal" class="modal">
             <div class="modal-content modal-table-view">
               <div class="modal-header">
                 <h2 id="modalTitle">Attendance Detail Log</h2>
@@ -525,8 +531,8 @@
                     </tr>
                   </thead>
                   <tbody id="modalTableBody"> -->
-                    <!-- Rows populated by JS -->
-                  <!-- </tbody>
+        <!-- Rows populated by JS -->
+        <!-- </tbody>
                 </table>
               </div>
             </div>
@@ -535,187 +541,248 @@
         </div> -->
 
         <div class="da-dashboard-wrapper">
-        
-        <!-- CHART CARD -->
-        <div class="da-main-chart-card">
+          <!-- CHART CARD -->
+          <div class="da-main-chart-card">
             <div class="da-card-top-bar">
-                <div class="da-header-text">
-                    <h3>Daily Attendance</h3>
-                    <p>Shift: 10:00 AM - 07:00 PM</p>
+              <div class="da-header-text">
+                <h3>Daily Attendance</h3>
+                <p>Shift: 10:00 AM - 07:00 PM</p>
+              </div>
+              <div class="da-controls-area">
+                <!-- Legend -->
+                <div class="da-legend-group">
+                  <span><span class="da-dot da-bg-late"></span>Late</span>
+                  <span><span class="da-dot da-bg-ontime"></span>On Time</span>
+                  <span><span class="da-dot da-bg-absent"></span>Absent</span>
                 </div>
-                <div class="da-controls-area">
-                    <!-- Legend -->
-                    <div class="da-legend-group">
-                        <span><span class="da-dot da-bg-late"></span>Late</span>
-                        <span><span class="da-dot da-bg-ontime"></span>On Time</span>
-                        <span><span class="da-dot da-bg-absent"></span>Absent</span>
-                    </div>
-                    
-                    <!-- Dynamic Employee Count Input -->
-                    <div class="da-input-wrapper">
-                        <span class="da-label-small">Staff:</span>
-                        <input type="number" id="daStaffCountInput" class="da-num-field" value="50" min="1">
-                    </div>
 
-                    <!-- Month Select -->
-                    <select class="da-month-dropdown" id="daMonthSelect">
-                        <option value="0">January</option>
-                        <option value="1">February</option>
-                        <option value="2">March</option>
-                        <option value="3">April</option>
-                        <option value="4">May</option>
-                        <option value="5">June</option>
-                        <option value="6">July</option>
-                        <option value="7">August</option>
-                        <option value="8">September</option>
-                        <option value="9">October</option>
-                        <option value="10">November</option>
-                        <option value="11">December</option>
-                    </select>
+                <!-- Dynamic Employee Count Input -->
+                <div class="da-input-wrapper">
+                  <span class="da-label-small">Staff:</span>
+                  <input
+                    type="number"
+                    id="daStaffCountInput"
+                    class="da-num-field"
+                    value="50"
+                    min="1"
+                  />
                 </div>
+
+                <!-- Month Select -->
+                <select class="da-month-dropdown" id="daMonthSelect">
+                  <option value="0">January</option>
+                  <option value="1">February</option>
+                  <option value="2">March</option>
+                  <option value="3">April</option>
+                  <option value="4">May</option>
+                  <option value="5">June</option>
+                  <option value="6">July</option>
+                  <option value="7">August</option>
+                  <option value="8">September</option>
+                  <option value="9">October</option>
+                  <option value="10">November</option>
+                  <option value="11">December</option>
+                </select>
+              </div>
             </div>
 
             <div class="da-chart-visual-area">
-                <!-- Y-Axis (Dynamic) -->
-                <div class="da-y-axis-labels" id="daYAxisContainer">
-                    <!-- Injected via JS -->
-                </div>
-                <!-- Grid -->
-                <div class="da-grid-lines-bg">
-                    <div class="da-grid-line"></div><div class="da-grid-line"></div><div class="da-grid-line"></div>
-                    <div class="da-grid-line"></div><div class="da-grid-line"></div><div class="da-grid-line"></div>
-                </div>
+              <!-- Y-Axis (Dynamic) -->
+              <div class="da-y-axis-labels" id="daYAxisContainer">
+                <!-- Injected via JS -->
+              </div>
+              <!-- Grid -->
+              <div class="da-grid-lines-bg">
+                <div class="da-grid-line"></div>
+                <div class="da-grid-line"></div>
+                <div class="da-grid-line"></div>
+                <div class="da-grid-line"></div>
+                <div class="da-grid-line"></div>
+                <div class="da-grid-line"></div>
+              </div>
 
-                <!-- BARS -->
-                <div class="da-bars-wrapper" id="daBarsContainer">
-                    <!-- Injected via JS -->
-                </div>
+              <!-- BARS -->
+              <div class="da-bars-wrapper" id="daBarsContainer">
+                <!-- Injected via JS -->
+              </div>
 
-                <!-- X-Axis (Dates) -->
-                <div class="da-x-axis-labels" id="daXLabelsContainer">
-                    <!-- Injected via JS -->
-                </div>
+              <!-- X-Axis (Dates) -->
+              <div class="da-x-axis-labels" id="daXLabelsContainer">
+                <!-- Injected via JS -->
+              </div>
             </div>
-        </div>
+          </div>
 
-        <!-- STATS SIDEBAR -->
-        <div class="da-stats-sidebar">
+          <!-- STATS SIDEBAR -->
+          <div class="da-stats-sidebar">
             <!-- <div class="da-stat-box">
                 <div class="da-stat-number da-text-yellow" id="daAvgOntimeDisplay">0</div>
                 <div class="da-stat-label">Avg Present / Day</div>
             </div> -->
-            
-            <div class="stat-card" style="width: 100%;">
-            <div class="icon-circle bg-icon-orange">
-              <i class="fas fa-user-clock"></i>
-            </div>
-            <p>Attendance Overview</p>
-            <h3>120/154</h3>
-            <a href="#" class="view-details-link attendance-trigger"
-              >View Details</a
-            >
-          </div>
 
-          <!-- MODAL POPUP (Styled like the Permission Request Table) -->
-          <div id="detailModal" class="modal">
-            <div class="modal-content modal-table-view">
-              <div class="modal-header">
-                <h2 id="modalTitle">Attendance Detail Log</h2>
-                <span class="close-btn">&times;</span>
+            <div class="stat-card" style="width: 100%">
+              <div class="icon-circle bg-icon-orange">
+                <i class="fas fa-user-clock"></i>
               </div>
-              <div class="modal-body">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Employee</th>
-                      <th>Date</th>
-                      <th>Check In/Out</th>
-                      <th>Duration</th>
-                    </tr>
-                  </thead>
-                  <tbody id="modalTableBody">
-                    <!-- Rows populated by JS -->
-                  </tbody>
-                </table>
+              <p>Attendance Overview</p>
+              <h3>120/154</h3>
+              <a href="#" class="view-details-link attendance-trigger"
+                >View Details</a
+              >
+            </div>
+
+            <!-- MODAL POPUP (Styled like the Permission Request Table) -->
+            <div id="detailModal" class="modal">
+              <div class="modal-content modal-table-view">
+                <div class="modal-header">
+                  <h2 id="modalTitle">Attendance Detail Log</h2>
+                  <span class="close-btn">&times;</span>
+                </div>
+                <div class="modal-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Check In/Out</th>
+                        <th>Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody id="modalTableBody">
+                      <!-- Rows populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-
 
             <div class="da-stat-box">
-                <div class="da-stat-number da-text-blue" id="daAvgLateDisplay">0</div>
-                <div class="da-stat-label">Avg Late / Day</div>
+              <div class="da-stat-number da-text-blue" id="daAvgLateDisplay">
+                0
+              </div>
+              <div class="da-stat-label">Avg Late / Day</div>
             </div>
             <div class="da-stat-box">
-                <div class="da-stat-number da-text-red" id="daAvgAbsentDisplay">0</div>
-                <div class="da-stat-label">Avg Absent / Day</div>
+              <div class="da-stat-number da-text-red" id="daAvgAbsentDisplay">
+                0
+              </div>
+              <div class="da-stat-label">Avg Absent / Day</div>
             </div>
+          </div>
         </div>
-
-    </div>
 
         <div class="main-grid-row grid-row-5">
           <!-- Birthdays (Span 1) -->
-          <div class="card quarter-card" id="birthdays">
-            <div class="card-header">
-              <h3>Birthdays</h3>
-              <a href="#">View All</a>
-            </div>
-            <div class="card-body birthday-list">
-              <h4>Today</h4>
-              <div class="birthday-entry highlighted">
-                <img
-                  style="width: 35px; height: 35px; border-radius: 50%"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Andrew Jermia</strong><small>IOS Developer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
+           
+          <!-- 1. MAIN BIRTHDAY CARD (CAROUSEL) -->
+<div class="birthday-card">
+    <div class="bday-header">
+        <h2>Team Birthday</h2>
+        <div class="bday-controls">
+            <button id="prevBdayBtn" class="nav-arrow"><i class="fas fa-chevron-left"></i></button>
+            <button id="nextBdayBtn" class="nav-arrow"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
 
-              <h4>Tomorrow</h4>
-              <div class="birthday-entry">
-                <img
-                  style="width: 35px; height: 35px; border-radius: 50%"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Mary Zeen</strong><small>UI/UX Designer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
-              <div class="birthday-entry">
-                <img
-                  style="width: 35px; height: 35px; border-radius: 50%"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Antony Lewis</strong><small>Android Developer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
-              <h4>25 Jan 2025</h4>
-              <div class="birthday-entry">
-                <img
-                  style="width: 35px; height: 35px; border-radius: 50%"
-                  src="../assets/profiledp.jpeg"
-                />
-                <div>
-                  <strong>Doglas Martini</strong><small>.Net Developer</small>
-                </div>
-                <button class="send-btn">
-                  <i class="fas fa-envelope"></i> Send
-                </button>
-              </div>
+    <!-- Dynamic Content Area -->
+    <div class="birthday-carousel">
+        <div class="birthday-profile fade-in" id="bdayProfileContainer">
+            <img id="bdayImg" src="https://randomuser.me/api/portraits/women/65.jpg" alt="Profile" />
+            <h3 id="bdayName">Andrew Jermia</h3>
+            <p id="bdayRole">IOS Developer</p>
+            <span id="bdayDate" class="bday-date-badge">Today, 24 Oct</span>
+        </div>
+    </div>
+
+    <div class="birthday-actions">
+        <!-- Passes 'current' to JS to know who is visible -->
+        <button class="wish-btn" onclick="openWishModal('current')">Send Wishes</button>
+        <button class="view-btn" onclick="openAllBirthdaysModal()">View All</button>
+    </div>
+</div>
+
+<!-- ========================================= -->
+<!-- 2. POPUP: SEND WISHES (Celebration Theme) -->
+<!-- ========================================= -->
+<div id="wishModal" class="modal-overlay">
+    <div class="modal-card wish-card">
+        <span class="close-modal" onclick="closeWishModal()">&times;</span>
+        
+        <div class="wish-header-icon">
+            <i class="fa-solid fa-cake-candles"></i>
+        </div>
+        
+        <h3>Happy Birthday!</h3>
+        <p>Send your best wishes to <span id="wishTargetName" class="highlight-name">Andrew</span></p>
+        
+        <textarea id="wishMessage" placeholder="Write a warm message... (e.g. Have a fantastic year ahead!)"></textarea>
+        
+        <button class="btn-send-wish" onclick="submitWish()">
+            <i class="fa-regular fa-paper-plane"></i> Send Wish
+        </button>
+    </div>
+</div>
+
+<!-- ========================================= -->
+<!-- 3. POPUP: VIEW ALL BIRTHDAYS (List View)  -->
+<!-- ========================================= -->
+<div id="allBirthdaysModal" class="modal-overlay">
+    <div class="modal-card list-card">
+        <div class="modal-header">
+            <h2>Upcoming Birthdays</h2>
+            <span class="close-modal" onclick="closeAllBirthdaysModal()">&times;</span>
+        </div>
+        
+        <div class="bday-list-container" id="bdayListContainer">
+            <!-- List items will be injected by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- 4. POPUP: WISHES SENT SUCCESS (New)       -->
+<!-- ========================================= -->
+<div id="successWishModal" class="modal-overlay">
+    <div class="modal-card success-card">
+        <!-- Animated Icon Circle -->
+        <div class="success-icon-container">
+            <i class="fa-solid fa-check"></i>
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+        </div>
+
+        <h3>Wishes Sent Successfully!</h3>
+        <p>Your warm wishes have been delivered to <br><span id="successName" class="highlight-name">Andrew</span>.</p>
+
+        <button class="btn-success-close" onclick="closeSuccessWishModal()">
+            Awesome!
+        </button>
+    </div>
+</div>
+
+          <!-- LEAVE POLICY -->
+
+          <div class="leave-card">
+            <div class="leave-left">
+              <h3>Leave Policy</h3>
+
+              <p>Last Updated: Today</p>
             </div>
+
+            <button class="small-btn">View All</button>
+          </div>
+
+          <!-- HOLIDAY CARD -->
+
+          <div class="holiday-card">
+            <div class="holiday-left">
+              <h3>Next Holiday</h3>
+
+              <p>Diwali, 15 Sep 2025</p>
+            </div>
+
+            <button class="small-btn">View All</button>
           </div>
         </div>
 

@@ -819,3 +819,184 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Run
     da_runSimulation();
 });
+
+//birthday wihes
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // --- 1. DATA ---
+    const birthdays = [
+        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg" },
+        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg" },
+        { name: "Siddarth", role: "Product Manager", date: "26 Oct", rawDate: "2023-10-26", img: "../assets/profiledp.jpeg" },
+        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", rawDate: "2023-10-28", img: "../assets/profiledp.jpeg" },
+        { name: "Arjun", role: "HR Manager", date: "02 Nov", rawDate: "2023-11-02", img: "../assets/profiledp.jpeg" }
+    ];
+
+    let currentIndex = 0;
+    let autoSlideInterval;
+
+    // --- 2. CAROUSEL ELEMENTS ---
+    const imgEl = document.getElementById("bdayImg");
+    const nameEl = document.getElementById("bdayName");
+    const roleEl = document.getElementById("bdayRole");
+    const dateEl = document.getElementById("bdayDate");
+    const container = document.getElementById("bdayProfileContainer");
+    const bdayCard = document.querySelector(".birthday-card");
+
+    // --- 3. CAROUSEL LOGIC ---
+    function updateCarousel(index) {
+        if(!container) return;
+        container.classList.remove("fade-in");
+        void container.offsetWidth; 
+        const person = birthdays[index];
+        if(imgEl) imgEl.src = person.img;
+        if(nameEl) nameEl.innerText = person.name;
+        if(roleEl) roleEl.innerText = person.role;
+        if(dateEl) dateEl.innerText = person.date;
+        container.classList.add("fade-in");
+    }
+
+    // --- 4. AUTO SLIDE LOGIC ---
+    function startAutoSlide() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % birthdays.length;
+            updateCarousel(currentIndex);
+        }, 4000);
+    }
+
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+
+    if(bdayCard) {
+        bdayCard.addEventListener("mouseenter", stopAutoSlide);
+        bdayCard.addEventListener("mouseleave", startAutoSlide);
+    }
+
+    // --- 5. NAVIGATION BUTTONS ---
+    const nextBtn = document.getElementById("nextBdayBtn");
+    const prevBtn = document.getElementById("prevBdayBtn");
+
+    if(nextBtn) nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % birthdays.length;
+        updateCarousel(currentIndex);
+        stopAutoSlide(); 
+        if(!bdayCard.matches(':hover')) startAutoSlide();
+    });
+
+    if(prevBtn) prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + birthdays.length) % birthdays.length;
+        updateCarousel(currentIndex);
+        stopAutoSlide();
+        if(!bdayCard.matches(':hover')) startAutoSlide();
+    });
+
+    // --- 6. WISH MODAL & SUCCESS MODAL LOGIC ---
+    const wishModal = document.getElementById("wishModal");
+    const wishTargetName = document.getElementById("wishTargetName");
+    const wishMessage = document.getElementById("wishMessage");
+    const successWishModal = document.getElementById("successWishModal"); // Success Modal
+    const successName = document.getElementById("successName"); // Name in success modal
+
+    window.openWishModal = function(identifier) {
+        stopAutoSlide();
+        let name = "";
+        if (identifier === 'current') {
+            name = birthdays[currentIndex].name;
+        } else {
+            name = identifier;
+        }
+
+        if(wishTargetName) wishTargetName.innerText = name;
+        if(wishMessage) wishMessage.value = ""; 
+        if(wishModal) wishModal.classList.add("active");
+    };
+
+    window.closeWishModal = function() {
+        if(wishModal) wishModal.classList.remove("active");
+        if(bdayCard && !bdayCard.matches(':hover')) {
+            startAutoSlide();
+        }
+    };
+
+    // --- UPDATED SUBMIT FUNCTION WITH SUCCESS POPUP ---
+    window.submitWish = function() {
+        const btn = document.querySelector(".btn-send-wish");
+        const originalText = btn.innerHTML;
+        
+        // 1. Loading State
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        
+        setTimeout(() => {
+            // 2. Get the name we just wished
+            const currentName = wishTargetName.innerText;
+
+            // 3. Close the input modal
+            closeWishModal();
+
+            // 4. Reset Button
+            btn.innerHTML = originalText;
+            
+            // 5. Open Success Modal
+            openSuccessWishModal(currentName);
+        }, 800);
+    };
+
+    // --- SUCCESS MODAL FUNCTIONS ---
+    window.openSuccessWishModal = function(name) {
+        if(successName) successName.innerText = name;
+        if(successWishModal) successWishModal.classList.add("active");
+    };
+
+    window.closeSuccessWishModal = function() {
+        if(successWishModal) successWishModal.classList.remove("active");
+    };
+
+    // --- 7. VIEW ALL MODAL LOGIC ---
+    const allBdayModal = document.getElementById("allBirthdaysModal");
+    const listContainer = document.getElementById("bdayListContainer");
+
+    window.openAllBirthdaysModal = function() {
+        stopAutoSlide();
+        if(listContainer) {
+            listContainer.innerHTML = "";
+            birthdays.forEach(person => {
+                const item = document.createElement("div");
+                item.className = "bday-item";
+                item.innerHTML = `
+                    <div class="bday-left">
+                        <img src="${person.img}" alt="${person.name}">
+                        <div class="bday-info">
+                            <h4>${person.name}</h4>
+                            <span>${person.date} - ${person.role}</span>
+                        </div>
+                    </div>
+                    <button class="btn-mini-wish" onclick="openWishModal('${person.name}')">
+                        Wish
+                    </button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+        if(allBdayModal) allBdayModal.classList.add("active");
+    };
+
+    window.closeAllBirthdaysModal = function() {
+        if(allBdayModal) allBdayModal.classList.remove("active");
+        if(bdayCard && !bdayCard.matches(':hover')) {
+            startAutoSlide();
+        }
+    };
+
+    // --- 8. CLOSE ON CLICK OUTSIDE (Updated for Success Modal) ---
+    window.onclick = function(event) {
+        if (event.target === wishModal) closeWishModal();
+        if (event.target === allBdayModal) closeAllBirthdaysModal();
+        if (event.target === successWishModal) closeSuccessWishModal();
+    };
+
+    // --- INITIALIZATION ---
+    updateCarousel(currentIndex);
+    startAutoSlide();
+});
