@@ -3,38 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Departmental Distribution</title>
-    <link rel="stylesheet" href="index.css">
+    <title>Dynamic Attendance Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="chart-widget">
-        <!-- Visualization -->
-        <div class="chart-container">
-            <svg class="donut-chart" viewBox="0 0 100 100">
-                <!-- Base Circle (Background) -->
-                <!-- We used a circle with radius 40. Circumference is approx 251.2 -->
-                <circle cx="50" cy="50" r="40" stroke="#eee" stroke-width="20" fill="none"></circle>
-                <!-- Segments will be injected here by JS -->
-            </svg>
-            
-            <div class="chart-center-text">
-                <span class="total-number" id="totalDisplay">0</span>
-                <span class="total-label">Total</span>
+    <div class="dashboard-container">
+        
+        <!-- CHART CARD -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="header-title">
+                    <h3>Daily Attendance</h3>
+                    <p>Shift: 10:00 AM - 07:00 PM</p>
+                </div>
+                <div class="controls">
+                    <!-- Legend -->
+                    <div class="legend">
+                        <span><span class="dot bg-late"></span>Late</span>
+                        <span><span class="dot bg-ontime"></span>On Time</span>
+                        <span><span class="dot bg-absent"></span>Absent</span>
+                    </div>
+                    
+                    <!-- Dynamic Employee Count Input -->
+                    <div class="input-group">
+                        <span class="input-label">Staff:</span>
+                        <input type="number" id="staffCount" class="num-input" value="50" min="1">
+                    </div>
+
+                    <!-- Month Select -->
+                    <select class="month-select" id="monthFilter">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-area">
+                <!-- Y-Axis (Dynamic) -->
+                <div class="y-axis" id="yAxis">
+                    <!-- Injected via JS -->
+                </div>
+                <!-- Grid -->
+                <div class="grid-lines">
+                    <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+                    <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+                </div>
+
+                <!-- BARS -->
+                <div class="bars-container" id="barsContainer">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- X-Axis (Dates) -->
+                <div class="x-labels" id="xLabels">
+                    <!-- Injected via JS -->
+                </div>
             </div>
         </div>
 
-        <!-- Data Details -->
-        <div class="chart-legend">
-            <div class="legend-header">
-                <h3>Workforce Distribution</h3>
-                <p>Active employees by department</p>
+        <!-- STATS CARD -->
+        <div class="stats-sidebar">
+            <div class="stat-card">
+                <div class="stat-val highlight-yellow" id="avgOntime">0</div>
+                <div class="stat-name">Avg Present / Day</div>
             </div>
-            
-            <ul class="legend-list" id="legendList">
-                <!-- List items will be injected here by JS -->
-            </ul>
+            <div class="stat-card">
+                <div class="stat-val highlight-blue" id="avgLate">0</div>
+                <div class="stat-name">Avg Late / Day</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val highlight-red" id="avgAbsent">0</div>
+                <div class="stat-name">Avg Absent / Day</div>
+            </div>
         </div>
+
     </div>
 
     <script src="script.js"></script>

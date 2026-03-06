@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. Automatic Date Initialization ---
     function initDates() {
         const today = new Date();
-        document.getElementById('systemDate').textContent = today.toDateString(); // Uncomment if you have this element
+        document.getElementById('systemDate').textContent = today.toDateString(); 
 
         // Default to Current Month and Year
         const targetMonth = today.getMonth(); // 0-11

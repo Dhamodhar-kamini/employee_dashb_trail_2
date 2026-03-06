@@ -44,7 +44,7 @@
 
               <!-- Submenu Items -->
               <div class="submenu" id="dashboardSubmenu">
-                <a href="../admin_page/admin.html" class="menu-item"
+                <a href="../admin_page/admin.html" class="menu-item active"
                   ><i class="fas fa-user-tie"></i
                   ><span>Admin Dashboard</span></a
                 >
@@ -494,8 +494,118 @@
         </div>
 
         <!-- attendance overview card -->
-        <div class="stats-grid-1">
+        <!-- <div class="stats-grid-1">
           <div class="stat-card">
+            <div class="icon-circle bg-icon-orange">
+              <i class="fas fa-user-clock"></i>
+            </div>
+            <p>Attendance Overview</p>
+            <h3>120/154</h3>
+            <a href="#" class="view-details-link attendance-trigger"
+              >View Details</a
+            >
+          </div> -->
+
+          <!-- MODAL POPUP (Styled like the Permission Request Table) -->
+          <!-- <div id="detailModal" class="modal">
+            <div class="modal-content modal-table-view">
+              <div class="modal-header">
+                <h2 id="modalTitle">Attendance Detail Log</h2>
+                <span class="close-btn">&times;</span>
+              </div>
+              <div class="modal-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Employee</th>
+                      <th>Date</th>
+                      <th>Check In/Out</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody id="modalTableBody"> -->
+                    <!-- Rows populated by JS -->
+                  <!-- </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div> -->
+
+        <div class="da-dashboard-wrapper">
+        
+        <!-- CHART CARD -->
+        <div class="da-main-chart-card">
+            <div class="da-card-top-bar">
+                <div class="da-header-text">
+                    <h3>Daily Attendance</h3>
+                    <p>Shift: 10:00 AM - 07:00 PM</p>
+                </div>
+                <div class="da-controls-area">
+                    <!-- Legend -->
+                    <div class="da-legend-group">
+                        <span><span class="da-dot da-bg-late"></span>Late</span>
+                        <span><span class="da-dot da-bg-ontime"></span>On Time</span>
+                        <span><span class="da-dot da-bg-absent"></span>Absent</span>
+                    </div>
+                    
+                    <!-- Dynamic Employee Count Input -->
+                    <div class="da-input-wrapper">
+                        <span class="da-label-small">Staff:</span>
+                        <input type="number" id="daStaffCountInput" class="da-num-field" value="50" min="1">
+                    </div>
+
+                    <!-- Month Select -->
+                    <select class="da-month-dropdown" id="daMonthSelect">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="da-chart-visual-area">
+                <!-- Y-Axis (Dynamic) -->
+                <div class="da-y-axis-labels" id="daYAxisContainer">
+                    <!-- Injected via JS -->
+                </div>
+                <!-- Grid -->
+                <div class="da-grid-lines-bg">
+                    <div class="da-grid-line"></div><div class="da-grid-line"></div><div class="da-grid-line"></div>
+                    <div class="da-grid-line"></div><div class="da-grid-line"></div><div class="da-grid-line"></div>
+                </div>
+
+                <!-- BARS -->
+                <div class="da-bars-wrapper" id="daBarsContainer">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- X-Axis (Dates) -->
+                <div class="da-x-axis-labels" id="daXLabelsContainer">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS SIDEBAR -->
+        <div class="da-stats-sidebar">
+            <!-- <div class="da-stat-box">
+                <div class="da-stat-number da-text-yellow" id="daAvgOntimeDisplay">0</div>
+                <div class="da-stat-label">Avg Present / Day</div>
+            </div> -->
+            
+            <div class="stat-card" style="width: 100%;">
             <div class="icon-circle bg-icon-orange">
               <i class="fas fa-user-clock"></i>
             </div>
@@ -531,7 +641,19 @@
               </div>
             </div>
           </div>
+
+
+            <div class="da-stat-box">
+                <div class="da-stat-number da-text-blue" id="daAvgLateDisplay">0</div>
+                <div class="da-stat-label">Avg Late / Day</div>
+            </div>
+            <div class="da-stat-box">
+                <div class="da-stat-number da-text-red" id="daAvgAbsentDisplay">0</div>
+                <div class="da-stat-label">Avg Absent / Day</div>
+            </div>
         </div>
+
+    </div>
 
         <div class="main-grid-row grid-row-5">
           <!-- Birthdays (Span 1) -->

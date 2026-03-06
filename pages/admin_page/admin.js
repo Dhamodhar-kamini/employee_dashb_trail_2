@@ -642,3 +642,180 @@ document.addEventListener("DOMContentLoaded", () => {
         cumulativePercent += (dept.count / total) * 100;
     });
 });
+
+
+//attendance graph and details
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. CONFIGURATION ---
+    let da_currentTotalEmployees = 50; 
+    const da_START_HOUR = 10;
+    const da_GRACE_MIN = 10; 
+    
+    // Selectors
+    const da_staffInput = document.getElementById('daStaffCountInput');
+    const da_monthSelect = document.getElementById('daMonthSelect');
+    const da_yAxis = document.getElementById('daYAxisContainer');
+    const da_barsContainer = document.getElementById('daBarsContainer');
+    const da_xLabelsContainer = document.getElementById('daXLabelsContainer');
+    
+    // Stats Elements
+    // Note: daAvgOntimeDisplay might be null if you removed it from HTML, so we handle that below
+    const da_statOntime = document.getElementById('daAvgOntimeDisplay');
+    const da_statLate = document.getElementById('daAvgLateDisplay');
+    const da_statAbsent = document.getElementById('daAvgAbsentDisplay');
+
+    // --- 2. UPDATE Y-AXIS VISUALS ---
+    function da_updateYAxisLabels() {
+        if(!da_yAxis) return;
+        da_yAxis.innerHTML = '';
+        
+        for(let i=0; i<=5; i++) {
+            const val = Math.round((da_currentTotalEmployees / 5) * i);
+            const span = document.createElement('span');
+            span.innerText = val;
+            da_yAxis.appendChild(span);
+        }
+    }
+
+    // --- 3. DATA GENERATOR ---
+    function da_generateMonthData(monthIndex) {
+        const daysInMonth = new Date(2025, parseInt(monthIndex) + 1, 0).getDate();
+        const dailyData = [];
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            let dayStats = { day: day, late: 0, ontime: 0, absent: 0 };
+
+            for (let emp = 0; emp < da_currentTotalEmployees; emp++) {
+                const rand = Math.random();
+                if (rand < 0.10) { 
+                    dayStats.absent++;
+                } else {
+                    const hour = Math.random() > 0.7 ? 10 : 9; 
+                    const min = Math.floor(Math.random() * 60);
+                    let isLate = false;
+                    if (hour > da_START_HOUR) isLate = true;
+                    if (hour === da_START_HOUR && min > da_GRACE_MIN) isLate = true;
+
+                    if (isLate) dayStats.late++;
+                    else dayStats.ontime++;
+                }
+            }
+            dailyData.push(dayStats);
+        }
+        return dailyData;
+    }
+
+    // --- 4. RENDER LOGIC ---
+    function da_runSimulation() {
+        da_updateYAxisLabels();
+
+        const monthIndex = da_monthSelect.value;
+        const data = da_generateMonthData(monthIndex);
+        
+        if(da_barsContainer) da_barsContainer.innerHTML = "";
+        if(da_xLabelsContainer) da_xLabelsContainer.innerHTML = "";
+
+        let totalLate = 0;
+        let totalAbsent = 0;
+        let totalOntime = 0;
+
+        data.forEach((dayData, index) => {
+            totalLate += dayData.late;
+            totalAbsent += dayData.absent;
+            totalOntime += dayData.ontime;
+
+            const hLate = (dayData.late / da_currentTotalEmployees) * 100;
+            const hOntime = (dayData.ontime / da_currentTotalEmployees) * 100;
+            const hAbsent = (dayData.absent / da_currentTotalEmployees) * 100;
+
+            const col = document.createElement('div');
+            col.className = 'da-bar-column';
+            col.setAttribute('data-tooltip', `Day ${dayData.day}\nOn Time: ${dayData.ontime}\nLate: ${dayData.late}\nAbsent: ${dayData.absent}\nTotal Staff: ${da_currentTotalEmployees}`);
+
+            col.innerHTML = `
+                <div class="da-bar-segment da-bg-late" style="height: ${hLate}%"></div>
+                <div class="da-bar-segment da-bg-ontime" style="height: ${hOntime}%"></div>
+                <div class="da-bar-segment da-bg-absent" style="height: ${hAbsent}%"></div>
+            `;
+            if(da_barsContainer) da_barsContainer.appendChild(col);
+
+            if (index === 0 || (index + 1) % 5 === 0) {
+                const label = document.createElement('div');
+                label.className = 'da-x-label-item';
+                label.innerText = dayData.day;
+                const leftPos = (index / (data.length - 1)) * 100;
+                label.style.position = 'absolute';
+                if (index === 0) label.style.left = '0%';
+                else if (index === data.length - 1) label.style.right = '0%';
+                else label.style.left = `${leftPos}%`;
+                
+                if(da_xLabelsContainer) da_xLabelsContainer.appendChild(label);
+            }
+        });
+
+        // --- FIX: CHECK IF ELEMENTS EXIST BEFORE UPDATING ---
+        const daysCount = data.length;
+        
+        if(da_statOntime) da_statOntime.innerText = (totalOntime / daysCount).toFixed(0);
+        if(da_statLate) da_statLate.innerText = (totalLate / daysCount).toFixed(0);
+        if(da_statAbsent) da_statAbsent.innerText = (totalAbsent / daysCount).toFixed(0);
+    }
+
+    // --- 5. EVENT LISTENERS ---
+    if(da_staffInput) {
+        da_staffInput.addEventListener('change', () => {
+            const inputVal = da_staffInput.value;
+            if(inputVal && inputVal > 0) {
+                da_currentTotalEmployees = parseInt(inputVal);
+                da_runSimulation(); 
+            }
+        });
+    }
+
+    if(da_monthSelect) {
+        da_monthSelect.addEventListener('change', da_runSimulation);
+    }
+
+    // --- 6. MODAL LOGIC (New Addition) ---
+    const detailModal = document.getElementById("detailModal");
+    const triggerBtn = document.querySelector(".attendance-trigger");
+    const closeBtn = document.querySelector(".close-btn");
+
+    if(triggerBtn && detailModal) {
+        triggerBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            // Optional: Populate the modal table here
+            populateModalTable(); 
+            detailModal.style.display = "flex"; // Using flex to center if CSS is set up
+        });
+    }
+
+    if(closeBtn && detailModal) {
+        closeBtn.addEventListener("click", () => {
+            detailModal.style.display = "none";
+        });
+    }
+
+    // Close when clicking outside
+    window.addEventListener("click", (e) => {
+        if (e.target === detailModal) {
+            detailModal.style.display = "none";
+        }
+    });
+
+    // Helper to add fake data to modal (Visual only)
+    function populateModalTable() {
+        const tbody = document.getElementById("modalTableBody");
+        if(!tbody) return;
+        tbody.innerHTML = `
+            <tr><td>001</td><td>Dhamodhar K</td><td>2025-10-24</td><td>09:55 - 18:00</td><td>8h 5m</td></tr>
+            <tr><td>002</td><td>Saleem</td><td>2025-10-24</td><td>10:15 - 18:00</td><td>7h 45m</td></tr>
+            <tr><td>003</td><td>Manikanta</td><td>2025-10-24</td><td>-- : --</td><td>Absent</td></tr>
+            <tr><td>003</td><td>Siddarth</td><td>2025-10-24</td><td>-- : --</td><td>Absent</td></tr>
+        `;
+    }
+
+    // Initial Run
+    da_runSimulation();
+});

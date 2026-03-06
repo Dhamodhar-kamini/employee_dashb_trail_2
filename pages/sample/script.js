@@ -1,81 +1,157 @@
-// 1. DATA CONFIGURATION
-const departmentData = [
-    { name: "IT & Dev", count: 85, color: "var(--col-it)", class: "bg-it" },
-    { name: "Content Writers", count: 120, color: "var(--col-content)", class: "bg-content" },
-    { name: "HR Team", count: 25, color: "var(--col-hr)", class: "bg-hr" },
-    { name: "Management", count: 15, color: "var(--col-mgmt)", class: "bg-mgmt" }
-];
+document.addEventListener('DOMContentLoaded', () => {
 
-document.addEventListener("DOMContentLoaded", () => {
-    const svgChart = document.querySelector('.donut-chart');
-    const legendList = document.getElementById('legendList');
-    const totalDisplay = document.getElementById('totalDisplay');
-
-    // 2. CALCULATE TOTAL
-    const total = departmentData.reduce((sum, item) => sum + item.count, 0);
+    // --- 1. CONFIGURATION ---
+    let currentTotalEmployees = 50; // Initial value
+    const START_HOUR = 10;
+    const GRACE_MIN = 10; 
     
-    // Animate Total Number
-    let currentCount = 0;
-    const interval = setInterval(() => {
-        // Increment logic
-        const increment = Math.ceil(total / 50);
-        currentCount += increment;
+    // Selectors
+    const staffInput = document.getElementById('staffCount');
+    const monthSelect = document.getElementById('monthFilter');
+    const yAxis = document.getElementById('yAxis');
+    const barsContainer = document.getElementById('barsContainer');
+    const xLabelsContainer = document.getElementById('xLabels');
+    
+    // Stats Elements
+    const statOntime = document.getElementById('avgOntime');
+    const statLate = document.getElementById('avgLate');
+    const statAbsent = document.getElementById('avgAbsent');
+
+    // --- 2. UPDATE Y-AXIS VISUALS ---
+    function updateYAxisLabels() {
+        yAxis.innerHTML = '';
         
-        if(currentCount >= total) {
-            currentCount = total;
-            clearInterval(interval);
+        // Generate 6 steps (0, 20%, 40%, 60%, 80%, 100%)
+        for(let i=0; i<=5; i++) {
+            const val = Math.round((currentTotalEmployees / 5) * i);
+            const span = document.createElement('span');
+            span.innerText = val;
+            yAxis.appendChild(span);
         }
-        totalDisplay.innerText = currentCount;
-    }, 20);
+    }
 
-    // 3. RENDER CHART & LEGEND
-    let cumulativePercent = 0;
+    // --- 3. DATA GENERATOR (Simulating DB) ---
+    function generateMonthData(monthIndex) {
+        // Calculate days in month for current year (using fixed year 2025 for demo)
+        const daysInMonth = new Date(2025, parseInt(monthIndex) + 1, 0).getDate();
+        const dailyData = [];
 
-    departmentData.forEach(dept => {
-        // --- A. Render Legend Item ---
-        const percentage = ((dept.count / total) * 100).toFixed(1);
+        for (let day = 1; day <= daysInMonth; day++) {
+            
+            let dayStats = { 
+                day: day, 
+                late: 0, 
+                ontime: 0, 
+                absent: 0 
+            };
+
+            // Loop through current dynamic count
+            for (let emp = 0; emp < currentTotalEmployees; emp++) {
+                const rand = Math.random();
+
+                // 10% Chance Absent
+                if (rand < 0.10) { 
+                    dayStats.absent++;
+                } else {
+                    // Present
+                    // Random time generation
+                    const hour = Math.random() > 0.7 ? 10 : 9; 
+                    const min = Math.floor(Math.random() * 60);
+                    
+                    let isLate = false;
+                    if (hour > START_HOUR) isLate = true;
+                    if (hour === START_HOUR && min > GRACE_MIN) isLate = true;
+
+                    if (isLate) dayStats.late++;
+                    else dayStats.ontime++;
+                }
+            }
+            dailyData.push(dayStats);
+        }
+        return dailyData;
+    }
+
+    // --- 4. RENDER LOGIC ---
+    function runSimulation() {
+        // Update Y-Axis Scale first
+        updateYAxisLabels();
+
+        const monthIndex = monthSelect.value;
+        const data = generateMonthData(monthIndex);
         
-        const li = document.createElement('li');
-        li.className = 'legend-item';
-        li.innerHTML = `
-            <div class="item-left">
-                <span class="color-dot ${dept.class}"></span>
-                <div>
-                    <span class="dept-name">${dept.name}</span>
-                    <span class="dept-percent">${percentage}%</span>
-                </div>
-            </div>
-            <span class="dept-count">${dept.count}</span>
-        `;
-        legendList.appendChild(li);
+        barsContainer.innerHTML = "";
+        xLabelsContainer.innerHTML = "";
 
-        // --- B. Render SVG Segment ---
-        // Math: Circumference of a circle with r=40 is approx 251.2
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        const radius = 40;
-        const circumference = 2 * Math.PI * radius;
-        const segmentLength = (dept.count / total) * circumference;
-        
-        circle.setAttribute("cx", "50");
-        circle.setAttribute("cy", "50");
-        circle.setAttribute("r", radius);
-        circle.setAttribute("class", "donut-segment");
-        circle.setAttribute("stroke", dept.color);
-        
-        // Calculate offset based on previous segments
-        const offset = -1 * (cumulativePercent / 100) * circumference;
+        // Aggregators for Stats
+        let totalLate = 0;
+        let totalAbsent = 0;
+        let totalOntime = 0;
 
-        // Set initial state (invisible length) for animation
-        circle.style.strokeDasharray = `0 ${circumference}`;
-        circle.style.strokeDashoffset = offset;
-        
-        svgChart.appendChild(circle);
+        // Render Daily Bars
+        data.forEach((dayData, index) => {
+            totalLate += dayData.late;
+            totalAbsent += dayData.absent;
+            totalOntime += dayData.ontime;
 
-        // Trigger Animation (set actual length)
-        setTimeout(() => {
-            circle.style.strokeDasharray = `${segmentLength} ${circumference}`;
-        }, 100);
+            // Percentages for CSS Height (Relative to currentTotalEmployees)
+            const hLate = (dayData.late / currentTotalEmployees) * 100;
+            const hOntime = (dayData.ontime / currentTotalEmployees) * 100;
+            const hAbsent = (dayData.absent / currentTotalEmployees) * 100;
 
-        cumulativePercent += (dept.count / total) * 100;
+            // Create Stacked Column
+            const col = document.createElement('div');
+            col.className = 'bar-col';
+            // Tooltip shows dynamic total
+            col.setAttribute('data-tooltip', `Day ${dayData.day}\nOn Time: ${dayData.ontime}\nLate: ${dayData.late}\nAbsent: ${dayData.absent}\nTotal Staff: ${currentTotalEmployees}`);
+
+            col.innerHTML = `
+                <div class="bar-segment bg-late" style="height: ${hLate}%"></div>
+                <div class="bar-segment bg-ontime" style="height: ${hOntime}%"></div>
+                <div class="bar-segment bg-absent" style="height: ${hAbsent}%"></div>
+            `;
+            barsContainer.appendChild(col);
+
+            // Create X-Label (every 5th day to avoid clutter)
+            if (index === 0 || (index + 1) % 5 === 0) {
+                const label = document.createElement('div');
+                label.className = 'x-label';
+                label.innerText = dayData.day;
+                
+                // Calculate position percentage
+                const leftPos = (index / (data.length - 1)) * 100;
+                // Adjust slightly so last label doesn't overflow
+                label.style.position = 'absolute';
+                
+                // Simple positioning logic
+                if (index === 0) label.style.left = '0%';
+                else if (index === data.length - 1) label.style.right = '0%';
+                else label.style.left = `${leftPos}%`;
+                
+                xLabelsContainer.appendChild(label);
+            }
+        });
+
+        // Update Stats Sidebar
+        const daysCount = data.length;
+        statOntime.innerText = (totalOntime / daysCount).toFixed(0);
+        statLate.innerText = (totalLate / daysCount).toFixed(0);
+        statAbsent.innerText = (totalAbsent / daysCount).toFixed(0);
+    }
+
+    // --- 5. EVENT LISTENERS ---
+    
+    // Update when input number changes
+    staffInput.addEventListener('change', () => {
+        const inputVal = staffInput.value;
+        if(inputVal && inputVal > 0) {
+            currentTotalEmployees = parseInt(inputVal);
+            runSimulation(); 
+        }
     });
+
+    // Update when month selection changes
+    monthSelect.addEventListener('change', runSimulation);
+
+    // Initial Run
+    runSimulation();
 });

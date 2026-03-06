@@ -36,7 +36,7 @@
               <!-- Dashboard Parent -->
               <a
                 href="javascript:void(0)"
-                class="menu-item active has-submenu"
+                class="menu-item has-submenu"
                 id="dashboardMenu"
               >
                 <i class="fas fa-tachometer-alt"></i>
@@ -49,7 +49,7 @@
                   ><i class="fas fa-user-tie"></i
                   ><span>Admin Dashboard</span></a
                 >
-                <a href="../employeedashb/employee.html" class="menu-item"
+                <a href="../employeedashb/employee.html" class="menu-item active"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
@@ -248,6 +248,85 @@
                   </tbody>
                 </table>
               </div>
+
+              <!-- Modal Structure -->
+<div class="modal-overlay" id="employeeModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2>Add New Employee</h2>
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+        </div>
+        
+        <form id="empForm">
+            <!-- Full Name -->
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="empName" required placeholder="John Doe">
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="empEmail" required placeholder="john@example.com">
+            </div>
+            
+            <!-- Row: Dept & Role -->
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Department</label>
+                    <select id="empDept">
+                        <option value="Engineering">Engineering</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="HR">HR</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Job Role</label>
+                    <input type="text" id="empRole" placeholder="e.g. Frontend Dev">
+                </div>
+            </div>
+
+            <!-- Row: Type & Status -->
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Employment Type</label>
+                    <select id="empType">
+                        <option value="Full Time">Full Time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <select id="empStatus">
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Remote">Remote</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
+                <button type="submit" class="btn-submit">Add Employee</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-card success-card">
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h3 id="successTitle">Success!</h3>
+        <p id="successMessage">Employee details have been updated.</p>
+        <button class="btn-success-close" id="closeSuccessBtn">OK</button>
+    </div>
+</div>
+
+              
 
               <!-- Pagination -->
               <div class="table-footer">
