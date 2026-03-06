@@ -22,14 +22,13 @@ body {
   color: var(--text-main);
   font-size: 13px;
 }
-
 .container {
-  max-width: 1900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* Grid & Header */
+/* Header */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -45,13 +44,22 @@ h1 {
   font-size: 11px;
   color: var(--text-muted);
 }
+.date-badge {
+  background: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Layout */
 .grid-container {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 20px;
 }
-
-/* Cards */
 .card {
   background: var(--white);
   border-radius: 12px;
@@ -74,7 +82,7 @@ h1 {
   color: var(--dark);
 }
 
-/* Form Controls */
+/* Forms */
 .form-body {
   display: flex;
   flex-direction: column;
@@ -101,7 +109,6 @@ h1 {
   border-radius: 6px;
   font-size: 13px;
   outline: none;
-  transition: 0.2s;
   background: #f9f9f9;
 }
 .form-control:focus {
@@ -129,7 +136,7 @@ h1 {
   border-radius: 4px;
 }
 
-/* Dividers */
+/* Dividers & Toggle */
 .divider-text {
   font-size: 11px;
   font-weight: 600;
@@ -141,8 +148,6 @@ h1 {
 .divider-text.danger {
   color: var(--danger);
 }
-
-/* Toggle */
 .toggle-wrapper {
   display: flex;
   align-items: center;
@@ -206,18 +211,11 @@ input:checked + .slider:before {
   cursor: pointer;
   font-weight: 500;
   font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
 }
 .btn-primary {
   background: var(--primary);
   color: white;
   box-shadow: 0 4px 10px rgba(255, 91, 30, 0.2);
-}
-.btn-primary:hover {
-  background: var(--primary-hover);
 }
 .btn-white {
   background: white;
@@ -239,7 +237,6 @@ input:checked + .slider:before {
   border-radius: 8px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   border-top: 4px solid var(--primary);
-  position: relative;
 }
 .ticket-top {
   display: flex;
@@ -276,17 +273,11 @@ input:checked + .slider:before {
   color: var(--dark);
 }
 
-/* Table inside Ticket */
-.calc-table {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 .ct-row {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--text-main);
+  margin-bottom: 8px;
 }
 .ct-row.head {
   color: var(--text-muted);
