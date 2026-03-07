@@ -1804,13 +1804,13 @@ textarea#wishMessage:focus {
 
 background:#1f5664;
 color:white;
-padding:22px 25px;
+padding:22px 30px;
 border-radius:16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 box-shadow:0 8px 20px rgba(0,0,0,0.1);
-
+width: 50%;
 }
 
 .leave-left h3{
@@ -1833,13 +1833,13 @@ opacity:0.8;
 .holiday-card{
 
 background:#ffc107;
-padding:22px 25px;
+padding:22px 30px;
 border-radius:16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 box-shadow:0 8px 20px rgba(0,0,0,0.1);
-
+width: 50%;
 }
 
 .holiday-left h3{

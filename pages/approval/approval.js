@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // },
         // {
         //     id: 8,
-            name: "Laokta Roymarley",
-            img: "https://i.pravatar.cc/150?img=33",
+            name: "Dhamu",
+            img: "../assets/profiledp.jpeg",
             type: "Sick Leave",
             dates: "20 Aug 2023 to 22 Aug 2023",
             reason: "Sustaining a physical injury such...",
