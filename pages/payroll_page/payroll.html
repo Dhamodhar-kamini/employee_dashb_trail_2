@@ -67,9 +67,8 @@
                   ><span>Recruitment Dashboard</span
                   ></a
                 >
-                <a href="../attendance/attendance.html" class="menu-item"
-                  ><i class="fas fa-calendar-check"></i
-                  ><span>Attendance Dashboard</span
+                <a href="../assertAllocation/assertAllocation.html" class="menu-item"
+                  ><i class="fas fa-boxes"></i><span>Assert Allocation</span
                   ></a
                 >
                 
@@ -266,63 +265,57 @@
 
             <!-- Column 2 (Right Top - Tall) -->
             <div class="col-right-top">
-    <div class="card h-100">
-        <!-- Header -->
-        <div class="card-header">
-            <div>
-                <h3>Salary Range Distribution</h3>
-                <div class="sub-header">Average Salary <span class="text-dark-lg">$78,450</span></div>
-            </div>
-            <div class="header-actions">
-                <span class="legend-dot"></span> Salary Range
-                <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-            </div>
-        </div>
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div>
+                            <h3>Salary Range Distribution</h3>
+                            <div class="sub-header">Average Salary <span class="text-dark-lg">$78,450</span></div>
+                        </div>
+                        <div class="header-actions">
+                            <span class="legend-dot"></span> Salary Range
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                    </div>
 
-        <!-- NEW FLEX CONTAINER -->
-        <div class="chart-split-layout">
-            
-            <!-- LEFT: Bar Chart -->
-            <div class="chart-container-bar">
-                <canvas id="salaryBarChart"></canvas>
-            </div>
+                    <!-- Bar Chart Container -->
+                    <div class="chart-container-bar">
+                        <canvas id="salaryBarChart"></canvas>
+                    </div>
 
-            <!-- RIGHT: Range List -->
-            <div class="range-section">
-                <div class="range-header">
-                    <h3>Range</h3>
-                    <span class="select-text">Last 7 Days <i class="fa-solid fa-chevron-down"></i></span>
-                </div>
-                <div class="range-list">
-                    <div class="range-item">
-                        <div class="ri-top"><span>$30k-50k</span> <span>285 (22.8%)</span></div>
-                        <div class="progress-track"><div class="progress-fill orange" style="width: 22.8%"></div></div>
+                    <!-- Range List -->
+                    <div class="range-section">
+                        <div class="range-header">
+                            <h3>Range</h3>
+                            <span class="select-text">Last 7 Days <i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+                        <div class="range-list">
+                            <div class="range-item">
+                                <div class="ri-top"><span>$30k-50k</span> <span>285 (22.8%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 22.8%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$50k-80k</span> <span>478 (38.3%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 38.3%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$80k-120k</span> <span>342 (27.4%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 27.4%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$120k-180k</span> <span>98 (7.8%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 7.8%"></div></div>
+                            </div>
+                            <div class="range-item">
+                                <div class="ri-top"><span>$180k-250k</span> <span>45 (3.6%)</span></div>
+                                <div class="progress-track"><div class="progress-fill orange" style="width: 3.6%"></div></div>
+                            </div>
+                        </div>
+                        <div class="view-report">
+                            View Salary Report in realtime <button class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
                     </div>
-                    <div class="range-item">
-                        <div class="ri-top"><span>$50k-80k</span> <span>478 (38.3%)</span></div>
-                        <div class="progress-track"><div class="progress-fill orange" style="width: 38.3%"></div></div>
-                    </div>
-                    <div class="range-item">
-                        <div class="ri-top"><span>$80k-120k</span> <span>342 (27.4%)</span></div>
-                        <div class="progress-track"><div class="progress-fill orange" style="width: 27.4%"></div></div>
-                    </div>
-                    <div class="range-item">
-                        <div class="ri-top"><span>$120k-180k</span> <span>98 (7.8%)</span></div>
-                        <div class="progress-track"><div class="progress-fill orange" style="width: 7.8%"></div></div>
-                    </div>
-                    <div class="range-item">
-                        <div class="ri-top"><span>$180k-250k</span> <span>45 (3.6%)</span></div>
-                        <div class="progress-track"><div class="progress-fill orange" style="width: 3.6%"></div></div>
-                    </div>
-                </div>
-                <div class="view-report">
-                    View Salary Report in realtime <button class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
-
-        </div> <!-- End Flex Container -->
-    </div>
-</div>
 
             <!-- Middle Row: Batch, Trend, Insurance -->
             <!-- <div class="col-full row-middle"> -->

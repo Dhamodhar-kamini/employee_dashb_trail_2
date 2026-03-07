@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leave Requests - Oppty</title>
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Icons -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/opptylogo2.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./assertAllocation.css" />
+    <link rel="stylesheet" href="../admin_page/admin.css" />
+  </head>
+
+  <body>
+    <div class="dashboard-container">
+      <!-- 1. Sidebar Navigation (Detailed based on image) -->
+      <aside class="sidebar">
+        <div class="logo">
+          <!-- <i class="fas fa-chart-line"></i> -->
+          <!-- <span>OPPTY</span> -->
+          <img
+            class="opptyLogo"
+            src="../assets/opptylogo.png"
+            alt="OPPTY HRMS Logo"
+          />
+        </div>
+
+        <div class="sidebar-content">
+          <div class="menu-section main-menu">
+            <p class="menu-header">MAIN MENU</p>
+            <div class="menu-section main-menu">
+              <!-- Dashboard Parent -->
+              <a
+                href="javascript:void(0)"
+                class="menu-item has-submenu"
+                id="dashboardMenu"
+              >
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+              </a>
+
+              <!-- Submenu Items -->
+              <div class="submenu" id="dashboardSubmenu">
+                <a href="../admin_page/admin.html" class="menu-item"
+                  ><i class="fas fa-user-tie"></i
+                  ><span>Admin Dashboard</span></a
+                >
+                <a href="../employeedashb/employee.html" class="menu-item"
+                  ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
+                >
+                <a href="../approval/approval.html" class="menu-item"
+                  ><i class="fas fa-check-circle"></i><span>Approval</span></a
+                >
+
+                <a href="../payroll_page/payroll.html" class="menu-item"
+                  ><i class="fas fa-money-bill-wave"></i
+                  ><span>Payroll Dashboard</span></a
+                >
+                <a href="../recruitment/recruitment.html" class="menu-item"
+                  ><i class="fas fa-search"></i
+                  ><span>Recruitment Dashboard</span></a
+                >
+                <a
+                  href="../assertAllocation/assertAllocation.html"
+                  class="menu-item active"
+                  ><i class="fas fa-boxes"></i><span>Assert Allocation</span></a
+                >
+
+                <a href="../helpdesk/helpdesk.html" class="menu-item"
+                  ><i class="fas fa-headset"></i
+                  ><span>Help Desk Dashboard</span></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 2. Main Content Area -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search in HRMS" />
+            <span>CTRL + /</span>
+          </div>
+          <div class="header-icons">
+            <!-- Existing Icons -->
+            <i class="fas fa-th-large"></i>
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+            <i class="fas fa-cog"></i>
+
+            <!-- MODIFIED PROFILE SECTION -->
+            <div class="hdr-profile-wrapper">
+              <!-- Profile Image (Clickable) -->
+              <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+                <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+              </div>
+
+              <!-- The Popup Menu -->
+              <div class="hdr-popup-menu" id="hdrProfileDropdown">
+                <!-- Optional Header info -->
+                <div class="hdr-popup-header">
+                  <p><strong>Employee Profile</strong></p>
+                  <span class="hdr-email-text">user@example.com</span>
+                </div>
+
+                <!-- Logout Button -->
+                <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- assert allocation section -->
+        <!-- Main Content -->
+        <section class="hra-main-content">
+          <header class="hra-header">
+            <div class="hra-header-left">
+              <i
+                class="fa-solid fa-bars hra-mobile-toggle"
+                id="hraMenuToggle"
+              ></i>
+              <div class="hra-page-title">
+                <h2>Asset Allocation</h2>
+                <p>Manage employee equipment and assets</p>
+              </div>
+            </div>
+            <!-- <div class="hra-user-profile">
+              <div class="hra-avatar">AD</div>
+              <span class="hra-username">Admin User</span>
+            </div> -->
+          </header>
+
+          <!-- Actions Bar -->
+          <div class="hra-actions-bar">
+            <div class="hra-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="hraSearchInput"
+                placeholder="Search by name, ID or model..."
+              />
+            </div>
+            <!-- BUTTON: Explicitly styled to be visible -->
+            <button class="hra-btn-primary" id="hraAddAssetBtn">
+              <i class="fa-solid fa-plus"></i> Allocate Asset
+            </button>
+          </div>
+
+          <!-- Data Table -->
+          <div class="hra-table-wrapper">
+            <table class="hra-table">
+              <thead>
+                <tr>
+                  <th>Asset ID</th>
+                  <th>Employee</th>
+                  <th>Asset Type</th>
+                  <th>Model / Details</th>
+                  <th>Assigned Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hraAssetTableBody">
+                <!-- Javascript will inject rows here -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Allocation Form Modal -->
+        <div class="hra-modal-overlay" id="hraAssetModal">
+          <div class="hra-modal-content">
+            <div class="hra-modal-header">
+              <h3>Allocate New Asset</h3>
+              <span class="hra-close-btn" id="hraCloseModal">&times;</span>
+            </div>
+            <form id="hraAssetForm">
+              <div class="hra-form-group">
+                <label>Employee Name</label>
+                <input
+                  type="text"
+                  id="hraEmpName"
+                  placeholder="e.g. John Doe"
+                  required
+                />
+              </div>
+              <div class="hra-form-group">
+                <label>Asset Type</label>
+                <select id="hraAssetType">
+                  <option value="Laptop">Laptop</option>
+                  <option value="Monitor">Monitor</option>
+                  <option value="Phone">Phone</option>
+                  <option value="Headset">Headset</option>
+                </select>
+              </div>
+              <div class="hra-form-group">
+                <label>Model / Details</label>
+                <input
+                  type="text"
+                  id="hraModelDetails"
+                  placeholder="e.g. MacBook Pro M1"
+                  required
+                />
+              </div>
+              <div class="hra-form-group">
+                <label>Serial / Asset ID</label>
+                <input
+                  type="text"
+                  id="hraAssetId"
+                  placeholder="e.g. AST-2023-001"
+                  required
+                />
+              </div>
+              <div class="hra-form-group">
+                <label>Assignment Date</label>
+                <input type="date" id="hraAssignDate" required />
+              </div>
+              <button type="submit" class="hra-btn-primary hra-full-width">
+                Confirm Allocation
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- SUCCESS POPUP (Hidden by default) -->
+        <div class="hra-success-popup" id="hraSuccessPopup">
+          <div class="hra-popup-icon">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="hra-popup-text">
+            <h4>Success!</h4>
+            <p>Asset allocated successfully.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./assertAllocation.js"></script>
+    <script src="../admin_page/admin.js"></script>
+  </body>
+</html>
