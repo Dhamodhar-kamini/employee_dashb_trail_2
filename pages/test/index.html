@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRM Executive Dashboard</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons (Added for the new cards) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+        <h1>Recruitment Dashboard</h1>
+        <p>Overview of current hiring pipeline and schedules.</p>
+    </header>
+
+    <!-- Top Section: Table & Chart -->
+    <div class="top-grid">
+        
+        <!-- Candidates Table -->
+        <div class="card">
+            <h3 class="card-title">Candidates Hiring Analysis</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Department</th>
+                            <th>Applicants</th>
+                            <th>Shortlisted</th>
+                            <th>Hired</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Marketing</strong></td>
+                            <td><span class="badge badge-applicants">14</span></td>
+                            <td><span class="badge badge-shortlisted">08</span></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Development</strong></td>
+                            <td><span class="badge badge-applicants">56</span></td>
+                            <td><span class="badge badge-shortlisted">20</span></td>
+                            <td><span class="badge badge-hired">04</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>UX Design</strong></td>
+                            <td><span class="badge badge-applicants">23</span></td>
+                            <td><span class="badge badge-shortlisted">12</span></td>
+                            <td><span class="badge badge-hired">01</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sales</strong></td>
+                            <td><span class="badge badge-applicants">31</span></td>
+                            <td><span class="badge badge-shortlisted">05</span></td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recruitment Overview Chart -->
+        <div class="card">
+            <h3 class="card-title">Recruitment Overview</h3>
+            <div style="height: 200px; display: flex; justify-content: center;">
+                <canvas id="recruitmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW STATS SECTION -->
+    <div class="stats-grid">
+        
+        <!-- Open Positions -->
+        <div class="stat-card card-orange">
+            <div class="stat-content">
+                <span class="stat-label">Open Positions</span>
+                <h2 class="stat-value">47</h2>
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +12% this month</span>
+            </div>
+            <!-- <div class="stat-icon">
+                <i class="fa-solid fa-briefcase"></i>
+            </div> -->
+        </div>
+
+        <!-- Total Candidates -->
+        <div class="stat-card card-blue">
+            <div class="stat-content">
+                <span class="stat-label">Total Candidates</span>
+                <h2 class="stat-value">2,384</h2>
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +5% this week</span>
+            </div>
+            <!-- <div class="stat-icon">
+                <i class="fa-solid fa-users"></i>
+            </div> -->
+        </div>
+
+        <!-- Interviews -->
+        <div class="stat-card card-green">
+            <div class="stat-content">
+                <span class="stat-label">Interviews Today</span>
+                <h2 class="stat-value">12</h2>
+                <span class="stat-trend neutral"><i class="fa-solid fa-minus"></i> Same as yesterday</span>
+            </div>
+            <!-- <div class="stat-icon">
+                <i class="fa-solid fa-user-clock"></i>
+            </div> -->
+        </div>
+
+        <!-- Offers -->
+        <div class="stat-card card-dark">
+            <div class="stat-content">
+                <span class="stat-label">Offers Released</span>
+                <h2 class="stat-value">28</h2>
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +8% conversion</span>
+            </div>
+            <!-- <div class="stat-icon">
+                <i class="fa-solid fa-file-signature"></i>
+            </div> -->
+        </div>
+
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="bottom-grid">
+        
+        <!-- Action Card -->
+        <div class="card">
+            <h3 class="card-title">Quick Actions</h3>
+            <div class="quick-action-content">
+                <img src="https://img.icons8.com/color/48/000000/google-calendar--v2.png" alt="Calendar">
+                <p style="margin-top:10px; color:#64748b;">You have 3 candidates waiting for interview slots.</p>
+                
+                <button class="btn-primary" id="openScheduleBtn">
+                    Schedule Interview Now
+                </button>
+            </div>
+        </div>
+
+        <!-- Upcoming List -->
+        <div class="card">
+            <h3 class="card-title">Upcoming Schedule</h3>
+            <div class="schedule-list">
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <h4>UI Designer Interview</h4>
+                        <p>Candidate: Sarah Jenkins</p>
+                    </div>
+                    <span class="date-badge">Mar 02</span>
+                </div>
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <h4>Backend Logic Test</h4>
+                        <p>Candidate: Mike Ross</p>
+                    </div>
+                    <span class="date-badge">Mar 05</span>
+                </div>
+                <div class="schedule-item">
+                    <div class="schedule-info">
+                        <h4>HR Round</h4>
+                        <p>Candidate: Jessica Pearson</p>
+                    </div>
+                    <span class="date-badge">Mar 06</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Google Calendar -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Schedule Interview</h3>
+            
+            <div class="form-group">
+                <label>Interview Title</label>
+                <input type="text" id="interviewTitle" placeholder="e.g., Frontend Developer Interview">
+            </div>
+            
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="interviewDate">
+            </div>
+
+            <div class="form-group">
+                <label>Time</label>
+                <input type="time" id="interviewTime">
+            </div>
+
+            <div class="form-group">
+                <label>Meeting Platform / Link</label>
+                <input type="text" id="meetingLink" placeholder="Google Meet / Zoom Link">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-outline" id="cancelScheduleBtn">Cancel</button>
+                <button class="btn-primary" id="createEventBtn">Add to Google Calendar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="script.js"></script>
+</body>
+</html>

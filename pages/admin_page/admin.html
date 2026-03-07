@@ -69,7 +69,9 @@
                   ><i class="fas fa-search"></i
                   ><span>Recruitment Dashboard</span></a
                 >
-                <a href="../assertAllocation/assertAllocation.html" class="menu-item"
+                <a
+                  href="../assertAllocation/assertAllocation.html"
+                  class="menu-item"
                   ><i class="fas fa-boxes"></i><span>Assert Allocation</span></a
                 >
 
@@ -673,117 +675,227 @@
 
         <div class="main-grid-row grid-row-5">
           <!-- Birthdays (Span 1) -->
-           
+
           <!-- 1. MAIN BIRTHDAY CARD (CAROUSEL) -->
-<div class="birthday-card">
-    <div class="bday-header">
-        <h2>Team Birthday</h2>
-        <div class="bday-controls">
-            <button id="prevBdayBtn" class="nav-arrow"><i class="fas fa-chevron-left"></i></button>
-            <button id="nextBdayBtn" class="nav-arrow"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </div>
+          <div class="birthday-card">
+            <div class="bday-header">
+              <h2>Team Birthday</h2>
+              <div class="bday-controls">
+                <button id="prevBdayBtn" class="nav-arrow">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="nextBdayBtn" class="nav-arrow">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
 
-    <!-- Dynamic Content Area -->
-    <div class="birthday-carousel">
-        <div class="birthday-profile fade-in" id="bdayProfileContainer">
-            <img id="bdayImg" src="https://randomuser.me/api/portraits/women/65.jpg" alt="Profile" />
-            <h3 id="bdayName">Andrew Jermia</h3>
-            <p id="bdayRole">IOS Developer</p>
-            <span id="bdayDate" class="bday-date-badge">Today, 24 Oct</span>
-        </div>
-    </div>
+            <!-- Dynamic Content Area -->
+            <div class="birthday-carousel">
+              <div class="birthday-profile fade-in" id="bdayProfileContainer">
+                <img
+                  id="bdayImg"
+                  src="https://randomuser.me/api/portraits/women/65.jpg"
+                  alt="Profile"
+                />
+                <h3 id="bdayName">Andrew Jermia</h3>
+                <p id="bdayRole">IOS Developer</p>
+                <span id="bdayDate" class="bday-date-badge">Today, 24 Oct</span>
+              </div>
+            </div>
 
-    <div class="birthday-actions">
-        <!-- Passes 'current' to JS to know who is visible -->
-        <button class="wish-btn" onclick="openWishModal('current')">Send Wishes</button>
-        <button class="view-btn" onclick="openAllBirthdaysModal()">View All</button>
-    </div>
-</div>
+            <div class="birthday-actions">
+              <!-- Passes 'current' to JS to know who is visible -->
+              <button class="wish-btn" onclick="openWishModal('current')">
+                Send Wishes
+              </button>
+              <button class="view-btn" onclick="openAllBirthdaysModal()">
+                View All
+              </button>
+            </div>
+          </div>
 
-<!-- ========================================= -->
-<!-- 2. POPUP: SEND WISHES (Celebration Theme) -->
-<!-- ========================================= -->
-<div id="wishModal" class="modal-overlay">
-    <div class="modal-card wish-card">
-        <span class="close-modal" onclick="closeWishModal()">&times;</span>
-        
-        <div class="wish-header-icon">
-            <i class="fa-solid fa-cake-candles"></i>
-        </div>
-        
-        <h3>Happy Birthday!</h3>
-        <p>Send your best wishes to <span id="wishTargetName" class="highlight-name">Andrew</span></p>
-        
-        <textarea id="wishMessage" placeholder="Write a warm message... (e.g. Have a fantastic year ahead!)"></textarea>
-        
-        <button class="btn-send-wish" onclick="submitWish()">
-            <i class="fa-regular fa-paper-plane"></i> Send Wish
-        </button>
-    </div>
-</div>
+          <!-- ========================================= -->
+          <!-- 2. POPUP: SEND WISHES (Celebration Theme) -->
+          <!-- ========================================= -->
+          <div id="wishModal" class="modal-overlay">
+            <div class="modal-card wish-card">
+              <span class="close-modal" onclick="closeWishModal()"
+                >&times;</span
+              >
 
-<!-- ========================================= -->
-<!-- 3. POPUP: VIEW ALL BIRTHDAYS (List View)  -->
-<!-- ========================================= -->
-<div id="allBirthdaysModal" class="modal-overlay">
-    <div class="modal-card list-card">
-        <div class="modal-header">
-            <h2>Upcoming Birthdays</h2>
-            <span class="close-modal" onclick="closeAllBirthdaysModal()">&times;</span>
-        </div>
-        
-        <div class="bday-list-container" id="bdayListContainer">
-            <!-- List items will be injected by JS -->
-        </div>
-    </div>
-</div>
+              <div class="wish-header-icon">
+                <i class="fa-solid fa-cake-candles"></i>
+              </div>
 
-<!-- 4. POPUP: WISHES SENT SUCCESS (New)       -->
-<!-- ========================================= -->
-<div id="successWishModal" class="modal-overlay">
-    <div class="modal-card success-card">
-        <!-- Animated Icon Circle -->
-        <div class="success-icon-container">
-            <i class="fa-solid fa-check"></i>
-            <div class="confetti-piece"></div>
-            <div class="confetti-piece"></div>
-            <div class="confetti-piece"></div>
-        </div>
+              <h3>Happy Birthday!</h3>
+              <p>
+                Send your best wishes to
+                <span id="wishTargetName" class="highlight-name">Andrew</span>
+              </p>
 
-        <h3>Wishes Sent Successfully!</h3>
-        <p>Your warm wishes have been delivered to <br><span id="successName" class="highlight-name">Andrew</span>.</p>
+              <textarea
+                id="wishMessage"
+                placeholder="Write a warm message... (e.g. Have a fantastic year ahead!)"
+              ></textarea>
 
-        <button class="btn-success-close" onclick="closeSuccessWishModal()">
-            Awesome!
-        </button>
-    </div>
-</div>
+              <button class="btn-send-wish" onclick="submitWish()">
+                <i class="fa-regular fa-paper-plane"></i> Send Wish
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================= -->
+          <!-- 3. POPUP: VIEW ALL BIRTHDAYS (List View)  -->
+          <!-- ========================================= -->
+          <div id="allBirthdaysModal" class="modal-overlay">
+            <div class="modal-card list-card">
+              <div class="modal-header">
+                <h2>Upcoming Birthdays</h2>
+                <span class="close-modal" onclick="closeAllBirthdaysModal()"
+                  >&times;</span
+                >
+              </div>
+
+              <div class="bday-list-container" id="bdayListContainer">
+                <!-- List items will be injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. POPUP: WISHES SENT SUCCESS (New)       -->
+          <!-- ========================================= -->
+          <div id="successWishModal" class="modal-overlay">
+            <div class="modal-card success-card">
+              <!-- Animated Icon Circle -->
+              <div class="success-icon-container">
+                <i class="fa-solid fa-check"></i>
+                <div class="confetti-piece"></div>
+                <div class="confetti-piece"></div>
+                <div class="confetti-piece"></div>
+              </div>
+
+              <h3>Wishes Sent Successfully!</h3>
+              <p>
+                Your warm wishes have been delivered to <br /><span
+                  id="successName"
+                  class="highlight-name"
+                  >Andrew</span
+                >.
+              </p>
+
+              <button
+                class="btn-success-close"
+                onclick="closeSuccessWishModal()"
+              >
+                Awesome!
+              </button>
+            </div>
+          </div>
 
           <!-- LEAVE POLICY -->
-        <div style="display: flex; gap: 40px; justify-content: center;">
-          <div class="leave-card">
-            <div class="leave-left">
-              <h3>Leave Policy</h3>
+          <div style="display: flex; gap: 40px; justify-content: center">
+            <div class="leave-card">
+              <div class="leave-left">
+                <h3>Leave Policy</h3>
 
-              <p>Last Updated: Today</p>
+                <p>Last Updated: Today</p>
+              </div>
+
+              <button class="small-btn">View All</button>
             </div>
 
-            <button class="small-btn">View All</button>
-          </div>
+            <!-- HOLIDAY CARD -->
 
-          <!-- HOLIDAY CARD -->
-
-          <div class="holiday-card">
-            <div class="holiday-left">
-              <h3>Next Holiday</h3>
-
-              <p>Diwali, 15 Sep 2025</p>
+            <div class="hra-holiday-card">
+        <div class="hra-holiday-left">
+            <div class="hra-icon-bg">
+                <i class="fa-solid fa-calendar-day"></i>
             </div>
-
-            <button class="small-btn">View All</button>
-          </div>
+            <div class="hra-info-text">
+                <h3>Next Holiday</h3>
+                <p id="hraNextHolidayText">Loading...</p>
+            </div>
         </div>
+        <button class="hra-small-btn" id="hraViewHolidayBtn">View All</button>
+    </div>
+
+    <!-- 2. MODAL: VIEW ALL HOLIDAYS (List) -->
+    <div class="hra-modal-overlay" id="hraHolidayListModal">
+        <div class="hra-modal-content hra-modal-large">
+            <div class="hra-modal-header">
+                <h3><i class="fa-solid fa-calendar-check"></i> Holiday Calendar 2025</h3>
+                <span class="hra-close-btn" id="hraCloseHolidayList">&times;</span>
+            </div>
+            
+            <div class="hra-list-container">
+                <table class="hra-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Day</th>
+                            <th>Occasion</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hraHolidayTableBody">
+                        <!-- JS will populate rows here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="hra-modal-footer">
+                <button class="hra-btn-primary" id="hraOpenAddHolidayBtn">
+                    <i class="fa-solid fa-plus"></i> Add New Holiday
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MODAL: ADD NEW HOLIDAY (Form) -->
+    <div class="hra-modal-overlay hra-z-high" id="hraAddHolidayModal">
+        <div class="hra-modal-content">
+            <div class="hra-modal-header">
+                <h3>Add New Holiday</h3>
+                <span class="hra-close-btn" id="hraCloseAddHoliday">&times;</span>
+            </div>
+            <form id="hraHolidayForm">
+                <div class="hra-form-group">
+                    <label>Occasion Name</label>
+                    <input type="text" id="hraHolidayName" placeholder="e.g. Diwali" required>
+                </div>
+                <div class="hra-form-group">
+                    <label>Date</label>
+                    <input type="date" id="hraHolidayDate" required>
+                </div>
+                <div class="hra-form-group">
+                    <label>Holiday Type</label>
+                    <select id="hraHolidayType">
+                        <option value="Public Holiday">Public Holiday</option>
+                        <option value="Optional Holiday">Optional Holiday</option>
+                        <option value="Weekend">Weekend</option>
+                    </select>
+                </div>
+                <button type="submit" class="hra-btn-primary hra-full-width">Save Holiday</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. SUCCESS POPUP -->
+    <div class="hra-success-popup" id="hraSuccessPopup">
+        <div class="hra-popup-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="hra-popup-text">
+            <h4>Success!</h4>
+            <p>Holiday added to calendar successfully.</p>
+        </div>
+    </div>
+
+
+
+
+          </div>
         </div>
 
         <!-- Footer -->

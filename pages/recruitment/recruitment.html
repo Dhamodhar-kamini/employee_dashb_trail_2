@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/opptylogo2.png">
     <link rel="stylesheet" href="./recruitment.css" />
     <link rel="stylesheet" href="../admin_page/admin.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -120,98 +119,207 @@
           </div>
         </header>
           <!-- TOPBAR -->
-          <div class="topbar">
-            <!-- <button id="toggleBtn"><i class="fas fa-bars"></i></button> -->
-            <h2>Recruitment Dashboard</h2>
-            <div>
-              <button class="btn-light">Feb 2026</button>
-              <button class="btn-primary">+ Add Job</button>
-            </div>
-          </div>
+           <!-- Header -->
+    <header class="hrm-exec-header">
+        <h1>Recruitment Dashboard</h1>
+        <p>Overview of current hiring pipeline and schedules.</p>
+    </header>
 
-          <div class="content">
-            <!-- FIRST ROW -->
-            <div class="grid-2">
-              <!-- Hiring Analysis -->
-              <div class="card">
-                <h3>Candidates Hiring Analysis</h3>
-                <table>
-                  <tr>
-                    <th>Department</th>
-                    <th>Applicants</th>
-                    <th>Shortlisted</th>
-                    <th>Hired</th>
-                  </tr>
-                  <tr>
-                    <td>Marketing</td>
-                    <td><span class="badge orange">14</span></td>
-                    <td><span class="badge blue">08</span></td>
-                    <td>—</td>
-                  </tr>
-                  <tr>
-                    <td>Developer</td>
-                    <td><span class="badge orange">22</span></td>
-                    <td><span class="badge blue">20</span></td>
-                    <td><span class="badge green">04</span></td>
-                  </tr>
+    <!-- Top Section: Table & Chart -->
+    <div class="hrm-exec-top-grid">
+        
+        <!-- Candidates Table -->
+        <div class="hrm-exec-card">
+            <h3 class="hrm-exec-card-title">Candidates Hiring Analysis</h3>
+            <div class="hrm-exec-table-container">
+                <table class="hrm-exec-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Department</th>
+                            <th>Applicants</th>
+                            <th>Shortlisted</th>
+                            <th>Hired</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Marketing</strong></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">14</span></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">08</span></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Development</strong></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">56</span></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">20</span></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-hired">04</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>UX Design</strong></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">23</span></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">12</span></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-hired">01</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sales</strong></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">31</span></td>
+                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">05</span></td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
                 </table>
-              </div>
-
-              <!-- Recruitment Overview -->
-              <div class="card chart-card">
-                <h3>Recruitment Overview</h3>
-                <canvas id="donutChart"></canvas>
-              </div>
             </div>
-
-            <!-- STATS -->
-            <div class="stats">
-              <div class="stat bg-orange">
-                <h2>47</h2>
-                <p>Open Positions</p>
-              </div>
-              <div class="stat bg-blue">
-                <h2>2,384</h2>
-                <p>Total Candidates</p>
-              </div>
-              <div class="stat bg-green">
-                <h2>12</h2>
-                <p>Interviews Today</p>
-              </div>
-              <div class="stat bg-dark">
-                <h2>28</h2>
-                <p>Offers Released</p>
-              </div>
-            </div>
-
-            <!-- SECOND ROW -->
-            <div class="grid-3">
-              <div class="card reminder">
-                <h3>Quick Reminder</h3>
-                <p>You have 21 interviews today.</p>
-                <button class="btn-primary">Schedule Now</button>
-              </div>
-
-              <div class="card">
-                <h3>Average Time to Hire</h3>
-                <canvas id="barChart"></canvas>
-              </div>
-
-              <div class="card">
-                <h3>Upcoming Schedule</h3>
-                <ul class="list">
-                  <li>UI Designer - Mar 02</li>
-                  <li>Backend Dev - Apr 12</li>
-                  <li>Marketing Head - Jun 07</li>
-                </ul>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+
+        <!-- Recruitment Overview Chart -->
+        <div class="hrm-exec-card">
+            <h3 class="hrm-exec-card-title">Recruitment Overview</h3>
+            <!-- UPDATED CONTAINER FOR CHART -->
+            <div class="hrm-exec-chart-wrapper">
+                <canvas id="hrmExecRecruitmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="hrm-exec-stats-grid">
+        <!-- Open Positions -->
+        <div class="hrm-exec-stat-card hrm-exec-card-orange">
+            <div class="hrm-exec-stat-content">
+                <span class="hrm-exec-stat-label">Open Positions</span>
+                <h2 class="hrm-exec-stat-value">47</h2>
+                <span class="hrm-exec-stat-trend hrm-exec-trend-positive">
+                    <i class="fa-solid fa-arrow-trend-up"></i> +12% this month
+                </span>
+            </div>
+            <div class="hrm-exec-stat-icon">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+        </div>
+
+        <!-- Total Candidates -->
+        <div class="hrm-exec-stat-card hrm-exec-card-blue">
+            <div class="hrm-exec-stat-content">
+                <span class="hrm-exec-stat-label">Total Candidates</span>
+                <h2 class="hrm-exec-stat-value">2,384</h2>
+                <span class="hrm-exec-stat-trend hrm-exec-trend-positive">
+                    <i class="fa-solid fa-arrow-trend-up"></i> +5% this week
+                </span>
+            </div>
+            <div class="hrm-exec-stat-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+        </div>
+
+        <!-- Interviews -->
+        <div class="hrm-exec-stat-card hrm-exec-card-green">
+            <div class="hrm-exec-stat-content">
+                <span class="hrm-exec-stat-label">Interviews Today</span>
+                <h2 class="hrm-exec-stat-value">12</h2>
+                <span class="hrm-exec-stat-trend hrm-exec-trend-neutral">
+                    <i class="fa-solid fa-minus"></i> Same as yesterday
+                </span>
+            </div>
+            <div class="hrm-exec-stat-icon">
+                <i class="fa-solid fa-user-clock"></i>
+            </div>
+        </div>
+
+        <!-- Offers -->
+        <div class="hrm-exec-stat-card hrm-exec-card-dark">
+            <div class="hrm-exec-stat-content">
+                <span class="hrm-exec-stat-label">Offers Released</span>
+                <h2 class="hrm-exec-stat-value">28</h2>
+                <span class="hrm-exec-stat-trend hrm-exec-trend-positive">
+                    <i class="fa-solid fa-arrow-trend-up"></i> +8% conversion
+                </span>
+            </div>
+            <div class="hrm-exec-stat-icon">
+                <i class="fa-solid fa-file-signature"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="hrm-exec-bottom-grid">
+        
+        <!-- Action Card -->
+        <div class="hrm-exec-card">
+            <h3 class="hrm-exec-card-title">Quick Actions</h3>
+            <div class="hrm-exec-quick-action">
+                <img src="https://img.icons8.com/color/48/000000/google-calendar--v2.png" alt="Calendar">
+                <p style="margin-top:10px; color:#64748b;">You have 3 candidates waiting for interview slots.</p>
+                
+                <!-- BUTTON ID MUST MATCH JS -->
+                <button class="hrm-exec-btn-primary" id="hrmExecOpenScheduleBtn">
+                    Schedule Interview Now
+                </button>
+            </div>
+        </div>
+
+        <!-- Upcoming List -->
+        <div class="hrm-exec-card">
+            <h3 class="hrm-exec-card-title">Upcoming Schedule</h3>
+            <div class="hrm-exec-schedule-list">
+                <div class="hrm-exec-schedule-item">
+                    <div class="hrm-exec-schedule-info">
+                        <h4>UI Designer Interview</h4>
+                        <p>Candidate: Sarah Jenkins</p>
+                    </div>
+                    <span class="hrm-exec-date-badge">Mar 02</span>
+                </div>
+                <div class="hrm-exec-schedule-item">
+                    <div class="hrm-exec-schedule-info">
+                        <h4>Backend Logic Test</h4>
+                        <p>Candidate: Mike Ross</p>
+                    </div>
+                    <span class="hrm-exec-date-badge">Mar 05</span>
+                </div>
+                <div class="hrm-exec-schedule-item">
+                    <div class="hrm-exec-schedule-info">
+                        <h4>HR Round</h4>
+                        <p>Candidate: Jessica Pearson</p>
+                    </div>
+                    <span class="hrm-exec-date-badge">Mar 06</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Google Calendar -->
+    <div id="hrmExecScheduleModal" class="hrm-exec-modal">
+        <div class="hrm-exec-modal-content">
+            <h3 style="margin-bottom: 20px;">Schedule Interview</h3>
+            
+            <div class="hrm-exec-form-group">
+                <label>Interview Title</label>
+                <input type="text" id="hrmExecInterviewTitle" placeholder="e.g., Frontend Developer Interview">
+            </div>
+            
+            <div class="hrm-exec-form-group">
+                <label>Date</label>
+                <input type="date" id="hrmExecInterviewDate">
+            </div>
+
+            <div class="hrm-exec-form-group">
+                <label>Time</label>
+                <input type="time" id="hrmExecInterviewTime">
+            </div>
+
+            <div class="hrm-exec-form-group">
+                <label>Meeting Platform / Link</label>
+                <input type="text" id="hrmExecMeetingLink" placeholder="Google Meet / Zoom Link">
+            </div>
+
+            <div class="hrm-exec-modal-actions">
+                <button class="hrm-exec-btn-outline" id="hrmExecCancelScheduleBtn">Cancel</button>
+                <button class="hrm-exec-btn-primary" id="hrmExecCreateEventBtn">Add to Google Calendar</button>
+            </div>
+        </div>
     </div>
 
     <script src="./recruitment.js"></script>
     <script src="../admin_page/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </body>
 </html>

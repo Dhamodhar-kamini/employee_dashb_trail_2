@@ -1000,3 +1000,136 @@ document.addEventListener("DOMContentLoaded", function () {
     updateCarousel(currentIndex);
     startAutoSlide();
 });
+
+
+//holidays section
+// --- 1. Initial Data ---
+let holidays = [
+    { name: 'Republic Day', date: '2025-01-26', type: 'Public Holiday' },
+    { name: 'Holi', date: '2025-03-14', type: 'Public Holiday' },
+    { name: 'Good Friday', date: '2025-04-18', type: 'Optional Holiday' },
+    { name: 'Independence Day', date: '2025-08-15', type: 'Public Holiday' },
+    { name: 'Diwali', date: '2025-10-20', type: 'Public Holiday' }
+];
+
+// --- 2. Element Selectors ---
+const holidayListModal = document.getElementById('hraHolidayListModal');
+const holidayAddModal = document.getElementById('hraAddHolidayModal');
+const tableBody = document.getElementById('hraHolidayTableBody');
+const successPopup = document.getElementById('hraSuccessPopup');
+
+// --- 3. Helper Functions ---
+
+// Format Date for display (e.g., "20 Oct 2025")
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-GB', { 
+        day: 'numeric', month: 'short', year: 'numeric' 
+    });
+}
+
+// Get Day Name (e.g., "Monday")
+function getDayName(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { weekday: 'long' });
+}
+
+// Update the Card to show the *next* upcoming holiday
+function updateCard() {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Sort array by date
+    const sortedHolidays = holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // Find first date >= today
+    const nextHoliday = sortedHolidays.find(h => h.date >= today);
+    
+    const textElement = document.getElementById('hraNextHolidayText');
+    if (nextHoliday) {
+        textElement.textContent = `${nextHoliday.name}, ${formatDate(nextHoliday.date)}`;
+    } else {
+        textElement.textContent = "No upcoming holidays";
+    }
+}
+
+// Render the table in the "View All" popup
+function renderTable() {
+    tableBody.innerHTML = '';
+    // Sort by date
+    holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    holidays.forEach(h => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="font-weight:600;">${formatDate(h.date)}</td>
+            <td style="color: #6b7280;">${getDayName(h.date)}</td>
+            <td>${h.name}</td>
+            <td><span style="background:#f3f4f6; padding:4px 8px; border-radius:4px; font-size:0.8rem;">${h.type}</span></td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Show Success Toast
+function showSuccess() {
+    successPopup.classList.add('hra-show');
+    setTimeout(() => {
+        successPopup.classList.remove('hra-show');
+    }, 3000);
+}
+
+// --- 4. Event Listeners ---
+
+// Initialize Card on Load
+document.addEventListener('DOMContentLoaded', updateCard);
+
+// OPEN "View All" Modal
+document.getElementById('hraViewHolidayBtn').addEventListener('click', () => {
+    renderTable();
+    holidayListModal.style.display = 'flex';
+});
+
+// CLOSE "View All" Modal
+document.getElementById('hraCloseHolidayList').addEventListener('click', () => {
+    holidayListModal.style.display = 'none';
+});
+
+// OPEN "Add Holiday" Modal (sits on top of list)
+document.getElementById('hraOpenAddHolidayBtn').addEventListener('click', () => {
+    holidayAddModal.style.display = 'flex';
+});
+
+// CLOSE "Add Holiday" Modal
+document.getElementById('hraCloseAddHoliday').addEventListener('click', () => {
+    holidayAddModal.style.display = 'none';
+});
+
+// SUBMIT Form
+document.getElementById('hraHolidayForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // 1. Get Values
+    const name = document.getElementById('hraHolidayName').value;
+    const date = document.getElementById('hraHolidayDate').value;
+    const type = document.getElementById('hraHolidayType').value;
+
+    // 2. Add to Array
+    holidays.push({ name, date, type });
+
+    // 3. Update UI
+    renderTable(); // Update List Modal
+    updateCard();  // Update Main Card
+
+    // 4. Close Form & Reset
+    holidayAddModal.style.display = 'none';
+    document.getElementById('hraHolidayForm').reset();
+
+    // 5. Show Success
+    showSuccess();
+});
+
+// Close Modals when clicking outside
+window.addEventListener('click', (e) => {
+    if (e.target == holidayListModal) holidayListModal.style.display = 'none';
+    if (e.target == holidayAddModal) holidayAddModal.style.display = 'none';
+});
