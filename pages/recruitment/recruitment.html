@@ -3,21 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recruitment Dashboard</title>
+    <title>OPPTY HRMS</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/opptylogo2.png">
     <link rel="stylesheet" href="./recruitment.css" />
     <link rel="stylesheet" href="../admin_page/admin.css" />
     <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
   </head>
   <body>
-    <div class="layout">
-      <!-- SIDEBAR -->
-      <div class="dashboard-container">
-        <!-- 1. Sidebar Navigation (Detailed based on image) -->
-         <aside class="sidebar">
+    <div class="dashboard-container">
+      <!-- 1. Sidebar Navigation (Detailed based on image) -->
+      <aside class="sidebar">
         <div class="logo">
           <!-- <i class="fas fa-chart-line"></i> -->
           <!-- <span>OPPTY</span> -->
@@ -45,34 +48,31 @@
               <!-- Submenu Items -->
               <div class="submenu" id="dashboardSubmenu">
                 <a href="../admin_page/admin.html" class="menu-item"
-                  ><i class="fas fa-user-tie"></i><span>Admin Dashboard</span></a
+                  ><i class="fas fa-user-tie"></i
+                  ><span>Admin Dashboard</span></a
                 >
-                <a href="../employeedashb/employee.html" class="menu-item"
+                <a href="../employeedashb/employee.html" class="menu-item active"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
                   ><i class="fas fa-check-circle"></i><span>Approval</span></a
                 >
-                
-                
+
                 <a href="../payroll_page/payroll.html" class="menu-item"
                   ><i class="fas fa-money-bill-wave"></i
-                  ><span>Payroll Dashboard</span
-                  ></a
+                  ><span>Payroll Dashboard</span></a
                 >
-                <a href="../recruitment/recruitment.html" class="menu-item active"
+                <a href="../recruitment/recruitment.html" class="menu-item"
                   ><i class="fas fa-search"></i
-                  ><span>Recruitment Dashboard</span
-                  ></a
+                  ><span>Recruitment Dashboard</span></a
                 >
                 <a href="../assertAllocation/assertAllocation.html" class="menu-item"
-                  ><i class="fas fa-boxes"></i><span>Asset Allocation</span
-                  ></a
+                  ><i class="fas fa-boxes"></i><span>Asset Allocation</span></a
                 >
-                
+
                 <a href="../helpdesk/helpdesk.html" class="menu-item"
-                  ><i class="fas fa-headset"></i><span>Help Desk Dashboard</span
-                  ></a
+                  ><i class="fas fa-headset"></i
+                  ><span>Help Desk Dashboard</span></a
                 >
               </div>
             </div>
@@ -80,9 +80,10 @@
         </div>
       </aside>
 
-        <!-- MAIN CONTENT -->
-        <div class="main main-content">
-          <header class="top-bar">
+      <!-- 2. Main Content Area -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
           <div class="search-bar">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search in HRMS" />
@@ -90,10 +91,9 @@
           </div>
           <div class="header-icons">
             <!-- Existing Icons -->
-            <i class="fas fa-th-large"></i>
+            
             <i class="fas fa-bell"></i>
-            <i class="fas fa-envelope"></i>
-            <i class="fas fa-cog"></i>
+            
 
             <!-- MODIFIED PROFILE SECTION -->
             <div class="hdr-profile-wrapper">
@@ -118,210 +118,171 @@
             </div>
           </div>
         </header>
-         <!-- recruitment section -->
-    <header class="hrm-exec-header">
+
+
+        <div class="rd-dashboard-header">
+      <div class="rd-header-title">
         <h1>Recruitment Dashboard</h1>
-        <p>Overview of current hiring pipeline and schedules.</p>
-    </header>
+      </div>
 
-    <!-- Top Section: Table & Chart -->
-    <div class="hrm-exec-top-grid">
-        
-        <!-- Candidates Table -->
-        <div class="hrm-exec-card">
-            <h3 class="hrm-exec-card-title">Candidates Hiring Analysis</h3>
-            <div class="hrm-exec-table-container">
-                <table class="hrm-exec-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40%;">Department</th>
-                            <th>Applicants</th>
-                            <th>Shortlisted</th>
-                            <th>Hired</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Marketing</strong></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">14</span></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">08</span></td>
-                            <td>—</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Development</strong></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">56</span></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">20</span></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-hired">04</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>UX Design</strong></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">23</span></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">12</span></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-hired">01</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sales</strong></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-applicants">31</span></td>
-                            <td><span class="hrm-exec-badge hrm-exec-badge-shortlisted">05</span></td>
-                            <td>—</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Recruitment Overview Chart -->
-        <div class="hrm-exec-card">
-            <h3 class="hrm-exec-card-title">Recruitment Overview</h3>
-            <!-- UPDATED CONTAINER FOR CHART -->
-            <div class="hrm-exec-chart-wrapper">
-                <canvas id="hrmExecRecruitmentChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Section -->
-    <div class="hrm-exec-stats-grid">
-        <!-- Open Positions -->
-        <div class="hrm-exec-stat-card hrm-exec-card-orange">
-            <div class="hrm-exec-stat-content">
-                <span class="hrm-exec-stat-label">Open Positions</span>
-                <h2 class="hrm-exec-stat-value">47</h2>
-                <span class="hrm-exec-stat-trend hrm-exec-trend-positive">
-                    <i class="fa-solid fa-arrow-trend-up"></i> +12% this month
-                </span>
-            </div>
-            <div class="hrm-exec-stat-icon">
-                <i class="fa-solid fa-briefcase"></i>
-            </div>
-        </div>
-
-        <!-- Total Candidates -->
-        <div class="hrm-exec-stat-card hrm-exec-card-blue">
-            <div class="hrm-exec-stat-content">
-                <span class="hrm-exec-stat-label">Total Candidates</span>
-                <h2 class="hrm-exec-stat-value">2,384</h2>
-                <span class="hrm-exec-stat-trend hrm-exec-trend-positive">
-                    <i class="fa-solid fa-arrow-trend-up"></i> +5% this week
-                </span>
-            </div>
-            <div class="hrm-exec-stat-icon">
-                <i class="fa-solid fa-users"></i>
-            </div>
-        </div>
-
-        <!-- Interviews -->
-        <div class="hrm-exec-stat-card hrm-exec-card-green">
-            <div class="hrm-exec-stat-content">
-                <span class="hrm-exec-stat-label">Interviews Today</span>
-                <h2 class="hrm-exec-stat-value">12</h2>
-                <span class="hrm-exec-stat-trend hrm-exec-trend-neutral">
-                    <i class="fa-solid fa-minus"></i> Same as yesterday
-                </span>
-            </div>
-            <div class="hrm-exec-stat-icon">
-                <i class="fa-solid fa-user-clock"></i>
-            </div>
-        </div>
-
-        <!-- Offers -->
-        <div class="hrm-exec-stat-card hrm-exec-card-dark">
-            <div class="hrm-exec-stat-content">
-                <span class="hrm-exec-stat-label">Offers Released</span>
-                <h2 class="hrm-exec-stat-value">28</h2>
-                <span class="hrm-exec-stat-trend hrm-exec-trend-positive">
-                    <i class="fa-solid fa-arrow-trend-up"></i> +8% conversion
-                </span>
-            </div>
-            <div class="hrm-exec-stat-icon">
-                <i class="fa-solid fa-file-signature"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Section -->
-    <div class="hrm-exec-bottom-grid">
-        
-        <!-- Action Card -->
-        <!-- Action Card -->
-<div class="hrm-exec-card">
-    <h3 class="hrm-exec-card-title">Quick Actions</h3>
-    <div class="hrm-exec-quick-action">
-        <img src="https://img.icons8.com/color/48/000000/google-calendar--v2.png" alt="Calendar">
-        <p style="margin-top:10px; color:#64748b;">You have 3 candidates waiting for interview slots.</p>
-        
-        <!-- BUTTON to open Modal -->
-        <button class="hrm-exec-btn-primary" id="hrmExecOpenScheduleBtn">
-            Schedule Interview Now
+      <div class="rd-header-actions">
+        <!-- Renamed ID -->
+        <button class="rd-btn rd-btn-outline" id="rdDateBtn">Loading Date...</button>
+        <!-- Renamed function call to avoid conflict with Interview Manager -->
+        <button class="rd-btn rd-btn-primary" onclick="rdOpenJobModal()">
+          + Add New Job
         </button>
+      </div>
     </div>
-</div>
 
-<!-- Modal for Google Calendar -->
-<div id="hrmExecScheduleModal" class="hrm-exec-modal">
-    <div class="hrm-exec-modal-content">
-        <h3 style="margin-bottom: 20px;">Schedule Interview</h3>
-        
-        <div class="hrm-exec-form-group">
-            <label>Interview Title</label>
-            <input type="text" id="hrmExecInterviewTitle" placeholder="e.g., Frontend Developer Interview">
-        </div>
-        
-        <div class="hrm-exec-form-group">
-            <label>Date</label>
-            <input type="date" id="hrmExecInterviewDate">
-        </div>
+    <div class="rd-grid-container">
+      <div class="rd-card">
+        <h3 class="rd-card-title">Candidates Hiring Analysis</h3>
 
-        <div class="hrm-exec-form-group">
-            <label>Time</label>
-            <input type="time" id="hrmExecInterviewTime">
-        </div>
+        <div class="rd-table-wrapper">
+          <table class="rd-table">
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Applicants</th>
+                <th>Shortlisted</th>
+                <th>Hired</th>
+              </tr>
+            </thead>
 
-        <div class="hrm-exec-form-group">
-            <label>Meeting Platform / Link</label>
-            <input type="text" id="hrmExecMeetingLink" placeholder="Google Meet / Zoom Link">
-        </div>
+            <tbody>
+              <tr>
+                <td><strong>Marketing</strong></td>
+                <td><span class="rd-badge rd-badge-applicants">14</span></td>
+                <td><span class="rd-badge rd-badge-shortlisted">08</span></td>
+                <td>—</td>
+              </tr>
 
-        <div class="hrm-exec-modal-actions">
-            <button class="hrm-exec-btn-outline" id="hrmExecCancelScheduleBtn">Cancel</button>
-            <button class="hrm-exec-btn-primary" id="hrmExecCreateEventBtn">Add to Google Calendar</button>
+              <tr>
+                <td><strong>Development</strong></td>
+                <td><span class="rd-badge rd-badge-applicants">56</span></td>
+                <td><span class="rd-badge rd-badge-shortlisted">20</span></td>
+                <td><span class="rd-badge rd-badge-hired">04</span></td>
+              </tr>
+
+              <tr>
+                <td><strong>UX Design</strong></td>
+                <td><span class="rd-badge rd-badge-applicants">23</span></td>
+                <td><span class="rd-badge rd-badge-shortlisted">12</span></td>
+                <td><span class="rd-badge rd-badge-hired">01</span></td>
+              </tr>
+
+              <tr>
+                <td><strong>Sales</strong></td>
+                <td><span class="rd-badge rd-badge-applicants">31</span></td>
+                <td><span class="rd-badge rd-badge-shortlisted">05</span></td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
+
+      <div class="rd-card">
+        <h3 class="rd-card-title">Recruitment Overview</h3>
+        <div style="height: 200px; position: relative;">
+          <!-- Renamed ID -->
+          <canvas id="rdRecruitmentChart"></canvas>
+        </div>
+      </div>
     </div>
-</div>
+
+    <div class="rd-stats-grid">
+      <div class="rd-stat-card rd-stat-orange">
+        <div class="rd-stat-value">47</div>
+        <div class="rd-stat-label">Open Positions</div>
+      </div>
+
+      <div class="rd-stat-card rd-stat-blue">
+        <div class="rd-stat-value">2,384</div>
+        <div class="rd-stat-label">Total Candidates</div>
+      </div>
+
+      <div class="rd-stat-card rd-stat-green">
+        <div class="rd-stat-value">12</div>
+        <div class="rd-stat-label">Interviews Today</div>
+      </div>
+
+      <div class="rd-stat-card rd-stat-dark">
+        <div class="rd-stat-value">28</div>
+        <div class="rd-stat-label">Offers Released</div>
+      </div>
+    </div>
 
 
-        <!-- Upcoming List -->
-        <div class="hrm-exec-card">
-            <h3 class="hrm-exec-card-title">Upcoming Schedule</h3>
-            <div class="hrm-exec-schedule-list">
-                <div class="hrm-exec-schedule-item">
-                    <div class="hrm-exec-schedule-info">
-                        <h4>UI Designer Interview</h4>
-                        <p>Candidate: Sarah Jenkins</p>
-                    </div>
-                    <span class="hrm-exec-date-badge">Mar 02</span>
-                </div>
-                <div class="hrm-exec-schedule-item">
-                    <div class="hrm-exec-schedule-info">
-                        <h4>Backend Logic Test</h4>
-                        <p>Candidate: Mike Ross</p>
-                    </div>
-                    <span class="hrm-exec-date-badge">Mar 05</span>
-                </div>
-                <div class="hrm-exec-schedule-item">
-                    <div class="hrm-exec-schedule-info">
-                        <h4>HR Round</h4>
-                        <p>Candidate: Jessica Pearson</p>
-                    </div>
-                    <span class="hrm-exec-date-badge">Mar 06</span>
-                </div>
+    <!-- Unified Interview Widget Container -->
+    <div class="im-widget-container">
+        
+        <!-- Left Side: Actions -->
+        <div class="im-action-pane">
+            <img src="https://img.icons8.com/color/96/google-calendar--v2.png" alt="Google Calendar" class="im-icon-lg">
+            
+            <!-- Dynamic Counter -->
+            <div class="im-stat-count" id="imTotalCount">0</div>
+            <div class="im-stat-label">Upcoming Meetings</div>
+
+            <button class="im-btn-primary" id="imBtnOpenModal">
+                <span>+</span> Schedule Interview
+            </button>
+        </div>
+
+        <!-- Right Side: List -->
+        <div class="im-list-pane">
+            <div class="im-pane-header">
+                <h3>Scheduled Interviews</h3>
+            </div>
+
+            <div class="im-list-scroll-area" id="imListContainer">
+                <!-- Javascript will inject items here -->
             </div>
         </div>
     </div>
 
-    
+
+    <!-- Modal Form -->
+    <div id="imModalOverlay" class="im-modal-overlay">
+        <div class="im-modal-content">
+            <h3 class="im-modal-title">Schedule Meeting</h3>
+            
+            <div class="im-form-group">
+                <label>Interview / Meeting Title</label>
+                <input type="text" id="imInputTitle" placeholder="e.g. Technical Round">
+            </div>
+            
+            <div class="im-form-group">
+                <label>Candidate / Attendee</label>
+                <input type="text" id="imInputCandidate" placeholder="Name">
+            </div>
+
+            <div class="im-form-group">
+                <label>Meeting Link (Zoom/Meet/Teams)</label>
+                <input type="url" id="imInputLink" placeholder="https://...">
+            </div>
+
+            <div class="im-form-group-row">
+                <div class="im-form-col">
+                    <label>Date</label>
+                    <input type="date" id="imInputDate">
+                </div>
+                <div class="im-form-col">
+                    <label>Time (AM/PM)</label>
+                    <input type="time" id="imInputTime">
+                </div>
+            </div>
+
+            <div class="im-modal-actions">
+                <button class="im-btn-outline" id="imBtnCancel">Cancel</button>
+                <button class="im-btn-primary" id="imBtnSave">Save & Add to Calendar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to external JavaScript -->
     <script src="./recruitment.js"></script>
-    <script src="../admin_page/admin.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </body>
+</body>
 </html>
