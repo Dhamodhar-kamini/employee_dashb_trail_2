@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Personal Info
     // Note: If your data doesn't have maritalStatus, it defaults to 'Single'
-    setText("p_marital", emp.maritalStatus || "Single"); 
+    setText("p_marital", emp.maritalStatus || "Unmarried"); 
 
     // Employment Details
     setText("p_dept_2", emp.dept);
