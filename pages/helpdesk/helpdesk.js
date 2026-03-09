@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (filtered.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color:#999;">No tickets found.</td></tr>`;
+            updateStats();
             return;
         }
 
@@ -56,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
             tableBody.innerHTML += row;
         });
+
+        updateStats();
     }
 
     renderTable(); // Init
@@ -67,63 +70,85 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ==========================================
-    // 2. CHART CONFIGURATION
+    // 2. STATS COUNTERS
     // ==========================================
-    const chartCanvas = document.getElementById('statusDoughnutChart');
-    if(chartCanvas) {
-        const ctx = chartCanvas.getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Open', 'Solved', 'Closed'],
-                datasets: [{
-                    data: [28, 104, 10],
-                    backgroundColor: ['#FF6B00', '#05CD99', '#EFF4FB'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                cutout: '75%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                }
-            }
-        });
+    const totalResponsesEl = document.getElementById('totalResponsesVal');
+    const pendingValEl = document.getElementById('pendingVal');
+    const solvedValEl = document.getElementById('solvedVal');
+
+    function updateStats() {
+        if (totalResponsesEl) totalResponsesEl.innerText = tickets.length;
+        if (pendingValEl) pendingValEl.innerText = tickets.filter(t => t.status === 'Open').length;
+        if (solvedValEl) solvedValEl.innerText = tickets.filter(t => t.status === 'Closed').length;
     }
 
-    // ==========================================
-    // 3. DROPDOWN MENU LOGIC (Fixed)
-    // ==========================================
-      const menuBtn = document.getElementById('chartMenuBtn');
-    const dropdown = document.getElementById('chartMenuDropdown');
+    // Call once on load
+    updateStats();
 
-    if (menuBtn && dropdown) {
-        
-        // 1. Toggle Menu on Click
-        menuBtn.addEventListener('click', function(e) {
+    // ==========================================
+    // 3. HELP MODAL LOGIC
+    // ==========================================
+    const helpModal = document.getElementById('helpModal');
+    const createTicketBtn = document.getElementById('createTicketBtn');
+    const closeHelpBtn = document.getElementById('closeHelpModal');
+    const cancelHelpBtn = document.getElementById('cancelHelpBtn');
+    const helpForm = document.getElementById('helpForm');
+
+    const formFields = {
+        name: document.getElementById('helpName'),
+        email: document.getElementById('helpEmail'),
+        description: document.getElementById('helpDescription')
+    };
+
+    function openHelpModal() {
+        if (helpModal) helpModal.classList.add('active');
+    }
+
+    // Expose for inline onclick use
+    window.openHelpModal = openHelpModal;
+
+    function closeHelpModal() {
+        if (helpModal) helpModal.classList.remove('active');
+        if (helpForm) helpForm.reset();
+    }
+
+    if (createTicketBtn) createTicketBtn.addEventListener('click', openHelpModal);
+    if (closeHelpBtn) closeHelpBtn.addEventListener('click', closeHelpModal);
+    if (cancelHelpBtn) cancelHelpBtn.addEventListener('click', closeHelpModal);
+
+    function generateTicketId() {
+        const last = tickets[tickets.length - 1];
+        if (!last || !last.id) return `#TCK-${Date.now()}`;
+        const match = last.id.match(/#TCK-(\d+)/);
+        if (!match) return `#TCK-${Date.now()}`;
+        const nextNum = parseInt(match[1], 10) + 1;
+        return `#TCK-${nextNum}`;
+    }
+
+    if (helpForm) {
+        helpForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            e.stopPropagation(); // Stops the click from bubbling to window
-            
-            // Toggle classes
-            dropdown.classList.toggle('show');
-            menuBtn.classList.toggle('active');
-        });
 
-        // 2. Close Menu when clicking ANYWHERE else
-        document.addEventListener('click', function(e) {
-            // Check if click is OUTSIDE the dropdown AND OUTSIDE the button
-            if (!dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
-                dropdown.classList.remove('show');
-                menuBtn.classList.remove('active');
+            if (!formFields.name.value || !formFields.email.value || !formFields.description.value) {
+                return;
             }
-        });
 
-    } else {
-        console.error("Dropdown elements not found! Check IDs.");
+            const newTicket = {
+                id: generateTicketId(),
+                subject: 'Help Request',
+                requester: formFields.name.value,
+                img: '../assets/profiledp.jpeg',
+                priority: 'Medium',
+                status: 'Open',
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                desc: formFields.description.value
+            };
+
+            tickets.unshift(newTicket);
+            renderTable(filterSelect ? filterSelect.value : 'all');
+            updateStats();
+            closeHelpModal();
+        });
     }
 
     // ==========================================
@@ -162,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Close on outside click
     window.addEventListener('click', (e) => {
         if(e.target === modal) modal.classList.remove('active');
+        if(e.target === helpModal) helpModal.classList.remove('active');
     });
 
 });

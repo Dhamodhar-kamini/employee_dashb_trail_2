@@ -79,7 +79,7 @@ body {
 /* Stats Grid */
 .hd-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-bottom: 24px;
 }
@@ -473,6 +473,57 @@ body {
   padding: 25px;
 }
 
+/* Help Request Form */
+.hd-modal-body .form-group {
+  margin-bottom: 16px;
+}
+
+.hd-modal-body label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-grey);
+  margin-bottom: 6px;
+}
+
+.hd-modal-body input,
+.hd-modal-body select,
+.hd-modal-body textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e1e7f4;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.hd-modal-body input:focus,
+.hd-modal-body select:focus,
+.hd-modal-body textarea:focus {
+  border-color: var(--primary-orange);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.btn-secondary {
+  background: #f4f7fe;
+  color: var(--text-dark);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #e9effc;
+}
+
 .ticket-meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -534,7 +585,9 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
-
+.btn-secondary:hover {
+  background: #e9effc;
+}
 /* Responsive */
 @media (max-width: 992px) {
   .hd-stats-grid {
