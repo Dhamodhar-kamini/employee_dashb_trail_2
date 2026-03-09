@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Initialize counters
     let counts = {
-        Fulltime: 0,
+        // Fulltime: 0,
         WFO: 0,
         WFH: 0,
         Internship: 0
@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Run updates for all 4 types
-    updateBar("Fulltime", "bar-fulltime", "label-fulltime", "val-fulltime");
+    // updateBar("Fulltime", "bar-fulltime", "label-fulltime", "val-fulltime");
     updateBar("WFO", "bar-wfo", "label-wfo", "val-wfo");
     updateBar("WFH", "bar-wfh", "label-wfh", "val-wfh");
     updateBar("Internship", "bar-intern", "label-intern", "val-intern");

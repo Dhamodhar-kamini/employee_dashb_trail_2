@@ -23,29 +23,36 @@ document.addEventListener("DOMContentLoaded", function () {
     const emp = JSON.parse(storedData);
     currentEmpData = emp;
 
-    // Helper
+    // Helper to safely set text
     const setText = (id, text) => {
       const el = document.getElementById(id);
       if (el) el.innerText = text || "-";
     };
 
-    // Header
+    // --- Header & Basic Info ---
     setText("p_name", emp.name);
     setText("p_role", emp.role);
     setText("p_dept", emp.dept);
     setText("p_initials", emp.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase());
 
-    // Overview Tab
+    // --- Overview Tab ---
     setText("p_id", emp.id);
     setText("p_join", emp.joinDate);
     setText("p_salary", emp.salary);
     setText("p_email", emp.email);
     setText("p_phone", emp.phone);
     setText("p_location", emp.location);
+    
+    // Personal Info
+    // Note: If your data doesn't have maritalStatus, it defaults to 'Single'
+    setText("p_marital", emp.maritalStatus || "Single"); 
+
+    // Employment Details
     setText("p_dept_2", emp.dept);
     setText("p_role_2", emp.role);
 
-    // Status Badge
+    // --- Employment Status Badge (Active/Leave) ---
+    // Ensure this ID (p_status) exists in your Employment Details section, NOT Personal Info
     const statusEl = document.getElementById("p_status");
     if (statusEl) {
       statusEl.innerText = emp.status;
@@ -74,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("No employee data available.");
         return;
       }
-      // Use class 'active' to show flex (defined in CSS)
+      // Add 'active' class to show modal (requires CSS .modal-overlay.active { display: flex; })
       downloadModal.classList.add("active");
     });
   }
@@ -96,10 +103,24 @@ document.addEventListener("DOMContentLoaded", function () {
     if(!currentEmpData) return;
     const emp = currentEmpData;
 
-    const headers = ["ID", "Name", "Role", "Department", "Email", "Phone", "Location", "Join Date", "Salary", "Status"];
+    // Added Marital Status to CSV
+    const headers = [
+      "ID", "Name", "Role", "Department", "Email", 
+      "Phone", "Location", "Marital Status", "Join Date", "Salary", "Status"
+    ];
+    
     const values = [
-        emp.id, emp.name, emp.role, emp.dept, emp.email, emp.phone, 
-        emp.location, emp.joinDate, emp.salary, emp.status
+        emp.id, 
+        emp.name, 
+        emp.role, 
+        emp.dept, 
+        emp.email, 
+        emp.phone, 
+        emp.location, 
+        emp.maritalStatus || "Single", // Default value
+        emp.joinDate, 
+        emp.salary, 
+        emp.status
     ];
 
     let csvContent = headers.join(",") + "\n" + values.map(v => `"${v || ''}"`).join(",");
@@ -122,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.downloadAsPDF = function() {
     if(!currentEmpData) return;
     
-    // 1. Close Modal FIRST so it doesn't appear in the PDF
+    // 1. Close Modal FIRST
     window.closeDownloadModal();
 
     // 2. Select content
