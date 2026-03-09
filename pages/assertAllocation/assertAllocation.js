@@ -10,6 +10,8 @@ let hraAssets = [
 // --- 2. Element Selectors ---
 const hraTableBody = document.getElementById('hraAssetTableBody');
 const hraModal = document.getElementById('hraAssetModal');
+const hraModalTitle = document.getElementById('hraModalTitle');
+const hraModalSubmitBtn = document.getElementById('hraModalSubmitBtn');
 const hraAddBtn = document.getElementById('hraAddAssetBtn');
 const hraCloseBtn = document.getElementById('hraCloseModal');
 const hraAssetForm = document.getElementById('hraAssetForm');
@@ -17,6 +19,8 @@ const hraSearchInput = document.getElementById('hraSearchInput');
 const hraSidebar = document.getElementById('hraSidebar');
 const hraMenuToggle = document.getElementById('hraMenuToggle');
 const hraSuccessPopup = document.getElementById('hraSuccessPopup'); // New Popup
+
+let currentEditingAssetId = null;
 
 // --- 3. Core Functions ---
 
@@ -38,8 +42,8 @@ function hraRenderTable(data) {
             <td>${asset.date}</td>
             <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
             <td>
-                <button class="hra-action-icon" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                <button class="hra-action-icon" title="Return" style="color: #ef4444;"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="hra-action-icon hra-edit-btn" data-id="${asset.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                <button class="hra-action-icon hra-delete-btn" data-id="${asset.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
             </td>
         `;
         hraTableBody.appendChild(tr);
@@ -54,6 +58,47 @@ function hraGetIcon(type) {
         case 'headset': return 'fa-headphones';
         default: return 'fa-box';
     }
+}
+
+function hraGetFilteredAssets() {
+    const term = hraSearchInput.value.toLowerCase().trim();
+    if (!term) return hraAssets;
+
+    return hraAssets.filter(asset =>
+        asset.employee.toLowerCase().includes(term) ||
+        asset.id.toLowerCase().includes(term) ||
+        asset.model.toLowerCase().includes(term)
+    );
+}
+
+function hraOpenModalForCreate() {
+    currentEditingAssetId = null;
+    hraModalTitle.textContent = 'Allocate New Asset';
+    hraModalSubmitBtn.textContent = 'Confirm Allocation';
+    hraAssetForm.reset();
+    hraModal.style.display = 'flex';
+}
+
+function hraOpenModalForEdit(asset) {
+    currentEditingAssetId = asset.id;
+    hraModalTitle.textContent = 'Edit Asset Details';
+    hraModalSubmitBtn.textContent = 'Save Changes';
+
+    document.getElementById('hraEmpName').value = asset.employee;
+    document.getElementById('hraAssetType').value = asset.type;
+    document.getElementById('hraModelDetails').value = asset.model;
+    document.getElementById('hraAssetId').value = asset.id;
+    document.getElementById('hraAssignDate').value = asset.date;
+
+    hraModal.style.display = 'flex';
+}
+
+function hraCloseModal() {
+    currentEditingAssetId = null;
+    hraModal.style.display = 'none';
+    hraModalTitle.textContent = 'Allocate New Asset';
+    hraModalSubmitBtn.textContent = 'Confirm Allocation';
+    hraAssetForm.reset();
 }
 
 // Function to Show Success Popup
@@ -74,27 +119,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Open Modal
 hraAddBtn.addEventListener('click', () => {
-    hraModal.style.display = 'flex';
+    hraOpenModalForCreate();
 });
 
 // Close Modal
 hraCloseBtn.addEventListener('click', () => {
-    hraModal.style.display = 'none';
+    hraCloseModal();
 });
 
 // Close Modal Outside Click
 window.addEventListener('click', (e) => {
     if (e.target == hraModal) {
-        hraModal.style.display = 'none';
+        hraCloseModal();
+    }
+});
+
+// Table Action Buttons (Edit/Delete)
+hraTableBody.addEventListener('click', (e) => {
+    const button = e.target.closest('button');
+    if (!button) return;
+
+    const assetId = button.getAttribute('data-id');
+    if (!assetId) return;
+
+    // Edit
+    if (button.classList.contains('hra-edit-btn')) {
+        const asset = hraAssets.find(a => a.id === assetId);
+        if (!asset) return;
+        hraOpenModalForEdit(asset);
+        return;
+    }
+
+    // Delete
+    if (button.classList.contains('hra-delete-btn')) {
+        hraAssets = hraAssets.filter(a => a.id !== assetId);
+        hraRenderTable(hraGetFilteredAssets());
+        showSuccessPopup();
+        return;
     }
 });
 
 // Form Submission
 hraAssetForm.addEventListener('submit', (e) => {
-    e.preventDefault(); 
-    
-    // 1. Get Values
-    const newAsset = {
+    e.preventDefault();
+
+    const updatedAsset = {
         id: document.getElementById('hraAssetId').value,
         employee: document.getElementById('hraEmpName').value,
         type: document.getElementById('hraAssetType').value,
@@ -103,29 +172,25 @@ hraAssetForm.addEventListener('submit', (e) => {
         status: 'assigned'
     };
 
-    // 2. Add to Array
-    hraAssets.unshift(newAsset);
-    
-    // 3. Update Table
-    hraRenderTable(hraAssets);
-    
-    // 4. Close Modal & Reset Form
-    hraModal.style.display = 'none';
-    hraAssetForm.reset();
+    if (currentEditingAssetId) {
+        const idx = hraAssets.findIndex(a => a.id === currentEditingAssetId);
+        if (idx !== -1) {
+            hraAssets[idx] = updatedAsset;
+        }
+    } else {
+        hraAssets.unshift(updatedAsset);
+    }
 
-    // 5. SHOW SUCCESS POPUP
+    hraRenderTable(hraGetFilteredAssets());
+
+    hraCloseModal();
+
     showSuccessPopup();
 });
 
 // Search Filter
-hraSearchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = hraAssets.filter(asset => 
-        asset.employee.toLowerCase().includes(term) || 
-        asset.id.toLowerCase().includes(term) ||
-        asset.model.toLowerCase().includes(term)
-    );
-    hraRenderTable(filtered);
+hraSearchInput.addEventListener('input', () => {
+    hraRenderTable(hraGetFilteredAssets());
 });
 
 // Mobile Sidebar Toggle
