@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OPPTY HRMS</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/opptylogo2.png">
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/opptylogo2.png"
+    />
     <link rel="stylesheet" href="employee.css" />
     <link rel="stylesheet" href="../admin_page/admin.css" />
     <link
@@ -50,7 +55,9 @@
                   ><i class="fas fa-user-tie"></i
                   ><span>Admin Dashboard</span></a
                 >
-                <a href="../employeedashb/employee.html" class="menu-item active"
+                <a
+                  href="../employeedashb/employee.html"
+                  class="menu-item active"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
@@ -65,7 +72,9 @@
                   ><i class="fas fa-search"></i
                   ><span>Recruitment Dashboard</span></a
                 >
-                <a href="../assertAllocation/assertAllocation.html" class="menu-item"
+                <a
+                  href="../assertAllocation/assertAllocation.html"
+                  class="menu-item"
                   ><i class="fas fa-boxes"></i><span>Asset Allocation</span></a
                 >
 
@@ -90,38 +99,36 @@
           </div>
           <div class="header-icons">
             <!-- Existing Icons -->
-            
+
             <div class="nt-container">
-    
-    <!-- Bell Icon & Badge -->
-    <div class="nt-bell-wrapper" id="ntBellBtn">
-        <i class="fas fa-bell nt-icon"></i>
-        <!-- Counter Badge (JS will update this) -->
-        <span class="nt-badge" id="ntBadge">0</span>
-    </div>
+              <!-- Bell Icon & Badge -->
+              <div class="nt-bell-wrapper" id="ntBellBtn">
+                <i class="fas fa-bell nt-icon"></i>
+                <!-- Counter Badge (JS will update this) -->
+                <span class="nt-badge" id="ntBadge">0</span>
+              </div>
 
-    <!-- Dropdown Popup -->
-    <div class="nt-dropdown" id="ntDropdown">
-        
-        <!-- Header -->
-        <div class="nt-header">
-            <span class="nt-title">Notifications</span>
-            <button class="nt-mark-read" id="ntMarkAllRead">Mark all read</button>
-        </div>
+              <!-- Dropdown Popup -->
+              <div class="nt-dropdown" id="ntDropdown">
+                <!-- Header -->
+                <div class="nt-header">
+                  <span class="nt-title">Notifications</span>
+                  <button class="nt-mark-read" id="ntMarkAllRead">
+                    Mark all read
+                  </button>
+                </div>
 
-        <!-- List of Items -->
-        <div class="nt-body" id="ntList">
-            <!-- JS will inject items here -->
-        </div>
+                <!-- List of Items -->
+                <div class="nt-body" id="ntList">
+                  <!-- JS will inject items here -->
+                </div>
 
-        <!-- Footer -->
-        <div class="nt-footer">
-            <a href="#">View all activity</a>
-        </div>
-    </div>
-
-</div>
-            
+                <!-- Footer -->
+                <div class="nt-footer">
+                  <a href="#">View all activity</a>
+                </div>
+              </div>
+            </div>
 
             <!-- MODIFIED PROFILE SECTION -->
             <div class="hdr-profile-wrapper">
@@ -157,10 +164,10 @@
               </p>
             </div>
             <div class="breadcrumbs">
-            <i class="fas fa-home"></i>
-            <span><a href="../admin_page/admin.html">Dashboard</a></span>
-            <span>Admin Dashboard</span>
-          </div>
+              <i class="fas fa-home"></i>
+              <span><a href="../admin_page/admin.html">Dashboard</a></span>
+              <span>Admin Dashboard</span>
+            </div>
             <!-- <button class="btn-primary-orange" id="addEmployeeBtn">
               <i class="fa-solid fa-plus"></i> Add New Employee
             </button> -->
@@ -256,8 +263,16 @@
                     <option value="On Leave">On Leave</option>
                     <option value="Remote">Remote</option>
                   </select>
-                  <button class="btn-icon-only">
+                  <!-- <button class="btn-icon-only">
                     <i class="fa-solid fa-filter"></i>
+                  </button> -->
+                  <!-- Added id="downloadBtn" -->
+                  <button
+                    class="btn-icon-only"
+                    id="downloadBtn"
+                    title="Export to CSV"
+                  >
+                    <i class="fa-solid fa-download"></i>
                   </button>
                 </div>
               </div>
@@ -283,83 +298,105 @@
               </div>
 
               <!-- Modal Structure -->
-<div class="modal-overlay" id="employeeModal">
-    <div class="modal-card">
-        <div class="modal-header">
-            <h2>Add New Employee</h2>
-            <span class="close-btn" id="closeModalBtn">&times;</span>
-        </div>
-        
-        <form id="empForm">
-            <!-- Full Name -->
-            <div class="input-group">
-                <label>Full Name</label>
-                <input type="text" id="empName" required placeholder="John Doe">
-            </div>
+              <div class="modal-overlay" id="employeeModal">
+                <div class="modal-card">
+                  <div class="modal-header">
+                    <h2>Add New Employee</h2>
+                    <span class="close-btn" id="closeModalBtn">&times;</span>
+                  </div>
 
-            <!-- Email -->
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" id="empEmail" required placeholder="john@example.com">
-            </div>
-            
-            <!-- Row: Dept & Role -->
-            <div class="form-row">
-                <div class="input-group">
-                    <label>Department</label>
-                    <select id="empDept">
-                        <option value="Engineering">Engineering</option>
-                        <option value="Design">Design</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="HR">HR</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Job Role</label>
-                    <input type="text" id="empRole" placeholder="e.g. Frontend Dev">
-                </div>
-            </div>
+                  <form id="empForm">
+                    <!-- Full Name -->
+                    <div class="input-group">
+                      <label>Full Name</label>
+                      <input
+                        type="text"
+                        id="empName"
+                        required
+                        placeholder="employee"
+                      />
+                    </div>
 
-            <!-- Row: Type & Status -->
-            <div class="form-row">
-                <div class="input-group">
-                    <label>Employment Type</label>
-                    <select id="empType">
-                        <option value="Full Time">Full Time</option>
-                        <option value="Contract">Contract</option>
-                        <option value="Internship">Internship</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Status</label>
-                    <select id="empStatus">
-                        <option value="Active">Active</option>
-                        <option value="On Leave">On Leave</option>
-                        <option value="Remote">Remote</option>
-                    </select>
-                </div>
-            </div>
+                    <!-- Email -->
+                    <div class="input-group">
+                      <label>Email Address</label>
+                      <input
+                        type="email"
+                        id="empEmail"
+                        required
+                        placeholder="emp@example.com"
+                      />
+                    </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
-                <button type="submit" class="btn-submit">Add Employee</button>
-            </div>
-        </form>
-    </div>
-</div>
-<!-- Success Modal -->
-<div class="modal-overlay" id="successModal">
-    <div class="modal-card success-card">
-        <div class="success-icon">
-            <i class="fa-solid fa-check"></i>
-        </div>
-        <h3 id="successTitle">Success!</h3>
-        <p id="successMessage">Employee details have been updated.</p>
-        <button class="btn-success-close" id="closeSuccessBtn">OK</button>
-    </div>
-</div>
+                    <!-- Row: Dept & Role -->
+                    <div class="form-row">
+                      <div class="input-group">
+                        <label>Department</label>
+                        <select id="empDept">
+                          <option value="Engineering">Engineering</option>
+                          <option value="Design">Design</option>
+                          <option value="Marketing">Marketing</option>
+                          <option value="HR">HR</option>
+                        </select>
+                      </div>
+                      <div class="input-group">
+                        <label>Job Role</label>
+                        <input
+                          type="text"
+                          id="empRole"
+                          placeholder="e.g. Frontend Dev"
+                        />
+                      </div>
+                    </div>
 
-              
+                    <!-- Row: Type & Status -->
+                    <div class="form-row">
+                      <div class="input-group">
+                        <label>Employment Type</label>
+                        <select id="empType">
+                          <option value="Full Time">Full Time</option>
+                          <option value="Contract">Contract</option>
+                          <option value="Internship">Internship</option>
+                        </select>
+                      </div>
+                      <div class="input-group">
+                        <label>Status</label>
+                        <select id="empStatus">
+                          <option value="Active">Active</option>
+                          <option value="On Leave">On Leave</option>
+                          <option value="Remote">Remote</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn-cancel"
+                        id="cancelModalBtn"
+                      >
+                        Cancel
+                      </button>
+                      <button type="submit" class="btn-submit">
+                        Add Employee
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <!-- Success Modal -->
+              <div class="modal-overlay" id="successModal">
+                <div class="modal-card success-card">
+                  <div class="success-icon">
+                    <i class="fa-solid fa-check"></i>
+                  </div>
+                  <h3 id="successTitle">Success!</h3>
+                  <p id="successMessage">Employee details have been updated.</p>
+                  <button class="btn-success-close" id="closeSuccessBtn">
+                    OK
+                  </button>
+                </div>
+              </div>
 
               <!-- Pagination -->
               <div class="table-footer">
@@ -482,20 +519,24 @@
         </div>
 
         <!-- DELETE CONFIRMATION MODAL -->
-<div class="modal-overlay" id="deleteModal">
-    <div class="modal-card delete-card">
-        <div class="delete-icon">
-            <i class="fa-solid fa-trash-can"></i>
+        <div class="modal-overlay" id="deleteModal">
+          <div class="modal-card delete-card">
+            <div class="delete-icon">
+              <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3>Delete Employee?</h3>
+            <p>
+              Are you sure you want to delete
+              <strong id="deleteEmpName">this employee</strong>?<br />This
+              action cannot be undone.
+            </p>
+
+            <div class="modal-actions">
+              <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
+              <button class="btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+          </div>
         </div>
-        <h3>Delete Employee?</h3>
-        <p>Are you sure you want to delete <strong id="deleteEmpName">this employee</strong>?<br>This action cannot be undone.</p>
-        
-        <div class="modal-actions">
-            <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
-            <button class="btn-danger" id="confirmDeleteBtn">Delete</button>
-        </div>
-    </div>
-</div>
       </main>
     </div>
 

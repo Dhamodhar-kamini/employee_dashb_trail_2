@@ -726,6 +726,10 @@ body {
   font-size: 22px;
   cursor: pointer;
 }
+.close-employee-btn {
+  margin-left: 30px;
+  cursor: pointer;
+}
 
 /* Icon */
 .emp-modal-icon {
@@ -1357,7 +1361,7 @@ body {
 
 /* --- General Card Styling & Sub-Elements --- */
 #employee-status {
-  height: 85%; /* Taller card for employee status */
+  height: 70%; /* Taller card for employee status */
 }
 .card {
   background: var(--card-bg);
@@ -1527,7 +1531,7 @@ body {
 .total-employee .count {
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--color-blue);
+  color: rgb(247, 75, 13);
   display: block;
 }
 .bar-row {
@@ -2325,6 +2329,7 @@ textarea#wishMessage:focus {
   font-size: 0.75rem;
   color: #999;
 }
+
 
 /* =================================
    RESPONSIVENESS (Crucial Adjustments for Grid Alignment)

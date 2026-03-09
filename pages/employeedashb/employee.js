@@ -12,14 +12,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // --- 2. DOM ELEMENTS ---
     const tableBody = document.getElementById("employeeTableBody");
+    
+    // Filter Inputs
     const searchInput = document.getElementById("searchInput");
+    const deptFilter = document.getElementById("deptFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const downloadBtn = document.getElementById("downloadBtn"); // Ensure ID is added to HTML
     
     // Main Form Modal Elements
     const modal = document.getElementById("employeeModal");
     const modalTitle = document.querySelector(".modal-header h2");
     const employeeForm = document.getElementById("empForm"); 
     const submitBtn = document.querySelector(".btn-submit");
-    const addBtn = document.getElementById("addEmployeeBtn");
+    const addBtn = document.getElementById("addEmployeeBtn"); // Ensure ID is in HTML
     const closeModalBtn = document.getElementById("closeModalBtn");
     const cancelModalBtn = document.getElementById("cancelModalBtn");
 
@@ -29,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const successTitle = document.getElementById("successTitle");
     const successMessage = document.getElementById("successMessage");
 
-    // DELETE MODAL ELEMENTS (NEW)
+    // Delete Modal Elements
     const deleteModal = document.getElementById("deleteModal");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
@@ -38,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // State Variables
     let isEditMode = false;
     let currentEditId = null;
-    let deleteTargetId = null; // Store ID to delete
+    let deleteTargetId = null;
 
     // --- 3. HELPER: SUCCESS POPUP ---
     function showSuccess(title, msg) {
@@ -101,13 +106,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- 5. EVENT DELEGATION ---
+    // --- 5. EVENT DELEGATION (View, Edit, Delete) ---
     if(tableBody) {
         tableBody.addEventListener("click", function(e) {
             
             // VIEW PROFILE
-            if (e.target.classList.contains("view-profile-btn")) {
-                const id = e.target.getAttribute("data-id");
+            if (e.target.classList.contains("view-profile-btn") || e.target.closest(".view-profile-btn")) {
+                const btn = e.target.closest(".view-profile-btn") || e.target;
+                const id = btn.getAttribute("data-id");
                 const selectedEmp = employees.find(emp => emp.id === id);
                 if (selectedEmp) {
                     localStorage.setItem("viewEmployeeData", JSON.stringify(selectedEmp));
@@ -115,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // DELETE BUTTON CLICKED (Open Custom Modal)
+            // DELETE
             if (e.target.closest(".delete-btn")) {
                 const btn = e.target.closest(".delete-btn");
                 const id = btn.getAttribute("data-id");
@@ -131,30 +137,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- 6. DELETE LOGIC (UPDATED WITH MODAL) ---
+    // --- 6. DELETE LOGIC ---
     function openDeleteModal(id) {
         const emp = employees.find(e => e.id === id);
         if(!emp) return;
-
-        deleteTargetId = id; // Store ID for confirmation
+        deleteTargetId = id;
         if(deleteEmpName) deleteEmpName.innerText = emp.name;
         if(deleteModal) deleteModal.classList.add("active");
     }
 
-    // Confirm Delete Click
     if(confirmDeleteBtn) {
         confirmDeleteBtn.addEventListener("click", () => {
             if(deleteTargetId) {
                 employees = employees.filter(emp => emp.id !== deleteTargetId);
-                renderTable(employees);
+                applyFilters(); // Re-render with filters maintained
                 deleteModal.classList.remove("active");
-                // Optional: Show success message for delete too
-                // showSuccess("Deleted!", "Employee has been removed.");
             }
         });
     }
 
-    // Cancel Delete Click
     if(cancelDeleteBtn) {
         cancelDeleteBtn.addEventListener("click", () => {
             deleteModal.classList.remove("active");
@@ -167,6 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const emp = employees.find(e => e.id === id);
         if (!emp) return;
 
+        // Populate Form
         if(document.getElementById("empName")) document.getElementById("empName").value = emp.name;
         if(document.getElementById("empEmail")) document.getElementById("empEmail").value = emp.email;
         if(document.getElementById("empDept")) document.getElementById("empDept").value = emp.dept;
@@ -212,10 +214,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (isEditMode) {
                 const index = employees.findIndex(e => e.id === currentEditId);
                 if (index !== -1) {
+                    // Update existing
                     employees[index] = { ...employees[index], name, email, dept, role, type, status };
                     showSuccess("Updated!", "Employee details have been updated successfully.");
                 }
             } else {
+                // Add new
                 const newId = "EMP-" + String(employees.length + 1).padStart(3, '0');
                 employees.push({
                     id: newId, name, email, dept, role, type, status,
@@ -227,12 +231,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 showSuccess("Added!", "New employee added successfully.");
             }
 
-            renderTable(employees);
+            applyFilters(); // Re-render
             closeModal();
         });
     }
 
-    // Modal Close Utils
     function closeModal() {
         modal.classList.remove("active");
     }
@@ -240,30 +243,97 @@ document.addEventListener("DOMContentLoaded", function () {
     if(closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
     if(cancelModalBtn) cancelModalBtn.addEventListener("click", closeModal);
     
-    // Global Click Listener for Modals
     window.addEventListener("click", (e) => { 
         if (e.target === modal) closeModal(); 
         if (e.target === successModal) successModal.classList.remove("active");
         if (e.target === deleteModal) deleteModal.classList.remove("active");
     });
 
-    // --- 10. SEARCH FILTER ---
-    if(searchInput) {
-        searchInput.addEventListener("input", function(e) {
-            const term = e.target.value.toLowerCase();
-            const filtered = employees.filter(emp => 
+    // --- 10. SEARCH & FILTERS (Unified Logic) ---
+    function applyFilters() {
+        // Get values
+        const term = searchInput ? searchInput.value.toLowerCase() : "";
+        const deptValue = deptFilter ? deptFilter.value : "all";
+        const statusValue = statusFilter ? statusFilter.value : "all";
+
+        const filtered = employees.filter(emp => {
+            // 1. Search Check
+            const matchesSearch = 
                 emp.name.toLowerCase().includes(term) ||
                 emp.role.toLowerCase().includes(term) ||
-                emp.id.toLowerCase().includes(term)
-            );
-            renderTable(filtered);
+                emp.id.toLowerCase().includes(term);
+            
+            // 2. Department Check
+            const matchesDept = (deptValue === "all") || (emp.dept === deptValue);
+            
+            // 3. Status Check
+            const matchesStatus = (statusValue === "all") || (emp.status === statusValue);
+
+            return matchesSearch && matchesDept && matchesStatus;
+        });
+
+        renderTable(filtered);
+    }
+
+    // Attach listeners to all inputs
+    if(searchInput) searchInput.addEventListener("input", applyFilters);
+    if(deptFilter) deptFilter.addEventListener("change", applyFilters);
+    if(statusFilter) statusFilter.addEventListener("change", applyFilters);
+
+
+    // --- 11. DOWNLOAD CSV FUNCTIONALITY ---
+    if(downloadBtn) {
+        downloadBtn.addEventListener("click", function() {
+            // Requirement: Download ALL employees
+            exportTableToCSV(employees, "all_employees.csv");
         });
     }
 
-    // --- 11. INITIAL RENDER ---
+    function exportTableToCSV(dataArray, filename) {
+        if (!dataArray || dataArray.length === 0) {
+            alert("No data to export!");
+            return;
+        }
+
+        let csvContent = [];
+        // Headers
+        const headers = ["ID", "Name", "Email", "Phone", "Department", "Role", "Type", "Status", "Join Date", "Salary", "Location"];
+        csvContent.push(headers.join(","));
+
+        // Rows
+        dataArray.forEach(item => {
+            const row = [
+                `"${item.id}"`,
+                `"${item.name}"`,
+                `"${item.email}"`,
+                `"${item.phone || ''}"`,
+                `"${item.dept}"`,
+                `"${item.role}"`,
+                `"${item.type}"`,
+                `"${item.status}"`,
+                `"${item.joinDate || ''}"`,
+                `"${item.salary || ''}"`,
+                `"${item.location || ''}"`
+            ];
+            csvContent.push(row.join(","));
+        });
+
+        const csvString = csvContent.join("\n");
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // --- 12. INITIAL RENDER ---
     renderTable(employees);
 });
-
 
 // notification section
 /* --- NOTIFICATION LOGIC (nt-) --- */
