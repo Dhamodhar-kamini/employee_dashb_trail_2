@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HRM Recruitment Dashboard</title>
+
+    <link rel="stylesheet" href="recuritment3.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="dashboard-header">
+      <div class="header-title">
+        <h1>Recruitment Dashboard</h1>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-outline" id="dateBtn">Loading Date...</button>
+        <button class="btn btn-primary" onclick="openModal()">
+          + Add New Job
+        </button>
+      </div>
+    </div>
+
+    <div class="grid-container">
+      <div class="card">
+        <h3 class="card-title">Candidates Hiring Analysis</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Applicants</th>
+                <th>Shortlisted</th>
+                <th>Hired</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td><strong>Marketing</strong></td>
+                <td><span class="badge badge-applicants">14</span></td>
+                <td><span class="badge badge-shortlisted">08</span></td>
+                <td>—</td>
+              </tr>
+
+              <tr>
+                <td><strong>Development</strong></td>
+                <td><span class="badge badge-applicants">56</span></td>
+                <td><span class="badge badge-shortlisted">20</span></td>
+                <td><span class="badge badge-hired">04</span></td>
+              </tr>
+
+              <tr>
+                <td><strong>UX Design</strong></td>
+                <td><span class="badge badge-applicants">23</span></td>
+                <td><span class="badge badge-shortlisted">12</span></td>
+                <td><span class="badge badge-hired">01</span></td>
+              </tr>
+
+              <tr>
+                <td><strong>Sales</strong></td>
+                <td><span class="badge badge-applicants">31</span></td>
+                <td><span class="badge badge-shortlisted">05</span></td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Recruitment Overview</h3>
+
+        <div style="height: 200px">
+          <canvas id="recruitmentChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card orange">
+        <div class="stat-value">47</div>
+        <div class="stat-label">Open Positions</div>
+      </div>
+
+      <div class="stat-card blue">
+        <div class="stat-value">2,384</div>
+        <div class="stat-label">Total Candidates</div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Interviews Today</div>
+      </div>
+
+      <div class="stat-card dark">
+        <div class="stat-value">28</div>
+        <div class="stat-label">Offers Released</div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="card">
+        <h3 class="card-title">Quick Schedule</h3>
+
+        <div class="quick-action-content">
+          <img src="https://img.icons8.com/color/48/000000/calendar--v1.png" />
+
+          <p class="quick-action-text">
+            You have 3 interviews pending confirmation.
+          </p>
+
+          <button class="btn btn-primary" onclick="openScheduleModal()">
+            Schedule Interview Now
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Avg. Time to Hire (Days)</h3>
+
+        <div style="height: 180px">
+          <canvas id="timeToHireChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Upcoming Schedule</h3>
+
+        <ul class="schedule-list">
+          <li class="schedule-item">
+            <div class="schedule-info">
+              <h4>UI Designer Interview</h4>
+              <p>Candidate: Sarah Jenkins</p>
+            </div>
+
+            <span class="date-badge">Mar 02</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="scheduleModal" class="modal">
+      <div class="modal-content">
+        <h3 style="margin-bottom: 20px">Schedule Interview</h3>
+
+        <div class="form-group">
+          <label>Interview Title</label>
+          <input type="text" id="interviewTitle" />
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="interviewDate" />
+        </div>
+
+        <div class="form-group">
+          <label>Time</label>
+          <input type="time" id="interviewTime" />
+        </div>
+
+        <div class="form-group">
+          <label>Meeting Link</label>
+          <input type="text" id="meetingLink" />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeScheduleModal()">
+            Cancel
+          </button>
+
+          <button class="btn btn-primary" onclick="createCalendarEvent()">
+            Add To Calendar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="recuritment3.js"></script>
+  </body>
+</html>

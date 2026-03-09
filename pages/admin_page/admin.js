@@ -1133,3 +1133,49 @@ window.addEventListener('click', (e) => {
     if (e.target == holidayListModal) holidayListModal.style.display = 'none';
     if (e.target == holidayAddModal) holidayAddModal.style.display = 'none';
 });
+
+
+//calender section
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Select Elements
+    const btn = document.getElementById("dateTriggerBtn");
+    const displaySpan = document.getElementById("dateDisplay");
+    const dateInput = document.getElementById("nativeDatePicker");
+
+    // 1. Function to format date as "DD Mon YYYY" (e.g., 14 Feb 2026)
+    function formatDate(dateObj) {
+        return dateObj.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    // 2. Set Initial Date (Today)
+    const today = new Date();
+    displaySpan.innerText = formatDate(today);
+
+    // 3. Open Calendar when Button is Clicked
+    btn.addEventListener("click", function() {
+        try {
+            // Modern Browsers
+            dateInput.showPicker(); 
+        } catch (error) {
+            // Fallback
+            dateInput.focus();
+            dateInput.click();
+        }
+    });
+
+    // 4. Update Button Text on Date Selection
+    dateInput.addEventListener("change", function() {
+        // Create date object from input value
+        // Note: input.value is YYYY-MM-DD
+        if (this.value) {
+            const selectedDate = new Date(this.value);
+            displaySpan.innerText = formatDate(selectedDate);
+        }
+    });
+
+});

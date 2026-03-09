@@ -96,10 +96,10 @@
           </div>
           <div class="header-icons">
             <!-- Existing Icons -->
-            <i class="fas fa-th-large"></i>
+            
             <i class="fas fa-bell"></i>
-            <i class="fas fa-envelope"></i>
-            <i class="fas fa-cog"></i>
+            
+            
 
             <!-- MODIFIED PROFILE SECTION -->
             <div class="hdr-profile-wrapper">
@@ -134,9 +134,16 @@
             <span>Admin Dashboard</span>
           </div>
           <div class="action-buttons">
-            <button class="btn-icon">
-              <i class="far fa-calendar-alt"></i> Feb 2026
-            </button>
+            <div class="calendar-wrapper">
+    <!-- Visible Button -->
+    <button class="btn-icon" id="dateTriggerBtn">
+        <i class="far fa-calendar-alt"></i> 
+        <span id="dateDisplay">Loading...</span>
+    </button>
+    
+    <!-- Hidden Input for Browser Native Picker -->
+    <input type="date" id="nativeDatePicker">
+</div>
             <button class="btn-primary emp-add-btn" id="empOpenBtn">
               <i class="fas fa-calendar-plus"></i>
               Add Employee
