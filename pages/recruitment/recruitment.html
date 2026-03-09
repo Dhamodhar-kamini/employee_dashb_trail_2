@@ -118,8 +118,7 @@
             </div>
           </div>
         </header>
-          <!-- TOPBAR -->
-           <!-- Header -->
+         <!-- recruitment section -->
     <header class="hrm-exec-header">
         <h1>Recruitment Dashboard</h1>
         <p>Overview of current hiring pipeline and schedules.</p>
@@ -244,18 +243,52 @@
     <div class="hrm-exec-bottom-grid">
         
         <!-- Action Card -->
-        <div class="hrm-exec-card">
-            <h3 class="hrm-exec-card-title">Quick Actions</h3>
-            <div class="hrm-exec-quick-action">
-                <img src="https://img.icons8.com/color/48/000000/google-calendar--v2.png" alt="Calendar">
-                <p style="margin-top:10px; color:#64748b;">You have 3 candidates waiting for interview slots.</p>
-                
-                <!-- BUTTON ID MUST MATCH JS -->
-                <button class="hrm-exec-btn-primary" id="hrmExecOpenScheduleBtn">
-                    Schedule Interview Now
-                </button>
-            </div>
+        <!-- Action Card -->
+<div class="hrm-exec-card">
+    <h3 class="hrm-exec-card-title">Quick Actions</h3>
+    <div class="hrm-exec-quick-action">
+        <img src="https://img.icons8.com/color/48/000000/google-calendar--v2.png" alt="Calendar">
+        <p style="margin-top:10px; color:#64748b;">You have 3 candidates waiting for interview slots.</p>
+        
+        <!-- BUTTON to open Modal -->
+        <button class="hrm-exec-btn-primary" id="hrmExecOpenScheduleBtn">
+            Schedule Interview Now
+        </button>
+    </div>
+</div>
+
+<!-- Modal for Google Calendar -->
+<div id="hrmExecScheduleModal" class="hrm-exec-modal">
+    <div class="hrm-exec-modal-content">
+        <h3 style="margin-bottom: 20px;">Schedule Interview</h3>
+        
+        <div class="hrm-exec-form-group">
+            <label>Interview Title</label>
+            <input type="text" id="hrmExecInterviewTitle" placeholder="e.g., Frontend Developer Interview">
         </div>
+        
+        <div class="hrm-exec-form-group">
+            <label>Date</label>
+            <input type="date" id="hrmExecInterviewDate">
+        </div>
+
+        <div class="hrm-exec-form-group">
+            <label>Time</label>
+            <input type="time" id="hrmExecInterviewTime">
+        </div>
+
+        <div class="hrm-exec-form-group">
+            <label>Meeting Platform / Link</label>
+            <input type="text" id="hrmExecMeetingLink" placeholder="Google Meet / Zoom Link">
+        </div>
+
+        <div class="hrm-exec-modal-actions">
+            <button class="hrm-exec-btn-outline" id="hrmExecCancelScheduleBtn">Cancel</button>
+            <button class="hrm-exec-btn-primary" id="hrmExecCreateEventBtn">Add to Google Calendar</button>
+        </div>
+    </div>
+</div>
+
 
         <!-- Upcoming List -->
         <div class="hrm-exec-card">
@@ -286,38 +319,7 @@
         </div>
     </div>
 
-    <!-- Modal for Google Calendar -->
-    <div id="hrmExecScheduleModal" class="hrm-exec-modal">
-        <div class="hrm-exec-modal-content">
-            <h3 style="margin-bottom: 20px;">Schedule Interview</h3>
-            
-            <div class="hrm-exec-form-group">
-                <label>Interview Title</label>
-                <input type="text" id="hrmExecInterviewTitle" placeholder="e.g., Frontend Developer Interview">
-            </div>
-            
-            <div class="hrm-exec-form-group">
-                <label>Date</label>
-                <input type="date" id="hrmExecInterviewDate">
-            </div>
-
-            <div class="hrm-exec-form-group">
-                <label>Time</label>
-                <input type="time" id="hrmExecInterviewTime">
-            </div>
-
-            <div class="hrm-exec-form-group">
-                <label>Meeting Platform / Link</label>
-                <input type="text" id="hrmExecMeetingLink" placeholder="Google Meet / Zoom Link">
-            </div>
-
-            <div class="hrm-exec-modal-actions">
-                <button class="hrm-exec-btn-outline" id="hrmExecCancelScheduleBtn">Cancel</button>
-                <button class="hrm-exec-btn-primary" id="hrmExecCreateEventBtn">Add to Google Calendar</button>
-            </div>
-        </div>
-    </div>
-
+    
     <script src="./recruitment.js"></script>
     <script src="../admin_page/admin.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

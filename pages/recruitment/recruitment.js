@@ -37,71 +37,51 @@ new Chart(document.getElementById("barChart"),{
 
 // recruitment section
 document.addEventListener("DOMContentLoaded", function() {
-    
-    // --- 1. Chart Configuration ---
-    const chartCanvas = document.getElementById("hrmExecRecruitmentChart");
-    
-    if (chartCanvas) {
-        new Chart(chartCanvas, {
-            type: "doughnut",
-            data: {
-                labels: ["Applicants", "Shortlisted", "Hired", "Rejected"],
-                datasets: [{
-                    data: [65, 20, 10, 5],
-                    backgroundColor: ["#3b82f6", "#f59e0b", "#10b981", "#cbd5e1"],
-                    borderWidth: 0,
-                    hoverOffset: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // Important for fitting container
-                cutout: "75%",
-                plugins: {
-                    legend: { display: false } 
-                }
-            }
-        });
-    } else {
-        console.error("Chart canvas not found!");
-    }
 
-    // --- 2. Modal Logic ---
+    // =========================================================
+    // PART 1: MODAL & BUTTON LOGIC (High Priority)
+    // =========================================================
     const scheduleModal = document.getElementById("hrmExecScheduleModal");
     const openBtn = document.getElementById("hrmExecOpenScheduleBtn");
     const cancelBtn = document.getElementById("hrmExecCancelScheduleBtn");
     const createBtn = document.getElementById("hrmExecCreateEventBtn");
 
     if (openBtn && scheduleModal) {
-        // Open Modal
+        
+        // 1. OPEN MODAL
         openBtn.addEventListener("click", function() {
+            // Auto-fill today's date
             const today = new Date().toISOString().split('T')[0];
             const dateInput = document.getElementById("hrmExecInterviewDate");
             if(dateInput) dateInput.value = today;
             
+            // Set display to flex to show it
             scheduleModal.style.display = "flex";
         });
 
-        // Close Modal functions
+        // 2. CLOSE MODAL FUNCTION
         function closeScheduleModal() {
             scheduleModal.style.display = "none";
         }
 
+        // 3. ATTACH CANCEL EVENT
         if(cancelBtn) {
             cancelBtn.addEventListener("click", closeScheduleModal);
         }
 
-        // Close when clicking outside
+        // 4. CLICK OUTSIDE TO CLOSE
         window.onclick = function(event) {
             if (event.target == scheduleModal) {
                 closeScheduleModal();
             }
         }
     } else {
-        console.error("Modal buttons not found.");
+        console.error("Critical: Schedule Button or Modal not found in DOM.");
     }
 
-    // --- 3. Google Calendar Logic ---
+    // =========================================================
+    // PART 2: GOOGLE CALENDAR LOGIC
+    // =========================================================
     if(createBtn) {
         createBtn.addEventListener("click", function() {
             const title = document.getElementById("hrmExecInterviewTitle").value || "Job Interview";
@@ -114,12 +94,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            // Create Date Objects
+            // Create Date Objects (using template literals)
             const start = new Date(`${date}T${time}`);
-            // Default duration 1 hour
-            const end = new Date(start.getTime() + 60 * 60000);
+            const end = new Date(start.getTime() + 60 * 60000); // Add 1 hour duration
 
-            // Format for Google URL
+            // Format date for Google (YYYYMMDDTHHMMSSZ)
             function formatTime(d) {
                 return d.toISOString().replace(/[-:]|\.\d+/g, "");
             }
@@ -129,8 +108,41 @@ document.addEventListener("DOMContentLoaded", function() {
             // Open in new tab
             window.open(calendarURL, '_blank');
             
-            // Hide modal
+            // Close modal after adding
             if(scheduleModal) scheduleModal.style.display = "none";
         });
+    }
+
+    // =========================================================
+    // PART 3: CHART LOGIC (Wrapped in Try/Catch)
+    // =========================================================
+    // We put this last so if it fails, the buttons still work.
+    try {
+        const chartCanvas = document.getElementById("hrmExecRecruitmentChart");
+        
+        if (typeof Chart !== 'undefined' && chartCanvas) {
+            new Chart(chartCanvas, {
+                type: "doughnut",
+                data: {
+                    labels: ["Applicants", "Shortlisted", "Hired", "Rejected"],
+                    datasets: [{
+                        data: [65, 20, 10, 5],
+                        backgroundColor: ["#3b82f6", "#f59e0b", "#10b981", "#cbd5e1"],
+                        borderWidth: 0,
+                        hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "75%",
+                    plugins: {
+                        legend: { display: false } 
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Chart failed to load:", error);
     }
 });
