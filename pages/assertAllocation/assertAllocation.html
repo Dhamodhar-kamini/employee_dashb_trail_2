@@ -189,7 +189,7 @@
         <div class="hra-modal-overlay" id="hraAssetModal">
           <div class="hra-modal-content">
             <div class="hra-modal-header">
-              <h3>Allocate New Asset</h3>
+              <h3 id="hraModalTitle">Allocate New Asset</h3>
               <span class="hra-close-btn" id="hraCloseModal">&times;</span>
             </div>
             <form id="hraAssetForm">
@@ -198,7 +198,7 @@
                 <input
                   type="text"
                   id="hraEmpName"
-                  placeholder="e.g. John Doe"
+                  placeholder="Enter employee name"
                   required
                 />
               </div>
@@ -216,7 +216,7 @@
                 <input
                   type="text"
                   id="hraModelDetails"
-                  placeholder="e.g. MacBook Pro M1"
+                  placeholder="Enter model or asset details"
                   required
                 />
               </div>
@@ -233,7 +233,7 @@
                 <label>Assignment Date</label>
                 <input type="date" id="hraAssignDate" required />
               </div>
-              <button type="submit" class="hra-btn-primary hra-full-width">
+              <button type="submit" id="hraModalSubmitBtn" class="hra-btn-primary hra-full-width">
                 Confirm Allocation
               </button>
             </form>
