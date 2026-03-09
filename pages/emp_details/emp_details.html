@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employee Profile - Oppty</title>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
@@ -23,7 +23,11 @@
     <div class="main-container">
       <!-- Top Navigation -->
       <div class="top-nav">
-        <a href="../employeedashb/employee.html" class="back-link" onclick="history.back()">
+        <a
+          href="../employeedashb/employee.html"
+          class="back-link"
+          onclick="history.back()"
+        >
           <i class="fa-solid fa-arrow-left"></i> Back to Employees
         </a>
       </div>
@@ -42,11 +46,50 @@
             </p>
           </div>
         </div>
+        <!-- In your <header class="profile-header"> -->
         <div class="header-actions">
-          <button class="btn-primary" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> Print Profile
+          <!-- ADDED id="downloadProfileBtn" HERE -->
+          <button class="btn-primary" id="downloadProfileBtn">
+            <i class="fa-solid fa-download"></i> Download Profile
           </button>
         </div>
+        
+        <!-- Download Options Modal -->
+<div id="downloadModal" class="modal-overlay">
+  <div class="modal-card download-modal">
+    <div class="modal-header">
+      <h3>Download Profile</h3>
+      <span class="close-btn" onclick="closeDownloadModal()">&times;</span>
+    </div>
+    
+    <div class="download-options">
+      <!-- PDF Option -->
+      <div class="option-card" onclick="downloadAsPDF()">
+        <div class="icon-box pdf">
+          <i class="fa-solid fa-file-pdf"></i>
+        </div>
+        <div class="text-box">
+          <h4>Download PDF</h4>
+          <p>Best for printing & sharing</p>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow"></i>
+      </div>
+
+      <!-- CSV Option -->
+      <div class="option-card" onclick="downloadAsCSV()">
+        <div class="icon-box csv">
+          <i class="fa-solid fa-file-csv"></i>
+        </div>
+        <div class="text-box">
+          <h4>Download CSV</h4>
+          <p>Best for spreadsheets & data</p>
+        </div>
+        <i class="fa-solid fa-chevron-right arrow"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
       </header>
 
       <!-- Navigation Tabs -->
@@ -119,9 +162,9 @@
             </div>
 
             <div class="data-box full-width">
-              <label>Status</label>
+              <label>Marital Status</label>
               <div class="value">
-                <span class="status-badge" id="p_status">Active</span>
+                <span class="status-badge" id="p_status">Single</span>
               </div>
             </div>
           </div>
