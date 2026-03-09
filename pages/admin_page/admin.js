@@ -1179,3 +1179,189 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+
+
+/* --- NOTIFICATION LOGIC (nt-) --- */
+
+// 1. Dummy Data (Replace with API data later)
+let notifications = [
+    {
+        id: 1,
+        text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
+        time: "2 mins ago",
+        icon: "👩‍💼", // Using emojis as placeholders for images
+        read: false
+    },
+    {
+        id: 2,
+        text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.",
+        time: "15 mins ago",
+        icon: "📅",
+        read: false
+    },
+    {
+        id: 3,
+        text: "New system update available.",
+        time: "1 hour ago",
+        icon: "⚙️",
+        read: true
+    },
+    {
+        id: 4,
+        text: "<strong>Arjun</strong> accepted the offer.",
+        time: "3 hours ago",
+        icon: "✅",
+        read: true
+    }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Select Elements
+    const bellBtn = document.getElementById('ntBellBtn');
+    const dropdown = document.getElementById('ntDropdown');
+    const markReadBtn = document.getElementById('ntMarkAllRead');
+
+    // Initialize
+    ntRenderList();
+
+    // Toggle Dropdown
+    bellBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent immediate closing
+        const isVisible = dropdown.style.display === 'block';
+        dropdown.style.display = isVisible ? 'none' : 'block';
+    });
+
+    // Mark All as Read
+    markReadBtn.addEventListener('click', () => {
+        notifications.forEach(n => n.read = true);
+        ntRenderList();
+    });
+
+    // Close Dropdown when clicking outside
+    window.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+});
+
+// Render Function
+function ntRenderList() {
+    const listContainer = document.getElementById('ntList');
+    const badge = document.getElementById('ntBadge');
+    
+    // Clear current list
+    listContainer.innerHTML = '';
+
+    // Count unread
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    // Update Badge
+    if (unreadCount > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+    } else {
+        badge.style.display = 'none';
+    }
+
+    // Check if empty
+    if (notifications.length === 0) {
+        listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
+        return;
+    }
+
+    // Build List
+    notifications.forEach(item => {
+        const itemDiv = document.createElement('div');
+        // Add class 'nt-unread' if not read
+        itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
+        
+        itemDiv.innerHTML = `
+            <div class="nt-avatar">${item.icon}</div>
+            <div class="nt-content">
+                <p class="nt-text">${item.text}</p>
+                <span class="nt-time">${item.time}</span>
+            </div>
+        `;
+
+        // Click individual item to mark as read
+        itemDiv.addEventListener('click', () => {
+            item.read = true;
+            ntRenderList();
+        });
+
+        listContainer.appendChild(itemDiv);
+    });
+}
+
+
+//search filter
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const searchInput = document.getElementById('srchInput');
+    const errorMsg = document.getElementById('srchErrorMessage');
+
+    // 1. Keyboard Shortcut (CTRL + /) to focus input
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === '/') {
+            e.preventDefault(); // Stop typng '/' in other fields
+            searchInput.focus();
+        }
+    });
+
+    // 2. Search Logic (Triggered on 'Enter' key)
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch(searchInput.value);
+        }
+    });
+
+    // 3. The Search Function
+    function performSearch(query) {
+        // Clear previous highlights
+        document.querySelectorAll('.srch-highlight').forEach(el => {
+            el.classList.remove('srch-highlight');
+        });
+        errorMsg.style.display = 'none';
+
+        if (!query.trim()) return;
+
+        const lowerQuery = query.toLowerCase();
+        
+        // Select all items you want to search (rows, cards, divs)
+        // Ensure your HTML elements have this class
+        const items = document.querySelectorAll('.srch-item');
+        let found = false;
+
+        for (const item of items) {
+            // Check text content of the entire row/card
+            if (item.innerText.toLowerCase().includes(lowerQuery)) {
+                
+                // A. Smooth Scroll to the item
+                item.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+
+                // B. Add Highlight Class
+                item.classList.add('srch-highlight');
+
+                // C. Focus element (for accessibility)
+                item.setAttribute('tabindex', '-1');
+                item.focus();
+
+                found = true;
+                break; // Stop at the first match
+            }
+        }
+
+        if (!found) {
+            errorMsg.style.display = 'block';
+            // Optional: Shake animation on input
+            searchInput.style.border = "1px solid red";
+            setTimeout(() => searchInput.style.border = "", 1000);
+        }
+    }
+});

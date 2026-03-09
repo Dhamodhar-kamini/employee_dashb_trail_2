@@ -312,7 +312,8 @@ body {
 /* Header */
 .hra-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 30px;
     align-items: center;
     margin-bottom: 30px;
 }

@@ -51,7 +51,7 @@
                   ><i class="fas fa-user-tie"></i
                   ><span>Admin Dashboard</span></a
                 >
-                <a href="../employeedashb/employee.html" class="menu-item active"
+                <a href="../employeedashb/employee.html" class="menu-item"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
@@ -62,7 +62,7 @@
                   ><i class="fas fa-money-bill-wave"></i
                   ><span>Payroll Dashboard</span></a
                 >
-                <a href="../recruitment/recruitment.html" class="menu-item"
+                <a href="../recruitment/recruitment.html" class="menu-item active"
                   ><i class="fas fa-search"></i
                   ><span>Recruitment Dashboard</span></a
                 >
@@ -92,7 +92,37 @@
           <div class="header-icons">
             <!-- Existing Icons -->
             
-            <i class="fas fa-bell"></i>
+            <!-- Notification Container -->
+<div class="nt-container">
+    
+    <!-- Bell Icon & Badge -->
+    <div class="nt-bell-wrapper" id="ntBellBtn">
+        <i class="fas fa-bell nt-icon"></i>
+        <!-- Counter Badge (JS will update this) -->
+        <span class="nt-badge" id="ntBadge">0</span>
+    </div>
+
+    <!-- Dropdown Popup -->
+    <div class="nt-dropdown" id="ntDropdown">
+        
+        <!-- Header -->
+        <div class="nt-header">
+            <span class="nt-title">Notifications</span>
+            <button class="nt-mark-read" id="ntMarkAllRead">Mark all read</button>
+        </div>
+
+        <!-- List of Items -->
+        <div class="nt-body" id="ntList">
+            <!-- JS will inject items here -->
+        </div>
+
+        <!-- Footer -->
+        <div class="nt-footer">
+            <a href="#">View all activity</a>
+        </div>
+    </div>
+
+</div>
             
 
             <!-- MODIFIED PROFILE SECTION -->
@@ -123,16 +153,16 @@
         <div class="rd-dashboard-header">
       <div class="rd-header-title">
         <h1>Recruitment Dashboard</h1>
+        
       </div>
+     
+          <div class="breadcrumbs">
+            <i class="fas fa-home"></i>
+            <span><a href="../admin_page/admin.html">Dashboard</a></span>
+            <span>Admin Dashboard</span>
+          </div>
 
-      <div class="rd-header-actions">
-        <!-- Renamed ID -->
-        <button class="rd-btn rd-btn-outline" id="rdDateBtn">Loading Date...</button>
-        <!-- Renamed function call to avoid conflict with Interview Manager -->
-        <button class="rd-btn rd-btn-primary" onclick="rdOpenJobModal()">
-          + Add New Job
-        </button>
-      </div>
+      
     </div>
 
     <div class="rd-grid-container">

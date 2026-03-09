@@ -94,7 +94,37 @@
           <div class="header-icons">
     <!-- Existing Icons -->
     
-    <i class="fas fa-bell"></i>
+    <!-- Notification Container -->
+<div class="nt-container">
+    
+    <!-- Bell Icon & Badge -->
+    <div class="nt-bell-wrapper" id="ntBellBtn">
+        <i class="fas fa-bell nt-icon"></i>
+        <!-- Counter Badge (JS will update this) -->
+        <span class="nt-badge" id="ntBadge">0</span>
+    </div>
+
+    <!-- Dropdown Popup -->
+    <div class="nt-dropdown" id="ntDropdown">
+        
+        <!-- Header -->
+        <div class="nt-header">
+            <span class="nt-title">Notifications</span>
+            <button class="nt-mark-read" id="ntMarkAllRead">Mark all read</button>
+        </div>
+
+        <!-- List of Items -->
+        <div class="nt-body" id="ntList">
+            <!-- JS will inject items here -->
+        </div>
+
+        <!-- Footer -->
+        <div class="nt-footer">
+            <a href="#">View all activity</a>
+        </div>
+    </div>
+
+</div>
     
 
     <!-- MODIFIED PROFILE SECTION -->
@@ -134,9 +164,9 @@
                 <div class="breadcrumbs">
                     <i class="fa-solid fa-house"></i>
                     <i class="fa-solid fa-chevron-right"></i>
-                    <span>Dashboard</span>
+                    <span><a href="../admin_page/admin.html">Dashboard</a></span>
                     <i class="fa-solid fa-chevron-right"></i>
-                    <span class="active">Payroll Dashboard</span>
+                    <span class="active" style="color: #666;">Payroll Dashboard</span>
                 </div>
             </div>
             <div class="header-right">

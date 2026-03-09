@@ -12,7 +12,7 @@
 /* --- THE UNIFIED WIDGET CONTAINER --- */
 .im-widget-container {
   display: flex;
-  width: 950px;
+  width: 100%;
   background: white;
   border-radius: 20px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
@@ -264,13 +264,14 @@
 
 .rd-dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 20px;
     align-items: center;
     margin-bottom: 24px;
-    background: var(--rd-bg-card);
+    /* background: var(--rd-bg-card); */
     padding: 16px 24px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    /* border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02); */
 }
 
 .rd-header-title h1 {

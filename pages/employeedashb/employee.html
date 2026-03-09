@@ -91,7 +91,36 @@
           <div class="header-icons">
             <!-- Existing Icons -->
             
-            <i class="fas fa-bell"></i>
+            <div class="nt-container">
+    
+    <!-- Bell Icon & Badge -->
+    <div class="nt-bell-wrapper" id="ntBellBtn">
+        <i class="fas fa-bell nt-icon"></i>
+        <!-- Counter Badge (JS will update this) -->
+        <span class="nt-badge" id="ntBadge">0</span>
+    </div>
+
+    <!-- Dropdown Popup -->
+    <div class="nt-dropdown" id="ntDropdown">
+        
+        <!-- Header -->
+        <div class="nt-header">
+            <span class="nt-title">Notifications</span>
+            <button class="nt-mark-read" id="ntMarkAllRead">Mark all read</button>
+        </div>
+
+        <!-- List of Items -->
+        <div class="nt-body" id="ntList">
+            <!-- JS will inject items here -->
+        </div>
+
+        <!-- Footer -->
+        <div class="nt-footer">
+            <a href="#">View all activity</a>
+        </div>
+    </div>
+
+</div>
             
 
             <!-- MODIFIED PROFILE SECTION -->
@@ -127,6 +156,11 @@
                 Manage your team members and their details
               </p>
             </div>
+            <div class="breadcrumbs">
+            <i class="fas fa-home"></i>
+            <span><a href="../admin_page/admin.html">Dashboard</a></span>
+            <span>Admin Dashboard</span>
+          </div>
             <!-- <button class="btn-primary-orange" id="addEmployeeBtn">
               <i class="fa-solid fa-plus"></i> Add New Employee
             </button> -->
