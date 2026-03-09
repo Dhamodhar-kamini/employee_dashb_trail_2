@@ -154,78 +154,86 @@
             <div>
               <h2 class="page-title">Help Desk Dashboard</h2>
               <p class="page-subtitle">
-                Manage employee support tickets and inquiries
+                Manage employee support requests and inquiries
               </p>
             </div>
+<<<<<<< HEAD
 
             <div class="breadcrumbs">
             <i class="fas fa-home"></i>
             <span><a href="../admin_page/admin.html">Dashboard /</a></span>
             <span> Admin Dashboard</span>
           </div>
+=======
+            <button class="btn-create-ticket" id="createTicketBtn" onclick="openHelpModal()">Help</button>
+>>>>>>> 514bdb9c54805e64261e2e72b63b756e6b3971e6
             <!-- <button class="btn-create-ticket" id="createTicketBtn">
               <i class="fa-solid fa-plus"></i> Raise New Ticket
             </button> -->
           </header>
 
+          <!-- HELP REQUEST MODAL -->
+          <div class="hd-modal-overlay" id="helpModal">
+            <div class="hd-modal-box">
+              <div class="hd-modal-header">
+                <h3>Help Request</h3>
+                <button class="hd-close-btn" id="closeHelpModal">&times;</button>
+              </div>
+              <div class="hd-modal-body">
+                <form id="helpForm">
+                  <div class="form-group">
+                    <label for="helpName">Name</label>
+                    <input type="text" id="helpName" placeholder="Your full name" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="helpEmail">Email</label>
+                    <input type="email" id="helpEmail" placeholder="you@example.com" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="helpDescription">Description</label>
+                    <textarea id="helpDescription" rows="4" placeholder="Describe the issue" required></textarea>
+                  </div>
+                  <div class="form-actions">
+                    <button type="submit" class="btn-create-ticket">Submit</button>
+                    <button type="button" class="btn-secondary" id="cancelHelpBtn">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
           <!-- 1. STATS OVERVIEW -->
           <section class="hd-stats-grid">
-            <!-- Total Tickets -->
+            <!-- Total Responses -->
             <div class="dash-card">
               <div class="stat-top">
-                <div class="stat-icon-box icon-blue">
-                  <i class="fa-solid fa-ticket"></i>
-                </div>
-                <span class="stat-label">Total Tickets</span>
+                <span class="stat-label">Total Responses</span>
               </div>
-              <h2 class="stat-value">142</h2>
+              <h2 class="stat-value" id="totalResponsesVal">142</h2>
               <div class="stat-bottom">
-                <span class="stat-badge positive">+12%</span>
-                <span class="stat-desc">This Month</span>
+                <span class="stat-desc">All open and closed Request</span>
               </div>
             </div>
 
             <!-- Pending -->
             <div class="dash-card">
               <div class="stat-top">
-                <div class="stat-icon-box icon-orange">
-                  <i class="fa-solid fa-hourglass-half"></i>
-                </div>
                 <span class="stat-label">Pending</span>
               </div>
-              <h2 class="stat-value">28</h2>
+              <h2 class="stat-value" id="pendingVal">28</h2>
               <div class="stat-bottom">
-                <span class="stat-desc">Requires Attention</span>
+                <span class="stat-desc">Requires attention</span>
               </div>
             </div>
 
             <!-- Solved -->
             <div class="dash-card">
               <div class="stat-top">
-                <div class="stat-icon-box icon-green">
-                  <i class="fa-solid fa-check-double"></i>
-                </div>
                 <span class="stat-label">Solved</span>
               </div>
-              <h2 class="stat-value">104</h2>
+              <h2 class="stat-value" id="solvedVal">104</h2>
               <div class="stat-bottom">
-                <span class="stat-badge positive">+5%</span>
-                <span class="stat-desc">Efficiency Rate</span>
-              </div>
-            </div>
-
-            <!-- Avg Response Time -->
-            <div class="dash-card">
-              <div class="stat-top">
-                <div class="stat-icon-box icon-purple">
-                  <i class="fa-solid fa-stopwatch"></i>
-                </div>
-                <span class="stat-label">Avg Response</span>
-              </div>
-              <h2 class="stat-value">2h 15m</h2>
-              <div class="stat-bottom">
-                <span class="stat-badge negative">-10%</span>
-                <span class="stat-desc">Faster than avg</span>
+                <span class="stat-desc">Resolved requests</span>
               </div>
             </div>
           </section>
@@ -265,56 +273,6 @@
               </div>
             </div>
 
-            <!-- Status Chart -->
-            <!-- Status Chart -->
-            <div class="dash-card status-chart-card">
-              <div class="card-header-row">
-                <h3>Ticket Status</h3>
-
-                <!-- UPDATED THREE DOTS & DROPDOWN -->
-                <div class="action-menu-container">
-                  <button class="btn-icon-only" id="chartMenuBtn">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </button>
-
-                  <!-- Hidden Dropdown Menu -->
-                  <div class="dropdown-menu" id="chartMenuDropdown">
-                    <a href="#"
-                      ><i class="fa-solid fa-rotate-right"></i> Refresh Data</a
-                    >
-                    <a href="#"
-                      ><i class="fa-solid fa-file-export"></i> Export PDF</a
-                    >
-                    <a href="#"
-                      ><i class="fa-solid fa-gear"></i> Widget Settings</a
-                    >
-                  </div>
-                </div>
-              </div>
-
-              <!-- Chart Wrapper with Center Text -->
-              <div class="chart-wrapper">
-                <canvas id="statusDoughnutChart"></canvas>
-
-                <!-- THIS FIXES THE "EMPTY" LOOK -->
-                <div class="chart-center-text">
-                  <h3 id="totalTicketsVal">142</h3>
-                  <span>Total Tickets</span>
-                </div>
-              </div>
-
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <span class="dot orange"></span> Open
-                </div>
-                <div class="legend-item">
-                  <span class="dot green"></span> Solved
-                </div>
-                <div class="legend-item">
-                  <span class="dot grey"></span> Closed
-                </div>
-              </div>
-            </div>
           </section>
         </main>
 
