@@ -35,15 +35,17 @@ function hraRenderTable(data) {
     data.forEach(asset => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-<td style="font-weight:bold;">${asset.asset_id}</td>
-<td>${asset.employee}</td>
-<td>${asset.asset_type}</td>
-<td>${asset.model_details}</td>
-<td>${asset.assigned_date}</td>
-<td><span class="hra-status-badge hra-status-${asset.status}">
-${asset.status}
-</span></td>
-`;
+            <td style="font-weight:bold;">${asset.id}</td>
+            <td>${asset.employee}</td>
+            <td><i class="fa-solid ${hraGetIcon(asset.type)}"></i> ${asset.type}</td>
+            <td>${asset.model}</td>
+            <td>${asset.date}</td>
+            <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
+            <td>
+                <button class="hra-action-icon hra-edit-btn" data-id="${asset.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                <button class="hra-action-icon hra-delete-btn" data-id="${asset.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        `;
         hraTableBody.appendChild(tr);
     });
 }
@@ -177,11 +179,9 @@ hraTableBody.addEventListener('click', (e) => {
 });
 
 // Form Submission
-hraAssetForm.addEventListener('submit', async (e) => {
+hraAssetForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     const updatedAsset = {
         id: document.getElementById('hraAssetId').value,
         empId: document.getElementById('hraEmpId').value,
@@ -191,63 +191,23 @@ hraAssetForm.addEventListener('submit', async (e) => {
         model: document.getElementById('hraModelDetails').value,
         date: document.getElementById('hraAssignDate').value,
         status: 'assigned'
-=======
-    const assetData = {
-        asset_id: document.getElementById('hraAssetId').value,
-        employee: document.getElementById('hraEmpName').value,
-=======
-    const assetData = {
-        asset_id: document.getElementById('hraAssetId').value,
-        employee: document.getElementById('hraEmpName').value,
->>>>>>> Stashed changes
-        asset_type: document.getElementById('hraAssetType').value,
-        model_details: document.getElementById('hraModelDetails').value,
-        assigned_date: document.getElementById('hraAssignDate').value,
-        status: "assigned"
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     };
 
-    try {
-
-        const response = await fetch("http://127.0.0.1:8000/api/assets/save/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(assetData)
-        });
-        const result1 = await response.json();
-console.log("Saved:", result1);
-
-        const result = await response.json();
-
-        if (response.ok) {
-
-            console.log("Saved:", result);
-
-            loadAssets(); // reload from backend
-
-            hraCloseModal();
-            showSuccessPopup();
+    if (currentEditingAssetId) {
+        const idx = hraAssets.findIndex(a => a.id === currentEditingAssetId);
+        if (idx !== -1) {
+            hraAssets[idx] = updatedAsset;
         }
-
-    } catch (error) {
-        console.error("Error saving asset:", error);
+    } else {
+        hraAssets.unshift(updatedAsset);
     }
+
+    hraRenderTable(hraGetFilteredAssets());
+
+    hraCloseModal();
+
+    showSuccessPopup();
 });
-async function loadAssets(){
-
-    const response = await fetch("http://127.0.0.1:8000/api/assets/");
-    const data = await response.json();
-
-    hraAssets = data;
-    hraRenderTable(hraAssets);
-}
-
-document.addEventListener("DOMContentLoaded", loadAssets);
 
 // Search Filter
 hraSearchInput.addEventListener('input', () => {
