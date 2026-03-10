@@ -1,22 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- Global Variable ---
+
   let currentEmpData = null;
 
-  // ==================================================
-  // --- 1. INITIALIZATION & DATA POPULATION ---
-  // ==================================================
+  
   const storedData = localStorage.getItem("viewEmployeeData");
   if (storedData) {
-    currentEmpData = JSON.parse(storedData);
-    populateUI(currentEmpData);     // Fill text fields
-    admUpdateUIState();             // Set initial state (Salary Hold badge + buttons)
+    currentEmpData = normalizeEmployee(JSON.parse(storedData));
+    // re-save normalized version (adds defaults for leave/bank if missing)
+    localStorage.setItem("viewEmployeeData", JSON.stringify(currentEmpData));
+
+    populateUI(currentEmpData);
+    admUpdateUIState();
   } else {
     alert("No employee selected.");
     window.history.back();
     return;
   }
 
-  // Helper: Populate Standard Text Fields
+  // Inject modals/popups (once)
+  injectEditModal();
+  injectSuccessPopup();
+
+  // Bind buttons
+  bindEditProfileButtons();     // works even if your Edit button uses id="downloadProfileBtn"
+  bindDownloadButtonIfPresent(); // prevents download binding when the button is actually Edit
+
+ 
+  function normalizeEmployee(emp) {
+    const e = emp || {};
+
+    // Leave Balance defaults (days)
+    if (!e.leaveBalance || typeof e.leaveBalance !== "object") e.leaveBalance = {};
+    e.leaveBalance.sick = toIntOrDefault(e.leaveBalance.sick, 0);
+    e.leaveBalance.casual = toIntOrDefault(e.leaveBalance.casual, 0);
+    e.leaveBalance.privilege = toIntOrDefault(e.leaveBalance.privilege, 0);
+    e.leaveBalance.maternity = toIntOrDefault(e.leaveBalance.maternity, 0);
+    e.leaveBalance.compOff = toIntOrDefault(e.leaveBalance.compOff, 0);
+
+    // Bank details defaults
+    if (!e.bankDetails || typeof e.bankDetails !== "object") e.bankDetails = {};
+    e.bankDetails.bankName = (e.bankDetails.bankName ?? "").toString();
+    e.bankDetails.accountNumber = (e.bankDetails.accountNumber ?? "").toString();
+    e.bankDetails.ifsc = (e.bankDetails.ifsc ?? "").toString();
+
+    // Admin flags defaults
+    e.isSalaryHeld = !!e.isSalaryHeld;
+    e.isLoginDisabled = !!e.isLoginDisabled;
+
+    // Status default
+    e.status = e.status || "Active";
+
+    return e;
+  }
+
+  function toIntOrDefault(v, def) {
+    const n = Number.parseInt(v, 10);
+    return Number.isFinite(n) ? n : def;
+  }
+
+  
   function populateUI(emp) {
     const setText = (id, text) => {
       const el = document.getElementById(id);
@@ -32,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
       emp.name
         ? emp.name
             .split(" ")
+            .filter(Boolean)
             .map((n) => n[0])
             .join("")
             .substring(0, 2)
@@ -52,11 +95,39 @@ document.addEventListener("DOMContentLoaded", function () {
     setText("p_role_2", emp.role);
     setText("p_marital", emp.maritalStatus || "Single");
 
-    // Status Badge
+    // Status badge
     updateStatusBadge(emp.status);
+
+    // Leave Balance + Bank Details (your HTML has no IDs, so we update by matching <label> text)
+    updateValueByLabel("Sick Leave", `${emp.leaveBalance.sick} days`);
+    updateValueByLabel("Casual Leave", `${emp.leaveBalance.casual} days`);
+    updateValueByLabel("Privilege Leave", `${emp.leaveBalance.privilege} days`);
+    updateValueByLabel("Maternity Leave", `${emp.leaveBalance.maternity} days`);
+    updateValueByLabel("Comp Off", `${emp.leaveBalance.compOff} days`);
+
+    updateValueByLabel("Bank Name", emp.bankDetails.bankName || "-");
+    updateValueByLabel("Account Number", emp.bankDetails.accountNumber || "-");
+    updateValueByLabel("IFSC Code", emp.bankDetails.ifsc || "-");
   }
 
-  // Helper: Update Status Badge Colors
+  // Update a .data-box value by its <label> text (case-insensitive)
+  function updateValueByLabel(labelText, valueText) {
+    const wanted = (labelText || "").trim().toLowerCase();
+    const boxes = document.querySelectorAll(".data-box");
+    for (const box of boxes) {
+      const lab = box.querySelector("label");
+      const val = box.querySelector(".value");
+      if (!lab || !val) continue;
+      const got = (lab.textContent || "").trim().toLowerCase();
+      if (got === wanted) {
+        val.textContent = valueText;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  
   function updateStatusBadge(status) {
     const statusEl = document.getElementById("p_status");
     if (!statusEl) return;
@@ -117,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // --- 2. TAB SWITCHING LOGIC ---
   // ==================================================
   window.switchTab = function (tabName, evt) {
-    const e = evt || window.event; // support inline onclick
+    const e = evt || window.event;
     const allTabs = document.querySelectorAll(".tab-item");
     allTabs.forEach((tab) => tab.classList.remove("active"));
     if (e && e.currentTarget) e.currentTarget.classList.add("active");
@@ -132,25 +203,22 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==================================================
   // --- 3. ADMIN ACTIONS (Salary, Login, Dismiss, Delete) ---
   // ==================================================
-  // A. Open Admin Modal (With Dynamic Text Logic)
   window.admOpenModal = function (modalId) {
     const modal = document.getElementById(modalId);
 
-    // Salary modal text
     if (modalId === "admSalaryModal" && currentEmpData) {
       const actionText = document.getElementById("admSalaryActionText");
       if (actionText) {
         if (currentEmpData.isSalaryHeld) {
           actionText.innerText = "Resume";
-          actionText.style.color = "#10b981"; // Green
+          actionText.style.color = "#10b981";
         } else {
           actionText.innerText = "Hold";
-          actionText.style.color = "#d97706"; // Orange
+          actionText.style.color = "#d97706";
         }
       }
     }
 
-    // Login modal text
     if (modalId === "admLoginModal" && currentEmpData) {
       const actionText = document.getElementById("admLoginActionText");
       if (actionText) {
@@ -161,13 +229,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modal) modal.classList.add("adm-show");
   };
 
-  // B. Close Admin Modal
   window.admCloseModal = function (modalId) {
     const modal = document.getElementById(modalId);
     if (modal) modal.classList.remove("adm-show");
   };
 
-  // C. Perform Action (Toggle State)
   window.admPerformAction = function (actionType) {
     if (!currentEmpData) return;
 
@@ -191,32 +257,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
       case "delete":
         admDeleteEmployeePermanently();
-        return; // stop
+        return;
     }
 
     admSaveAndRefresh(currentEmpData);
     if (modalId) admCloseModal(modalId);
   };
 
-  // D. Update UI Buttons & Visuals based on Data (UPDATED FOR HOLD TEXT)
   function admUpdateUIState() {
     if (!currentEmpData) return;
 
-    // --- SALARY LOGIC ---
+    // Salary state
     const salaryBtnText = document.getElementById("admTxtSalary");
-    const salaryUI = ensureSalaryHoldBadge(); // { box, badge }
+    const salaryUI = ensureSalaryHoldBadge();
 
     if (currentEmpData.isSalaryHeld) {
       if (salaryBtnText) salaryBtnText.innerText = "Resume Salary";
       if (salaryUI?.box) salaryUI.box.classList.add("adm-salary-held");
-      if (salaryUI?.badge) salaryUI.badge.style.display = "inline-block"; // HOLD text ON
+      if (salaryUI?.badge) salaryUI.badge.style.display = "inline-block";
     } else {
       if (salaryBtnText) salaryBtnText.innerText = "Hold Salary";
       if (salaryUI?.box) salaryUI.box.classList.remove("adm-salary-held");
-      if (salaryUI?.badge) salaryUI.badge.style.display = "none"; // HOLD text OFF
+      if (salaryUI?.badge) salaryUI.badge.style.display = "none";
     }
 
-    // --- LOGIN LOGIC ---
+    // Login state
     const loginBtnText = document.getElementById("admTxtLogin");
     if (currentEmpData.isLoginDisabled) {
       if (loginBtnText) loginBtnText.innerText = "Enable Login";
@@ -224,28 +289,26 @@ document.addEventListener("DOMContentLoaded", function () {
       if (loginBtnText) loginBtnText.innerText = "Disable Login";
     }
 
-    // --- STATUS BADGE ---
     updateStatusBadge(currentEmpData.status);
   }
 
-  // E. Save Data Helper
   function admSaveAndRefresh(updatedEmp) {
-    // 1) Update Current View
+    updatedEmp = normalizeEmployee(updatedEmp);
+
+    // view storage
     localStorage.setItem("viewEmployeeData", JSON.stringify(updatedEmp));
 
-    // 2) Update Main Database (List of all employees)
+    // employees storage
     const allEmps = JSON.parse(localStorage.getItem("employees")) || [];
     const index = allEmps.findIndex((e) => e.id === updatedEmp.id);
-    if (index !== -1) {
-      allEmps[index] = updatedEmp;
-      localStorage.setItem("employees", JSON.stringify(allEmps));
-    }
+    if (index !== -1) allEmps[index] = updatedEmp;
+    else allEmps.push(updatedEmp);
 
-    // 3) Refresh UI
+    localStorage.setItem("employees", JSON.stringify(allEmps));
+
     admUpdateUIState();
   }
 
-  // F. Delete Employee Logic
   function admDeleteEmployeePermanently() {
     const allEmps = JSON.parse(localStorage.getItem("employees")) || [];
     const newEmps = allEmps.filter((e) => e.id !== currentEmpData.id);
@@ -258,13 +321,492 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ==================================================
+  // --- 3B. EDIT EMPLOYEE (Admin) including Leave Balance + Bank Details ---
+  // ==================================================
+  function bindEditProfileButtons() {
+    // Your current "Edit Profile" button is using id="downloadProfileBtn"
+    const downloadOrEditBtn = document.getElementById("downloadProfileBtn");
+
+    // Optional: if you add a real edit button later, it will also work
+    const editBtn = document.getElementById("editProfileBtn");
+
+    const candidates = [downloadOrEditBtn, editBtn].filter(Boolean);
+
+    candidates.forEach((btn) => {
+      // Only bind as Edit if it looks like Edit (your current case)
+      if (!looksLikeEditButton(btn)) return;
+
+      if (btn.dataset.editBound === "1") return;
+      btn.dataset.editBound = "1";
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.admOpenEditModal();
+      });
+    });
+  }
+
+  function looksLikeEditButton(btn) {
+    const txt = (btn.textContent || "").toLowerCase();
+    if (txt.includes("edit")) return true;
+    if (btn.querySelector(".fa-pen-to-square, .fa-pen, .fa-edit")) return true;
+    return false;
+  }
+
+  function injectEditModal() {
+    if (document.getElementById("admEditModal")) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "admEditModal";
+    overlay.className = "adm-modal-overlay";
+    overlay.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    `;
+
+    const modal = document.createElement("div");
+    modal.className = "adm-modal";
+    modal.style.cssText = `
+      width: min(920px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      max-height: 85vh;
+      overflow: auto;
+      scrollbar-width: none; 
+      -ms-overflow-style: none;
+      font-family: inherit;
+    `;
+
+    modal.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div>
+          <div style="font-size:18px;font-weight:900;">Edit Employee Profile</div>
+          <div style="color:#6b7280;font-size:13px;margin-top:2px;">
+            Update details, leave balance and bank details.
+          </div>
+        </div>
+        <button type="button" id="admEditCloseX"
+          style="border:none;background:#f3f4f6;border-radius:12px;padding:8px 10px;cursor:pointer;font-weight:900;">
+          ✕
+        </button>
+      </div>
+
+      <div style="height:1px;background:#eef2f7;margin:14px 0;"></div>
+
+      <form id="admEditForm">
+
+        <div style="font-weight:900;color:#111827;margin:8px 0 10px 0;">Profile</div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Employee ID (read-only)</label>
+            <input id="edit_id" type="text" disabled
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Name *</label>
+            <input id="edit_name" type="text" required
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Role</label>
+            <input id="edit_role" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Department</label>
+            <input id="edit_dept" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Email</label>
+            <input id="edit_email" type="email"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Phone</label>
+            <input id="edit_phone" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Location</label>
+            <input id="edit_location" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Marital Status</label>
+            <select id="edit_marital"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Unmarried">Unmarried</option>
+              <option value="Divorced">Divorced</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Join Date</label>
+            <input id="edit_joinDate" type="text" placeholder="15 Mar 2020"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Salary</label>
+            <input id="edit_salary" type="text" placeholder="₹85,000.00"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Status</label>
+            <select id="edit_status"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Dismissed">Dismissed</option>
+              <option value="Terminated">Terminated</option>
+            </select>
+          </div>
+
+          <div style="display:flex;align-items:flex-end;gap:10px;">
+            <div style="flex:1;">
+              <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Login</label>
+              <div style="padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;font-size:13px;">
+                <span id="edit_login_state">-</span>
+              </div>
+            </div>
+            <div style="flex:1;">
+              <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Salary State</label>
+              <div style="padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;font-size:13px;">
+                <span id="edit_salary_state">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:1px;background:#eef2f7;margin:16px 0;"></div>
+
+        <div style="font-weight:900;color:#111827;margin:0 0 10px 0;">Leave Balance (days)</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;">
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Sick Leave</label>
+            <input id="edit_leave_sick" type="number" min="0"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Casual Leave</label>
+            <input id="edit_leave_casual" type="number" min="0"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Privilege Leave</label>
+            <input id="edit_leave_privilege" type="number" min="0"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Maternity Leave</label>
+            <input id="edit_leave_maternity" type="number" min="0"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Comp Off</label>
+            <input id="edit_leave_comp" type="number" min="0"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+        </div>
+
+        <div style="height:1px;background:#eef2f7;margin:16px 0;"></div>
+
+        <div style="font-weight:900;color:#111827;margin:0 0 10px 0;">Bank Details</div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Bank Name</label>
+            <input id="edit_bank_name" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Account Number</label>
+            <input id="edit_bank_account" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">IFSC Code</label>
+            <input id="edit_bank_ifsc" type="text"
+              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;text-transform:uppercase;" />
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+          <button type="button" id="admEditCancel"
+            style="padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:800;">
+            Cancel
+          </button>
+          <button type="submit" id="admEditSave"
+            style="padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(135deg,#111827,#334155);color:#fff;cursor:pointer;font-weight:900;">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // close handlers
+    modal.querySelector("#admEditCloseX").addEventListener("click", () => window.admCloseEditModal());
+    modal.querySelector("#admEditCancel").addEventListener("click", () => window.admCloseEditModal());
+
+    // submit handler
+    modal.querySelector("#admEditForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      window.admSaveEditEmployee();
+    });
+
+    // Make .adm-show work even if CSS doesn't
+    const origAdd = overlay.classList.add.bind(overlay.classList);
+    overlay.classList.add = function (...args) {
+      if (args.includes("adm-show")) overlay.style.display = "flex";
+      return origAdd(...args);
+    };
+    const origRemove = overlay.classList.remove.bind(overlay.classList);
+    overlay.classList.remove = function (...args) {
+      if (args.includes("adm-show")) overlay.style.display = "none";
+      return origRemove(...args);
+    };
+  }
+
+  window.admOpenEditModal = function () {
+    if (!currentEmpData) return;
+
+    const overlay = document.getElementById("admEditModal");
+    if (!overlay) return;
+
+    currentEmpData = normalizeEmployee(currentEmpData);
+
+    const $ = (id) => document.getElementById(id);
+
+    // Profile
+    $("edit_id").value = currentEmpData.id || "";
+    $("edit_name").value = currentEmpData.name || "";
+    $("edit_role").value = currentEmpData.role || "";
+    $("edit_dept").value = currentEmpData.dept || "";
+    $("edit_email").value = currentEmpData.email || "";
+    $("edit_phone").value = currentEmpData.phone || "";
+    $("edit_location").value = currentEmpData.location || "";
+    $("edit_marital").value = currentEmpData.maritalStatus || "Single";
+    $("edit_joinDate").value = currentEmpData.joinDate || "";
+    $("edit_salary").value = currentEmpData.salary || "";
+    $("edit_status").value = currentEmpData.status || "Active";
+
+    $("edit_login_state").innerText = currentEmpData.isLoginDisabled ? "Disabled" : "Enabled";
+    $("edit_salary_state").innerText = currentEmpData.isSalaryHeld ? "Held" : "Active";
+
+    // Leave
+    $("edit_leave_sick").value = currentEmpData.leaveBalance.sick;
+    $("edit_leave_casual").value = currentEmpData.leaveBalance.casual;
+    $("edit_leave_privilege").value = currentEmpData.leaveBalance.privilege;
+    $("edit_leave_maternity").value = currentEmpData.leaveBalance.maternity;
+    $("edit_leave_comp").value = currentEmpData.leaveBalance.compOff;
+
+    // Bank
+    $("edit_bank_name").value = currentEmpData.bankDetails.bankName || "";
+    $("edit_bank_account").value = currentEmpData.bankDetails.accountNumber || "";
+    $("edit_bank_ifsc").value = currentEmpData.bankDetails.ifsc || "";
+
+    overlay.classList.add("adm-show");
+  };
+
+  window.admCloseEditModal = function () {
+    const overlay = document.getElementById("admEditModal");
+    if (overlay) overlay.classList.remove("adm-show");
+  };
+
+  window.admSaveEditEmployee = function () {
+    if (!currentEmpData) return;
+
+    const getVal = (id) => (document.getElementById(id)?.value ?? "").trim();
+    const getNum = (id) => toIntOrDefault(getVal(id), 0);
+
+    const name = getVal("edit_name");
+    if (!name) {
+      alert("Name is required.");
+      return;
+    }
+
+    // Update current object
+    currentEmpData = normalizeEmployee(currentEmpData);
+
+    // Profile
+    currentEmpData.name = name;
+    currentEmpData.role = getVal("edit_role");
+    currentEmpData.dept = getVal("edit_dept");
+    currentEmpData.email = getVal("edit_email");
+    currentEmpData.phone = getVal("edit_phone");
+    currentEmpData.location = getVal("edit_location");
+    currentEmpData.maritalStatus = getVal("edit_marital") || "Single";
+    currentEmpData.joinDate = getVal("edit_joinDate");
+    currentEmpData.salary = getVal("edit_salary");
+    currentEmpData.status = getVal("edit_status") || currentEmpData.status;
+
+    // Leave balance
+    currentEmpData.leaveBalance.sick = getNum("edit_leave_sick");
+    currentEmpData.leaveBalance.casual = getNum("edit_leave_casual");
+    currentEmpData.leaveBalance.privilege = getNum("edit_leave_privilege");
+    currentEmpData.leaveBalance.maternity = getNum("edit_leave_maternity");
+    currentEmpData.leaveBalance.compOff = getNum("edit_leave_comp");
+
+    // Bank details
+    currentEmpData.bankDetails.bankName = getVal("edit_bank_name");
+    currentEmpData.bankDetails.accountNumber = getVal("edit_bank_account");
+    currentEmpData.bankDetails.ifsc = getVal("edit_bank_ifsc").toUpperCase();
+
+    // Save + refresh everywhere
+    admSaveAndRefresh(currentEmpData);
+    populateUI(currentEmpData);
+
+    window.admCloseEditModal();
+    showSuccessPopup("Profile updated successfully!");
+  };
+
+  // ==================================================
+  // --- Success Popup (Beautiful) ---
+  // ==================================================
+  function injectSuccessPopup() {
+    if (document.getElementById("admSuccessPopup")) return;
+
+    const el = document.createElement("div");
+    el.id = "admSuccessPopup";
+    el.style.cssText = `
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(17,24,39,.35);
+      z-index: 10000;
+      padding: 16px;
+    `;
+
+    el.innerHTML = `
+      <div style="
+        width: min(420px, 100%);
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 22px 60px rgba(0,0,0,.28);
+        overflow: hidden;
+        transform: translateY(8px);
+        opacity: 0;
+        transition: .18s ease;
+      " id="admSuccessCard">
+        <div style="padding:16px 16px 12px 16px; background: linear-gradient(135deg,#10b981,#22c55e); color:#fff;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div style="font-weight:900; font-size:16px;">Success</div>
+            <button id="admSuccessClose" type="button" style="border:none;background:rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:6px 10px;cursor:pointer;font-weight:900;">✕</button>
+          </div>
+        </div>
+
+        <div style="padding:16px;">
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div style="
+              width: 42px; height: 42px; border-radius: 14px;
+              background: #dcfce7; color: #166534;
+              display:flex; align-items:center; justify-content:center;
+              font-size: 20px; font-weight: 900;
+            ">✓</div>
+            <div>
+              <div id="admSuccessMsg" style="font-weight:900; color:#111827; font-size:14px; line-height:1.35;">
+                Updated successfully
+              </div>
+              <div style="color:#6b7280; font-size:12px; margin-top:4px;">
+                Changes have been saved and applied to the employee profile.
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+            <button id="admSuccessOk" type="button" style="
+              border:none;
+              background:#111827;
+              color:#fff;
+              padding:10px 14px;
+              border-radius:12px;
+              cursor:pointer;
+              font-weight:900;
+            ">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(el);
+
+    el.querySelector("#admSuccessClose").addEventListener("click", hideSuccessPopup);
+    el.querySelector("#admSuccessOk").addEventListener("click", hideSuccessPopup);
+    el.addEventListener("click", function (e) {
+      if (e.target === el) hideSuccessPopup();
+    });
+  }
+
+  let successTimer = null;
+
+  function showSuccessPopup(message) {
+    const overlay = document.getElementById("admSuccessPopup");
+    const card = document.getElementById("admSuccessCard");
+    const msg = document.getElementById("admSuccessMsg");
+    if (!overlay || !card || !msg) return;
+
+    msg.textContent = message || "Updated successfully";
+
+    overlay.style.display = "flex";
+    requestAnimationFrame(() => {
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0px)";
+    });
+
+    if (successTimer) clearTimeout(successTimer);
+    successTimer = setTimeout(hideSuccessPopup, 1700);
+  }
+
+  function hideSuccessPopup() {
+    const overlay = document.getElementById("admSuccessPopup");
+    const card = document.getElementById("admSuccessCard");
+    if (!overlay || !card) return;
+
+    card.style.opacity = "0";
+    card.style.transform = "translateY(8px)";
+    setTimeout(() => {
+      overlay.style.display = "none";
+    }, 160);
+  }
+
+  // ==================================================
   // --- 4. DOWNLOAD LOGIC (CSV & PDF) ---
   // ==================================================
-  const downloadBtn = document.getElementById("downloadProfileBtn");
   const downloadModal = document.getElementById("downloadModal");
 
-  // Open Download Modal
-  if (downloadBtn) {
+  function bindDownloadButtonIfPresent() {
+    const downloadBtn = document.getElementById("downloadProfileBtn");
+    if (!downloadBtn) return;
+
+    // If this button is actually Edit Profile (your current case), do NOT bind download.
+    if (looksLikeEditButton(downloadBtn)) return;
+
+    if (downloadBtn.dataset.downloadBound === "1") return;
+    downloadBtn.dataset.downloadBound = "1";
+
     downloadBtn.addEventListener("click", function () {
       if (!currentEmpData) {
         alert("No employee data available.");
@@ -274,16 +816,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Close Download Modal
   window.closeDownloadModal = function () {
     if (downloadModal) downloadModal.classList.remove("active");
   };
 
-  // CSV Download (fixed template literals + safe CSV quoting)
   window.downloadAsCSV = function () {
     if (!currentEmpData) return;
+    currentEmpData = normalizeEmployee(currentEmpData);
 
     const emp = currentEmpData;
+
     const headers = [
       "ID",
       "Name",
@@ -298,6 +840,14 @@ document.addEventListener("DOMContentLoaded", function () {
       "Status",
       "Salary Held",
       "Login Disabled",
+      "Sick Leave",
+      "Casual Leave",
+      "Privilege Leave",
+      "Maternity Leave",
+      "Comp Off",
+      "Bank Name",
+      "Account Number",
+      "IFSC Code",
     ];
 
     const values = [
@@ -314,11 +864,18 @@ document.addEventListener("DOMContentLoaded", function () {
       emp.status,
       emp.isSalaryHeld ? "Yes" : "No",
       emp.isLoginDisabled ? "Yes" : "No",
+      emp.leaveBalance.sick,
+      emp.leaveBalance.casual,
+      emp.leaveBalance.privilege,
+      emp.leaveBalance.maternity,
+      emp.leaveBalance.compOff,
+      emp.bankDetails.bankName,
+      emp.bankDetails.accountNumber,
+      emp.bankDetails.ifsc,
     ];
 
     const csvEscape = (v) => {
       const s = (v ?? "").toString();
-      // Quote if it contains comma, quote, or newline
       if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
       return s;
     };
@@ -340,7 +897,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeDownloadModal();
   };
 
-  // PDF Download (fixed template literals)
   window.downloadAsPDF = function () {
     if (!currentEmpData) return;
 
@@ -348,7 +904,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const element = document.querySelector(".main-container");
 
-    // Hide UI controls before printing so they don't appear in PDF
     const controls = document.querySelectorAll(
       ".top-nav, .header-actions, .tabs-container, .adm-actions-grid"
     );
@@ -367,12 +922,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .set(opt)
         .from(element)
         .save()
-        .then(() => {
-          controls.forEach((el) => (el.style.display = ""));
-        })
-        .catch(() => {
-          controls.forEach((el) => (el.style.display = ""));
-        });
+        .then(() => controls.forEach((el) => (el.style.display = "")))
+        .catch(() => controls.forEach((el) => (el.style.display = "")));
     } else {
       alert("PDF Library not loaded. Please include html2pdf.js");
       controls.forEach((el) => (el.style.display = ""));
@@ -380,15 +931,19 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==================================================
-  // --- 5. GLOBAL CLICK HANDLER (Close All Modals) ---
+  // --- 5. GLOBAL CLICK HANDLER (Close Modals) ---
   // ==================================================
   window.onclick = function (event) {
-    // Close Admin Modals
-    if (event.target && event.target.classList && event.target.classList.contains("adm-modal-overlay")) {
+    // Close admin overlay modals
+    if (
+      event.target &&
+      event.target.classList &&
+      event.target.classList.contains("adm-modal-overlay")
+    ) {
       event.target.classList.remove("adm-show");
     }
 
-    // Close Download Modal
+    // Close download overlay
     if (event.target === downloadModal) {
       window.closeDownloadModal();
     }
