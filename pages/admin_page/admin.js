@@ -1,3 +1,35 @@
+
+employee_details_table = document.getElementById('employeeTBody')
+function loademployees()
+{
+  fetch("http://13.60.240.189:8000/api/employees/")
+  .then(res => res.json())
+        .then(data => 
+          {
+            console.log("Data fetched:", data);
+            employee_details_table.innerHTML = "";
+            data.forEach(p => 
+              {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${p.employee_id}</td>
+                    <td>${p.name}</td>
+                    <td>₹${p.email}</td>
+                    <td>₹${p.role}</td>
+                    <td>₹${p.salary}</td>
+                `;
+                employee_details_table.appendChild(row);
+                
+            }).catch(err => {
+            console.error("Error fetching payslips:", err);
+            employee_details.innerHTML = `<tr><td colspan="4">Error loading payslips</td></tr>`;
+        });
+          });
+        
+}
+
+document.addEventListener("DOMContentLoaded",loademployees)
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("oppty Dashboard JS Initialized.");
 
