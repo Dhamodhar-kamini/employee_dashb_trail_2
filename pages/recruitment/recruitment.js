@@ -321,3 +321,123 @@ function ntRenderList() {
         listContainer.appendChild(itemDiv);
     });
 }
+
+
+//position cards
+ // 1. Data Store
+  // The 'count' on the dashboard will be the length of these arrays.
+  const dashboardData = {
+    positions: {
+      color: '#f97316', // Orange
+      title: 'Open Positions',
+      items: ['Senior React Developer', 'UI/UX Designer', 'Backend Node.js Lead']
+    },
+    candidates: {
+      color: '#3b82f6', // Blue
+      title: 'Total Candidates',
+      items: ['John Doe (Applied)', 'Sarah Smith (Screening)', 'Mike Ross (Interview)', 'Rachel Zane (Offer)']
+    },
+    interviews: {
+      color: '#10b981', // Green
+      title: 'Interviews Today',
+      items: ['10:00 AM - Mike Ross', '02:00 PM - Jessica Pearson']
+    },
+    offers: {
+      color: '#1f2937', // Dark
+      title: 'Offers Released',
+      items: ['Rachel Zane - Legal Counsel', 'Louis Litt - Finance Head']
+    }
+  };
+
+  let currentKey = null; // Tracks which card is currently open
+
+  // 2. Initialize Dashboard Counts
+  function updateDashboardCounts() {
+    document.getElementById('count-positions').innerText = dashboardData.positions.items.length;
+    // For candidates, let's pretend there are more in the DB, but we show list length + 81
+    document.getElementById('count-candidates').innerText = 81 + dashboardData.candidates.items.length; 
+    document.getElementById('count-interviews').innerText = dashboardData.interviews.items.length;
+    document.getElementById('count-offers').innerText = dashboardData.offers.items.length;
+  }
+
+  // 3. Open Modal
+  function openModal(key) {
+    currentKey = key;
+    const data = dashboardData[key];
+    const modal = document.getElementById('rdModal');
+    const header = document.getElementById('modalHeader');
+    
+    // Set Header Style
+    header.style.backgroundColor = data.color;
+    document.getElementById('modalTitle').innerText = data.title;
+
+    // Render List
+    renderList();
+
+    // Show Modal
+    modal.classList.add('active');
+  }
+
+  // 4. Close Modal
+  function closeModal() {
+    const modal = document.getElementById('rdModal');
+    modal.classList.remove('active');
+    currentKey = null;
+  }
+
+  // 5. Render List Items in Modal
+  function renderList() {
+    const listContainer = document.getElementById('detailsList');
+    listContainer.innerHTML = ''; // Clear current
+
+    const items = dashboardData[currentKey].items;
+
+    if(items.length === 0) {
+      listContainer.innerHTML = '<li style="color:#999; text-align:center; padding:10px;">No items found.</li>';
+      return;
+    }
+
+    items.forEach((item, index) => {
+      const li = document.createElement('li');
+      li.className = 'rd-list-item';
+      li.innerHTML = `
+        <span>${item}</span>
+        <button class="rd-delete-btn" onclick="deleteItem(${index})">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      `;
+      listContainer.appendChild(li);
+    });
+  }
+
+  // 6. Add Item Logic
+  function addItem() {
+    const input = document.getElementById('newItemInput');
+    const value = input.value.trim();
+
+    if (value && currentKey) {
+      dashboardData[currentKey].items.push(value);
+      input.value = ''; // Clear input
+      renderList(); // Refresh list inside modal
+      updateDashboardCounts(); // Refresh number on dashboard card
+    } else {
+      alert("Please enter a detail.");
+    }
+  }
+
+  // 7. Delete Item Logic
+  function deleteItem(index) {
+    if (confirm("Are you sure you want to remove this item?")) {
+      dashboardData[currentKey].items.splice(index, 1);
+      renderList(); // Refresh list inside modal
+      updateDashboardCounts(); // Refresh number on dashboard card
+    }
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('rdModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Initial Render
+  updateDashboardCounts();

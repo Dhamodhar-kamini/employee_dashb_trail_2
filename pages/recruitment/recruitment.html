@@ -222,28 +222,70 @@
       </div>
     </div>
 
+    <div class="main-container">
     <div class="rd-stats-grid">
-      <div class="rd-stat-card rd-stat-orange">
-        <div class="rd-stat-value">0</div>
+      
+      <!-- Card 1: Open Positions -->
+      <div class="rd-stat-card rd-stat-orange" onclick="openModal('positions')">
+        <div class="rd-icon-bg"><i class="fa-solid fa-briefcase"></i></div>
+        <div class="rd-stat-value" id="count-positions">0</div>
         <div class="rd-stat-label">Open Positions</div>
+        <div class="rd-click-hint">Click to view details</div>
       </div>
 
-      <div class="rd-stat-card rd-stat-blue">
-        <div class="rd-stat-value">85</div>
+      <!-- Card 2: Total Candidates -->
+      <div class="rd-stat-card rd-stat-blue" onclick="openModal('candidates')">
+        <div class="rd-icon-bg"><i class="fa-solid fa-users"></i></div>
+        <div class="rd-stat-value" id="count-candidates">85</div>
         <div class="rd-stat-label">Total Candidates</div>
+        <div class="rd-click-hint">Click to view details</div>
       </div>
 
-      <div class="rd-stat-card rd-stat-green">
-        <div class="rd-stat-value">2</div>
+      <!-- Card 3: Interviews Today -->
+      <div class="rd-stat-card rd-stat-green" onclick="openModal('interviews')">
+        <div class="rd-icon-bg"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="rd-stat-value" id="count-interviews">2</div>
         <div class="rd-stat-label">Interviews Today</div>
+        <div class="rd-click-hint">Click to view details</div>
       </div>
 
-      <div class="rd-stat-card rd-stat-dark">
-        <div class="rd-stat-value">2</div>
+      <!-- Card 4: Offers Released -->
+      <div class="rd-stat-card rd-stat-dark" onclick="openModal('offers')">
+        <div class="rd-icon-bg"><i class="fa-solid fa-file-signature"></i></div>
+        <div class="rd-stat-value" id="count-offers">2</div>
         <div class="rd-stat-label">Offers Released</div>
+        <div class="rd-click-hint">Click to view details</div>
       </div>
     </div>
+  </div>
 
+  <!-- DYNAMIC MODAL / POPUP -->
+  <div class="rd-modal-overlay" id="rdModal">
+    <div class="rd-modal-card">
+      <div class="rd-modal-header" id="modalHeader">
+        <h3 id="modalTitle">Details</h3>
+        <button class="rd-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="rd-modal-body">
+        <!-- List View -->
+        <div id="viewMode">
+          <ul class="rd-details-list" id="detailsList">
+            <!-- JS will inject items here -->
+          </ul>
+        </div>
+
+        <!-- Edit/Add Section -->
+        <div class="rd-add-section">
+          <h4>Add New Item</h4>
+          <div class="rd-input-group">
+            <input type="text" id="newItemInput" placeholder="Type detail here...">
+            <button class="rd-add-btn" onclick="addItem()"><i class="fa-solid fa-plus"></i> Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!-- Unified Interview Widget Container -->
     <div class="im-widget-container">

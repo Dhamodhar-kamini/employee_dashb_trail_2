@@ -362,3 +362,207 @@
 .rd-stat-blue { border-left-color: #3b82f6; }
 .rd-stat-green { border-left-color: #22c55e; }
 .rd-stat-dark { border-left-color: #1e293b; }
+
+
+
+/* position cards section */
+/* --- GRID SYSTEM --- */
+.rd-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+/* --- CARD STYLES --- */
+.rd-stat-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rd-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.rd-stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827;
+  position: relative;
+  z-index: 2;
+}
+
+.rd-stat-label {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2;
+}
+
+.rd-click-hint {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 15px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.rd-stat-card:hover .rd-click-hint {
+  opacity: 1;
+}
+
+/* Icons and Color Accents */
+.rd-icon-bg {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  font-size: 80px;
+  opacity: 0.1;
+  transform: rotate(15deg);
+  transition: transform 0.3s;
+}
+
+.rd-stat-card:hover .rd-icon-bg {
+  transform: rotate(0deg) scale(1.1);
+}
+
+.rd-stat-orange { border-bottom: 4px solid var(--orange); }
+.rd-stat-orange .rd-icon-bg { color: var(--orange); }
+
+.rd-stat-blue { border-bottom: 4px solid var(--blue); }
+.rd-stat-blue .rd-icon-bg { color: var(--blue); }
+
+.rd-stat-green { border-bottom: 4px solid var(--green); }
+.rd-stat-green .rd-icon-bg { color: var(--green); }
+
+.rd-stat-dark { border-bottom: 4px solid var(--dark); }
+.rd-stat-dark .rd-icon-bg { color: var(--dark); }
+
+/* --- MODAL / POPUP STYLES --- */
+.rd-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rd-modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.rd-modal-card {
+  background: rgb(170, 164, 164);
+  opacity: 0.2s;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.rd-modal-overlay.active .rd-modal-card {
+  transform: scale(1);
+}
+
+.rd-modal-header {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.rd-modal-header h3 { margin: 0; font-size: 18px; }
+
+.rd-close-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.rd-close-btn:hover { background: rgba(255,255,255,0.4); }
+
+.rd-modal-body {
+  padding: 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* List Styles */
+.rd-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rd-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rd-list-item:last-child { border-bottom: none; }
+
+.rd-delete-btn {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.rd-delete-btn:hover { background: #fecaca; }
+
+/* Add Section */
+.rd-add-section {
+  margin-top: 20px;
+  background: #c6c7c8;
+  padding: 15px;
+  border-radius: 12px;
+}
+.rd-add-section h4 { margin: 0 0 10px 0; font-size: 14px; color: #4b5563; }
+
+.rd-input-group { display: flex; gap: 10px; }
+
+.rd-input-group input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+}
+.rd-input-group input:focus { border-color: #3b82f6; }
+
+.rd-add-btn {
+  background: #1f2937;
+  color: white;
+  border: none;
+  padding: 0 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.rd-add-btn:hover { opacity: 0.9; }
