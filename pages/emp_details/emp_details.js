@@ -1,12 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
-
   let currentEmpData = null;
+  // We keep track of the original ID in case the user changes it in the edit form
+  let originalEmpId = null;
 
-  
+  // ==================================================
+  // --- 1. INITIALIZATION & DATA NORMALIZATION ---
+  // ==================================================
   const storedData = localStorage.getItem("viewEmployeeData");
+
   if (storedData) {
     currentEmpData = normalizeEmployee(JSON.parse(storedData));
-    // re-save normalized version (adds defaults for leave/bank if missing)
+    originalEmpId = currentEmpData.id; // Store original ID for tracking updates
+    
+    // re-save normalized version
     localStorage.setItem("viewEmployeeData", JSON.stringify(currentEmpData));
 
     populateUI(currentEmpData);
@@ -22,12 +28,15 @@ document.addEventListener("DOMContentLoaded", function () {
   injectSuccessPopup();
 
   // Bind buttons
-  bindEditProfileButtons();     // works even if your Edit button uses id="downloadProfileBtn"
-  bindDownloadButtonIfPresent(); // prevents download binding when the button is actually Edit
+  bindEditProfileButtons();
+  bindDownloadButtonIfPresent();
 
- 
   function normalizeEmployee(emp) {
     const e = emp || {};
+
+    // Basic defaults
+    e.id = e.id || "EMP-000";
+    e.name = e.name || "Unknown";
 
     // Leave Balance defaults (days)
     if (!e.leaveBalance || typeof e.leaveBalance !== "object") e.leaveBalance = {};
@@ -42,6 +51,15 @@ document.addEventListener("DOMContentLoaded", function () {
     e.bankDetails.bankName = (e.bankDetails.bankName ?? "").toString();
     e.bankDetails.accountNumber = (e.bankDetails.accountNumber ?? "").toString();
     e.bankDetails.ifsc = (e.bankDetails.ifsc ?? "").toString();
+
+    // Statutory Information Defaults (NEW)
+    if (!e.statutoryDetails || typeof e.statutoryDetails !== "object") e.statutoryDetails = {};
+    e.statutoryDetails.pan = (e.statutoryDetails.pan ?? "-NA-").toString();
+    e.statutoryDetails.uan = (e.statutoryDetails.uan ?? "-NA-").toString();
+    e.statutoryDetails.pt = (e.statutoryDetails.pt ?? "-NA-").toString();
+    e.statutoryDetails.lwf = (e.statutoryDetails.lwf ?? "-NA-").toString();
+    e.statutoryDetails.esicStatus = (e.statutoryDetails.esicStatus ?? "-NA-").toString();
+    e.statutoryDetails.esicIp = (e.statutoryDetails.esicIp ?? "-NA-").toString();
 
     // Admin flags defaults
     e.isSalaryHeld = !!e.isSalaryHeld;
@@ -58,7 +76,9 @@ document.addEventListener("DOMContentLoaded", function () {
     return Number.isFinite(n) ? n : def;
   }
 
-  
+  // ==================================================
+  // --- 2. UI POPULATION ---
+  // ==================================================
   function populateUI(emp) {
     const setText = (id, text) => {
       const el = document.getElementById(id);
@@ -98,13 +118,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // Status badge
     updateStatusBadge(emp.status);
 
-    // Leave Balance + Bank Details (your HTML has no IDs, so we update by matching <label> text)
+    // Leave Balance
     updateValueByLabel("Sick Leave", `${emp.leaveBalance.sick} days`);
     updateValueByLabel("Casual Leave", `${emp.leaveBalance.casual} days`);
     updateValueByLabel("Privilege Leave", `${emp.leaveBalance.privilege} days`);
     updateValueByLabel("Maternity Leave", `${emp.leaveBalance.maternity} days`);
     updateValueByLabel("Comp Off", `${emp.leaveBalance.compOff} days`);
 
+    // Statutory Info (NEW)
+    updateValueByLabel("PAN", emp.statutoryDetails.pan);
+    updateValueByLabel("PAN UAN", emp.statutoryDetails.uan);
+    updateValueByLabel("Professional Tax", emp.statutoryDetails.pt);
+    updateValueByLabel("LWF Status", emp.statutoryDetails.lwf);
+    updateValueByLabel("ESIC Status", emp.statutoryDetails.esicStatus);
+    updateValueByLabel("ESIC IP Number", emp.statutoryDetails.esicIp);
+
+    // Bank Details
     updateValueByLabel("Bank Name", emp.bankDetails.bankName || "-");
     updateValueByLabel("Account Number", emp.bankDetails.accountNumber || "-");
     updateValueByLabel("IFSC Code", emp.bankDetails.ifsc || "-");
@@ -119,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const val = box.querySelector(".value");
       if (!lab || !val) continue;
       const got = (lab.textContent || "").trim().toLowerCase();
+      // Simple includes check or exact match
       if (got === wanted) {
         val.textContent = valueText;
         return true;
@@ -127,7 +157,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return false;
   }
 
-  
   function updateStatusBadge(status) {
     const statusEl = document.getElementById("p_status");
     if (!statusEl) return;
@@ -152,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ==================================================
-  // --- Salary HOLD badge (shows when held, hides when resumed) ---
+  // --- Salary HOLD badge ---
   // ==================================================
   function ensureSalaryHoldBadge() {
     const salaryEl = document.getElementById("p_salary");
@@ -185,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ==================================================
-  // --- 2. TAB SWITCHING LOGIC ---
+  // --- 3. TAB SWITCHING LOGIC ---
   // ==================================================
   window.switchTab = function (tabName, evt) {
     const e = evt || window.event;
@@ -201,11 +230,10 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==================================================
-  // --- 3. ADMIN ACTIONS (Salary, Login, Dismiss, Delete) ---
+  // --- 4. ADMIN ACTIONS (Salary, Login, Dismiss) ---
   // ==================================================
   window.admOpenModal = function (modalId) {
     const modal = document.getElementById(modalId);
-
     if (modalId === "admSalaryModal" && currentEmpData) {
       const actionText = document.getElementById("admSalaryActionText");
       if (actionText) {
@@ -218,14 +246,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     }
-
     if (modalId === "admLoginModal" && currentEmpData) {
       const actionText = document.getElementById("admLoginActionText");
       if (actionText) {
         actionText.innerText = currentEmpData.isLoginDisabled ? "Enable" : "Disable";
       }
     }
-
     if (modal) modal.classList.add("adm-show");
   };
 
@@ -236,31 +262,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.admPerformAction = function (actionType) {
     if (!currentEmpData) return;
-
     let modalId = "";
-
     switch (actionType) {
       case "salary":
         currentEmpData.isSalaryHeld = !currentEmpData.isSalaryHeld;
         modalId = "admSalaryModal";
         break;
-
       case "login":
         currentEmpData.isLoginDisabled = !currentEmpData.isLoginDisabled;
         modalId = "admLoginModal";
         break;
-
       case "dismiss":
         currentEmpData.status = "Dismissed";
         modalId = "admDismissModal";
         break;
-
       case "delete":
         admDeleteEmployeePermanently();
         return;
     }
-
-    admSaveAndRefresh(currentEmpData);
+    admSaveAndRefresh(currentEmpData, originalEmpId);
     if (modalId) admCloseModal(modalId);
   };
 
@@ -292,53 +312,56 @@ document.addEventListener("DOMContentLoaded", function () {
     updateStatusBadge(currentEmpData.status);
   }
 
-  function admSaveAndRefresh(updatedEmp) {
+  function admSaveAndRefresh(updatedEmp, oldId = null) {
     updatedEmp = normalizeEmployee(updatedEmp);
 
-    // view storage
+    // Update view storage
     localStorage.setItem("viewEmployeeData", JSON.stringify(updatedEmp));
 
-    // employees storage
+    // Update main array
     const allEmps = JSON.parse(localStorage.getItem("employees")) || [];
-    const index = allEmps.findIndex((e) => e.id === updatedEmp.id);
-    if (index !== -1) allEmps[index] = updatedEmp;
-    else allEmps.push(updatedEmp);
+    
+    // If oldId is provided, we search by that (in case ID was edited)
+    // Otherwise search by current ID
+    const searchId = oldId || updatedEmp.id;
+    
+    const index = allEmps.findIndex((e) => e.id === searchId);
+    
+    if (index !== -1) {
+      allEmps[index] = updatedEmp;
+    } else {
+      allEmps.push(updatedEmp);
+    }
 
     localStorage.setItem("employees", JSON.stringify(allEmps));
-
+    
+    // Update the tracker
+    originalEmpId = updatedEmp.id;
+    
     admUpdateUIState();
   }
 
   function admDeleteEmployeePermanently() {
     const allEmps = JSON.parse(localStorage.getItem("employees")) || [];
     const newEmps = allEmps.filter((e) => e.id !== currentEmpData.id);
-
     localStorage.setItem("employees", JSON.stringify(newEmps));
     localStorage.removeItem("viewEmployeeData");
-
     alert("Employee Deleted Permanently.");
     window.history.back();
   }
 
   // ==================================================
-  // --- 3B. EDIT EMPLOYEE (Admin) including Leave Balance + Bank Details ---
+  // --- 5. EDIT EMPLOYEE MODAL (Includes Statutory & Editable ID) ---
   // ==================================================
   function bindEditProfileButtons() {
-    // Your current "Edit Profile" button is using id="downloadProfileBtn"
     const downloadOrEditBtn = document.getElementById("downloadProfileBtn");
-
-    // Optional: if you add a real edit button later, it will also work
     const editBtn = document.getElementById("editProfileBtn");
-
     const candidates = [downloadOrEditBtn, editBtn].filter(Boolean);
 
     candidates.forEach((btn) => {
-      // Only bind as Edit if it looks like Edit (your current case)
       if (!looksLikeEditButton(btn)) return;
-
       if (btn.dataset.editBound === "1") return;
       btn.dataset.editBound = "1";
-
       btn.addEventListener("click", function (e) {
         e.preventDefault();
         window.admOpenEditModal();
@@ -360,141 +383,121 @@ document.addEventListener("DOMContentLoaded", function () {
     overlay.id = "admEditModal";
     overlay.className = "adm-modal-overlay";
     overlay.style.cssText = `
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 9999;
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      display: none; align-items: center; justify-content: center;
+      padding: 18px; z-index: 9999;
     `;
 
     const modal = document.createElement("div");
     modal.className = "adm-modal";
     modal.style.cssText = `
-      width: min(920px, 100%);
-      background: #fff;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 18px 45px rgba(0,0,0,.28);
-      max-height: 85vh;
-      overflow: auto;
-      scrollbar-width: none; 
-      -ms-overflow-style: none;
-      font-family: inherit;
+      width: min(920px, 100%); background: #fff; border-radius: 18px;
+      padding: 18px; box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      max-height: 85vh; overflow: auto; scrollbar-width: none;
+      -ms-overflow-style: none; font-family: inherit;
     `;
 
+    // Note: ID input is now editable (removed 'disabled' and background style)
+    // Added Statutory Information Section
     modal.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
         <div>
           <div style="font-size:18px;font-weight:900;">Edit Employee Profile</div>
-          <div style="color:#6b7280;font-size:13px;margin-top:2px;">
-            Update details, leave balance and bank details.
-          </div>
+          <div style="color:#6b7280;font-size:13px;margin-top:2px;">Update details, statutory info, leave and bank details.</div>
         </div>
-        <button type="button" id="admEditCloseX"
-          style="border:none;background:#f3f4f6;border-radius:12px;padding:8px 10px;cursor:pointer;font-weight:900;">
-          ✕
-        </button>
+        <button type="button" id="admEditCloseX" style="border:none;background:#f3f4f6;border-radius:12px;padding:8px 10px;cursor:pointer;font-weight:900;">✕</button>
       </div>
 
       <div style="height:1px;background:#eef2f7;margin:14px 0;"></div>
 
       <form id="admEditForm">
-
         <div style="font-weight:900;color:#111827;margin:8px 0 10px 0;">Profile</div>
         <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
           <div>
-            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Employee ID (read-only)</label>
-            <input id="edit_id" type="text" disabled
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;" />
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Employee ID</label>
+            <input id="edit_id" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Name *</label>
-            <input id="edit_name" type="text" required
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_name" type="text" required style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Role</label>
-            <input id="edit_role" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_role" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Department</label>
-            <input id="edit_dept" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_dept" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Email</label>
-            <input id="edit_email" type="email"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_email" type="email" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Phone</label>
-            <input id="edit_phone" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_phone" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Location</label>
-            <input id="edit_location" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_location" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Marital Status</label>
-            <select id="edit_marital"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+            <select id="edit_marital" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
               <option value="Single">Single</option>
               <option value="Married">Married</option>
               <option value="Unmarried">Unmarried</option>
               <option value="Divorced">Divorced</option>
             </select>
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Join Date</label>
-            <input id="edit_joinDate" type="text" placeholder="15 Mar 2020"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_joinDate" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Salary</label>
-            <input id="edit_salary" type="text" placeholder="₹85,000.00"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_salary" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
-
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Status</label>
-            <select id="edit_status"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+            <select id="edit_status" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
               <option value="Active">Active</option>
               <option value="On Leave">On Leave</option>
               <option value="Dismissed">Dismissed</option>
               <option value="Terminated">Terminated</option>
             </select>
           </div>
+        </div>
 
-          <div style="display:flex;align-items:flex-end;gap:10px;">
-            <div style="flex:1;">
-              <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Login</label>
-              <div style="padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;font-size:13px;">
-                <span id="edit_login_state">-</span>
-              </div>
+        <div style="height:1px;background:#eef2f7;margin:16px 0;"></div>
+        
+        <!-- STATUTORY INFO SECTION -->
+        <div style="font-weight:900;color:#111827;margin:0 0 10px 0;">Statutory Information</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;">
+            <div>
+                <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">PAN</label>
+                <input id="edit_stat_pan" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
             </div>
-            <div style="flex:1;">
-              <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Salary State</label>
-              <div style="padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;font-size:13px;">
-                <span id="edit_salary_state">-</span>
-              </div>
+            <div>
+                <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">UAN</label>
+                <input id="edit_stat_uan" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
             </div>
-          </div>
+            <div>
+                <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Prof. Tax</label>
+                <input id="edit_stat_pt" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">LWF Status</label>
+                <input id="edit_stat_lwf" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">ESIC Status</label>
+                <input id="edit_stat_esic_status" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            </div>
+             <div>
+                <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">ESIC IP</label>
+                <input id="edit_stat_esic_ip" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            </div>
         </div>
 
         <div style="height:1px;background:#eef2f7;margin:16px 0;"></div>
@@ -502,29 +505,24 @@ document.addEventListener("DOMContentLoaded", function () {
         <div style="font-weight:900;color:#111827;margin:0 0 10px 0;">Leave Balance (days)</div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;">
           <div>
-            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Sick Leave</label>
-            <input id="edit_leave_sick" type="number" min="0"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Sick</label>
+            <input id="edit_leave_sick" type="number" min="0" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
           <div>
-            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Casual Leave</label>
-            <input id="edit_leave_casual" type="number" min="0"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Casual</label>
+            <input id="edit_leave_casual" type="number" min="0" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
           <div>
-            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Privilege Leave</label>
-            <input id="edit_leave_privilege" type="number" min="0"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Privilege</label>
+            <input id="edit_leave_privilege" type="number" min="0" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
           <div>
-            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Maternity Leave</label>
-            <input id="edit_leave_maternity" type="number" min="0"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Maternity</label>
+            <input id="edit_leave_maternity" type="number" min="0" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Comp Off</label>
-            <input id="edit_leave_comp" type="number" min="0"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_leave_comp" type="number" min="0" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
         </div>
 
@@ -534,30 +532,21 @@ document.addEventListener("DOMContentLoaded", function () {
         <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Bank Name</label>
-            <input id="edit_bank_name" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_bank_name" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
           <div>
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Account Number</label>
-            <input id="edit_bank_account" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
+            <input id="edit_bank_account" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" />
           </div>
           <div style="grid-column: 1 / -1;">
             <label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">IFSC Code</label>
-            <input id="edit_bank_ifsc" type="text"
-              style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;text-transform:uppercase;" />
+            <input id="edit_bank_ifsc" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;text-transform:uppercase;" />
           </div>
         </div>
 
         <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
-          <button type="button" id="admEditCancel"
-            style="padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:800;">
-            Cancel
-          </button>
-          <button type="submit" id="admEditSave"
-            style="padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(135deg,#111827,#334155);color:#fff;cursor:pointer;font-weight:900;">
-            Save Changes
-          </button>
+          <button type="button" id="admEditCancel" style="padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:800;">Cancel</button>
+          <button type="submit" id="admEditSave" style="padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(135deg,#111827,#334155);color:#fff;cursor:pointer;font-weight:900;">Save Changes</button>
         </div>
       </form>
     `;
@@ -565,17 +554,13 @@ document.addEventListener("DOMContentLoaded", function () {
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
 
-    // close handlers
     modal.querySelector("#admEditCloseX").addEventListener("click", () => window.admCloseEditModal());
     modal.querySelector("#admEditCancel").addEventListener("click", () => window.admCloseEditModal());
-
-    // submit handler
     modal.querySelector("#admEditForm").addEventListener("submit", function (e) {
       e.preventDefault();
       window.admSaveEditEmployee();
     });
 
-    // Make .adm-show work even if CSS doesn't
     const origAdd = overlay.classList.add.bind(overlay.classList);
     overlay.classList.add = function (...args) {
       if (args.includes("adm-show")) overlay.style.display = "flex";
@@ -590,12 +575,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.admOpenEditModal = function () {
     if (!currentEmpData) return;
-
     const overlay = document.getElementById("admEditModal");
     if (!overlay) return;
 
     currentEmpData = normalizeEmployee(currentEmpData);
-
     const $ = (id) => document.getElementById(id);
 
     // Profile
@@ -611,8 +594,13 @@ document.addEventListener("DOMContentLoaded", function () {
     $("edit_salary").value = currentEmpData.salary || "";
     $("edit_status").value = currentEmpData.status || "Active";
 
-    $("edit_login_state").innerText = currentEmpData.isLoginDisabled ? "Disabled" : "Enabled";
-    $("edit_salary_state").innerText = currentEmpData.isSalaryHeld ? "Held" : "Active";
+    // Statutory (New)
+    $("edit_stat_pan").value = currentEmpData.statutoryDetails.pan || "";
+    $("edit_stat_uan").value = currentEmpData.statutoryDetails.uan || "";
+    $("edit_stat_pt").value = currentEmpData.statutoryDetails.pt || "";
+    $("edit_stat_lwf").value = currentEmpData.statutoryDetails.lwf || "";
+    $("edit_stat_esic_status").value = currentEmpData.statutoryDetails.esicStatus || "";
+    $("edit_stat_esic_ip").value = currentEmpData.statutoryDetails.esicIp || "";
 
     // Leave
     $("edit_leave_sick").value = currentEmpData.leaveBalance.sick;
@@ -636,20 +624,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.admSaveEditEmployee = function () {
     if (!currentEmpData) return;
-
     const getVal = (id) => (document.getElementById(id)?.value ?? "").trim();
     const getNum = (id) => toIntOrDefault(getVal(id), 0);
 
     const name = getVal("edit_name");
-    if (!name) {
-      alert("Name is required.");
+    const newId = getVal("edit_id");
+
+    if (!name || !newId) {
+      alert("Name and Employee ID are required.");
       return;
     }
 
-    // Update current object
     currentEmpData = normalizeEmployee(currentEmpData);
 
     // Profile
+    currentEmpData.id = newId; // Update ID
     currentEmpData.name = name;
     currentEmpData.role = getVal("edit_role");
     currentEmpData.dept = getVal("edit_dept");
@@ -660,6 +649,14 @@ document.addEventListener("DOMContentLoaded", function () {
     currentEmpData.joinDate = getVal("edit_joinDate");
     currentEmpData.salary = getVal("edit_salary");
     currentEmpData.status = getVal("edit_status") || currentEmpData.status;
+
+    // Statutory (New)
+    currentEmpData.statutoryDetails.pan = getVal("edit_stat_pan");
+    currentEmpData.statutoryDetails.uan = getVal("edit_stat_uan");
+    currentEmpData.statutoryDetails.pt = getVal("edit_stat_pt");
+    currentEmpData.statutoryDetails.lwf = getVal("edit_stat_lwf");
+    currentEmpData.statutoryDetails.esicStatus = getVal("edit_stat_esic_status");
+    currentEmpData.statutoryDetails.esicIp = getVal("edit_stat_esic_ip");
 
     // Leave balance
     currentEmpData.leaveBalance.sick = getNum("edit_leave_sick");
@@ -673,8 +670,8 @@ document.addEventListener("DOMContentLoaded", function () {
     currentEmpData.bankDetails.accountNumber = getVal("edit_bank_account");
     currentEmpData.bankDetails.ifsc = getVal("edit_bank_ifsc").toUpperCase();
 
-    // Save + refresh everywhere
-    admSaveAndRefresh(currentEmpData);
+    // Pass originalEmpId in case the ID was changed so we can find the old record
+    admSaveAndRefresh(currentEmpData, originalEmpId);
     populateUI(currentEmpData);
 
     window.admCloseEditModal();
@@ -682,77 +679,39 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==================================================
-  // --- Success Popup (Beautiful) ---
+  // --- Success Popup ---
   // ==================================================
   function injectSuccessPopup() {
     if (document.getElementById("admSuccessPopup")) return;
-
     const el = document.createElement("div");
     el.id = "admSuccessPopup";
     el.style.cssText = `
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(17,24,39,.35);
-      z-index: 10000;
-      padding: 16px;
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(17,24,39,.35); z-index: 10000; padding: 16px;
     `;
-
     el.innerHTML = `
-      <div style="
-        width: min(420px, 100%);
-        background: #ffffff;
-        border-radius: 18px;
-        box-shadow: 0 22px 60px rgba(0,0,0,.28);
-        overflow: hidden;
-        transform: translateY(8px);
-        opacity: 0;
-        transition: .18s ease;
-      " id="admSuccessCard">
+      <div style="width: min(420px, 100%); background: #ffffff; border-radius: 18px; box-shadow: 0 22px 60px rgba(0,0,0,.28); overflow: hidden; transform: translateY(8px); opacity: 0; transition: .18s ease;" id="admSuccessCard">
         <div style="padding:16px 16px 12px 16px; background: linear-gradient(135deg,#10b981,#22c55e); color:#fff;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
             <div style="font-weight:900; font-size:16px;">Success</div>
             <button id="admSuccessClose" type="button" style="border:none;background:rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:6px 10px;cursor:pointer;font-weight:900;">✕</button>
           </div>
         </div>
-
         <div style="padding:16px;">
           <div style="display:flex; gap:12px; align-items:flex-start;">
-            <div style="
-              width: 42px; height: 42px; border-radius: 14px;
-              background: #dcfce7; color: #166534;
-              display:flex; align-items:center; justify-content:center;
-              font-size: 20px; font-weight: 900;
-            ">✓</div>
+            <div style="width: 42px; height: 42px; border-radius: 14px; background: #dcfce7; color: #166534; display:flex; align-items:center; justify-content:center; font-size: 20px; font-weight: 900;">✓</div>
             <div>
-              <div id="admSuccessMsg" style="font-weight:900; color:#111827; font-size:14px; line-height:1.35;">
-                Updated successfully
-              </div>
-              <div style="color:#6b7280; font-size:12px; margin-top:4px;">
-                Changes have been saved and applied to the employee profile.
-              </div>
+              <div id="admSuccessMsg" style="font-weight:900; color:#111827; font-size:14px; line-height:1.35;">Updated successfully</div>
+              <div style="color:#6b7280; font-size:12px; margin-top:4px;">Changes have been saved.</div>
             </div>
           </div>
-
           <div style="display:flex; justify-content:flex-end; margin-top:14px;">
-            <button id="admSuccessOk" type="button" style="
-              border:none;
-              background:#111827;
-              color:#fff;
-              padding:10px 14px;
-              border-radius:12px;
-              cursor:pointer;
-              font-weight:900;
-            ">OK</button>
+            <button id="admSuccessOk" type="button" style="border:none;background:#111827;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:900;">OK</button>
           </div>
         </div>
       </div>
     `;
-
     document.body.appendChild(el);
-
     el.querySelector("#admSuccessClose").addEventListener("click", hideSuccessPopup);
     el.querySelector("#admSuccessOk").addEventListener("click", hideSuccessPopup);
     el.addEventListener("click", function (e) {
@@ -761,21 +720,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   let successTimer = null;
-
   function showSuccessPopup(message) {
     const overlay = document.getElementById("admSuccessPopup");
     const card = document.getElementById("admSuccessCard");
     const msg = document.getElementById("admSuccessMsg");
     if (!overlay || !card || !msg) return;
-
     msg.textContent = message || "Updated successfully";
-
     overlay.style.display = "flex";
     requestAnimationFrame(() => {
       card.style.opacity = "1";
       card.style.transform = "translateY(0px)";
     });
-
     if (successTimer) clearTimeout(successTimer);
     successTimer = setTimeout(hideSuccessPopup, 1700);
   }
@@ -784,7 +739,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const overlay = document.getElementById("admSuccessPopup");
     const card = document.getElementById("admSuccessCard");
     if (!overlay || !card) return;
-
     card.style.opacity = "0";
     card.style.transform = "translateY(8px)";
     setTimeout(() => {
@@ -793,20 +747,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ==================================================
-  // --- 4. DOWNLOAD LOGIC (CSV & PDF) ---
+  // --- 6. DOWNLOAD LOGIC (CSV & PDF) ---
   // ==================================================
   const downloadModal = document.getElementById("downloadModal");
-
   function bindDownloadButtonIfPresent() {
     const downloadBtn = document.getElementById("downloadProfileBtn");
     if (!downloadBtn) return;
-
-    // If this button is actually Edit Profile (your current case), do NOT bind download.
     if (looksLikeEditButton(downloadBtn)) return;
-
     if (downloadBtn.dataset.downloadBound === "1") return;
     downloadBtn.dataset.downloadBound = "1";
-
     downloadBtn.addEventListener("click", function () {
       if (!currentEmpData) {
         alert("No employee data available.");
@@ -823,92 +772,45 @@ document.addEventListener("DOMContentLoaded", function () {
   window.downloadAsCSV = function () {
     if (!currentEmpData) return;
     currentEmpData = normalizeEmployee(currentEmpData);
-
     const emp = currentEmpData;
-
     const headers = [
-      "ID",
-      "Name",
-      "Role",
-      "Department",
-      "Email",
-      "Phone",
-      "Location",
-      "Marital Status",
-      "Join Date",
-      "Salary",
-      "Status",
-      "Salary Held",
-      "Login Disabled",
-      "Sick Leave",
-      "Casual Leave",
-      "Privilege Leave",
-      "Maternity Leave",
-      "Comp Off",
-      "Bank Name",
-      "Account Number",
-      "IFSC Code",
+      "ID", "Name", "Role", "Department", "Email", "Phone", "Location", "Marital Status", "Join Date", "Salary", "Status",
+      "Salary Held", "Login Disabled",
+      "Sick Leave", "Casual Leave", "Privilege Leave", "Maternity Leave", "Comp Off",
+      "PAN", "UAN", "Prof Tax", "LWF", "ESIC Status", "ESIC IP",
+      "Bank Name", "Account Number", "IFSC Code"
     ];
-
     const values = [
-      emp.id,
-      emp.name,
-      emp.role,
-      emp.dept,
-      emp.email,
-      emp.phone,
-      emp.location,
-      emp.maritalStatus || "Single",
-      emp.joinDate,
-      emp.salary,
-      emp.status,
-      emp.isSalaryHeld ? "Yes" : "No",
-      emp.isLoginDisabled ? "Yes" : "No",
-      emp.leaveBalance.sick,
-      emp.leaveBalance.casual,
-      emp.leaveBalance.privilege,
-      emp.leaveBalance.maternity,
-      emp.leaveBalance.compOff,
-      emp.bankDetails.bankName,
-      emp.bankDetails.accountNumber,
-      emp.bankDetails.ifsc,
+      emp.id, emp.name, emp.role, emp.dept, emp.email, emp.phone, emp.location, emp.maritalStatus || "Single", emp.joinDate, emp.salary, emp.status,
+      emp.isSalaryHeld ? "Yes" : "No", emp.isLoginDisabled ? "Yes" : "No",
+      emp.leaveBalance.sick, emp.leaveBalance.casual, emp.leaveBalance.privilege, emp.leaveBalance.maternity, emp.leaveBalance.compOff,
+      emp.statutoryDetails.pan, emp.statutoryDetails.uan, emp.statutoryDetails.pt, emp.statutoryDetails.lwf, emp.statutoryDetails.esicStatus, emp.statutoryDetails.esicIp,
+      emp.bankDetails.bankName, emp.bankDetails.accountNumber, emp.bankDetails.ifsc
     ];
-
     const csvEscape = (v) => {
       const s = (v ?? "").toString();
       if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
       return s;
     };
-
-    const csvContent =
-      headers.map(csvEscape).join(",") + "\n" + values.map(csvEscape).join(",");
-
+    const csvContent = headers.map(csvEscape).join(",") + "\n" + values.map(csvEscape).join(",");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-
     const link = document.createElement("a");
     link.href = url;
     link.download = `${(emp.name || "Employee").replace(/\s+/g, "_")}_Profile.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
     URL.revokeObjectURL(url);
     window.closeDownloadModal();
   };
 
   window.downloadAsPDF = function () {
     if (!currentEmpData) return;
-
     window.closeDownloadModal();
-
     const element = document.querySelector(".main-container");
-
-    const controls = document.querySelectorAll(
-      ".top-nav, .header-actions, .tabs-container, .adm-actions-grid"
-    );
+    const controls = document.querySelectorAll(".top-nav, .header-actions, .tabs-container, .adm-actions-grid");
     controls.forEach((el) => (el.style.display = "none"));
-
     const opt = {
       margin: 0.3,
       filename: `${(currentEmpData.name || "Employee").replace(/\s+/g, "_")}_Profile.pdf`,
@@ -916,12 +818,8 @@ document.addEventListener("DOMContentLoaded", function () {
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
-
     if (typeof html2pdf !== "undefined") {
-      html2pdf()
-        .set(opt)
-        .from(element)
-        .save()
+      html2pdf().set(opt).from(element).save()
         .then(() => controls.forEach((el) => (el.style.display = "")))
         .catch(() => controls.forEach((el) => (el.style.display = "")));
     } else {
@@ -930,20 +828,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // ==================================================
-  // --- 5. GLOBAL CLICK HANDLER (Close Modals) ---
-  // ==================================================
   window.onclick = function (event) {
-    // Close admin overlay modals
-    if (
-      event.target &&
-      event.target.classList &&
-      event.target.classList.contains("adm-modal-overlay")
-    ) {
+    if (event.target && event.target.classList && event.target.classList.contains("adm-modal-overlay")) {
       event.target.classList.remove("adm-show");
     }
-
-    // Close download overlay
     if (event.target === downloadModal) {
       window.closeDownloadModal();
     }
