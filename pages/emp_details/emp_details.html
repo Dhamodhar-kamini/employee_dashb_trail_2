@@ -36,10 +36,10 @@
       <header class="profile-header">
         <div class="profile-info">
           <div class="avatar-circle">
-            <span id="p_initials">JD</span>
+            <span id="p_initials">DD</span>
           </div>
           <div class="profile-text">
-            <h1 id="p_name">John Doe</h1>
+            <h1 id="p_name">Dhamodhar</h1>
             <p>
               <span id="p_role">Senior Developer</span> •
               <span id="p_dept">Engineering</span>
@@ -133,7 +133,7 @@
 
             <div class="data-box full-width">
               <label>Email</label>
-              <div class="value" id="p_email">john.doe@oppty.in</div>
+              <div class="value" id="p_email">arjun@oppty.in</div>
             </div>
 
             <div class="data-box full-width">
@@ -210,6 +210,100 @@
           <div class="value">HDFC0001234</div>
         </div>
       </div>
+
+      <!-- admin action buttons section -->
+       <!-- ADMIN ACTIONS GRID (Unique IDs & Classes) -->
+<h3 class="section-title" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; color: #334155;">
+  Admin Controls
+</h3>
+
+<div class="adm-actions-grid">
+  <!-- 1. Hold Salary -->
+  <button class="adm-btn adm-btn-salary" id="admBtnSalary" onclick="admOpenModal('admSalaryModal')">
+    <i class="fa-solid fa-hand-holding-dollar"></i> 
+    <span id="admTxtSalary">Hold Salary</span>
+  </button>
+
+  <!-- 2. Disable Login -->
+  <button class="adm-btn adm-btn-login" id="admBtnLogin" onclick="admOpenModal('admLoginModal')">
+    <i class="fa-solid fa-user-lock"></i> 
+    <span id="admTxtLogin">Disable Login</span>
+  </button>
+
+  <!-- 3. Dismiss Employee -->
+  <button class="adm-btn adm-btn-dismiss" onclick="admOpenModal('admDismissModal')">
+    <i class="fa-solid fa-user-xmark"></i> Dismiss Employee
+  </button>
+
+  <!-- 4. Delete Employee -->
+  <button class="adm-btn adm-btn-delete" onclick="admOpenModal('admDeleteModal')">
+    <i class="fa-solid fa-trash-can"></i> Delete Permanently
+  </button>
+</div>
+
+<!-- ========================================= -->
+<!--        INTERACTIVE MODALS (POPUPS)        -->
+<!-- ========================================= -->
+
+<!-- 1. SALARY MODAL -->
+<div id="admSalaryModal" class="adm-modal-overlay">
+  <div class="adm-modal-card">
+    <div class="adm-icon-circle adm-warning">
+      <i class="fa-solid fa-ban"></i>
+    </div>
+    <h3>Confirm Salary Action</h3>
+    <p>Are you sure you want to <strong id="admSalaryActionText">Hold</strong> the salary for this employee? <br>They will not be able to view their payslips.</p>
+    <div class="adm-modal-btns">
+      <button class="adm-btn-cancel" onclick="admCloseModal('admSalaryModal')">Cancel</button>
+      <button class="adm-btn-confirm adm-warning" onclick="admPerformAction('salary')">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. LOGIN MODAL -->
+<div id="admLoginModal" class="adm-modal-overlay">
+  <div class="adm-modal-card">
+    <div class="adm-icon-circle adm-dark">
+      <i class="fa-solid fa-key"></i>
+    </div>
+    <h3>Login Access</h3>
+    <p>Are you sure you want to <strong id="admLoginActionText">Disable</strong> login access? <br>The user will be logged out immediately.</p>
+    <div class="adm-modal-btns">
+      <button class="adm-btn-cancel" onclick="admCloseModal('admLoginModal')">Cancel</button>
+      <button class="adm-btn-confirm adm-dark" onclick="admPerformAction('login')">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. DISMISS MODAL -->
+<div id="admDismissModal" class="adm-modal-overlay">
+  <div class="adm-modal-card">
+    <div class="adm-icon-circle adm-orange">
+      <i class="fa-solid fa-briefcase"></i>
+    </div>
+    <h3>Dismiss Employee</h3>
+    <p>This will mark the employee status as <strong>Terminated</strong>. <br>Are you sure you want to proceed?</p>
+    <div class="adm-modal-btns">
+      <button class="adm-btn-cancel" onclick="admCloseModal('admDismissModal')">Cancel</button>
+      <button class="adm-btn-confirm adm-orange" onclick="admPerformAction('dismiss')">Yes, Dismiss</button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. DELETE MODAL -->
+<div id="admDeleteModal" class="adm-modal-overlay">
+  <div class="adm-modal-card">
+    <div class="adm-icon-circle adm-red">
+      <i class="fa-solid fa-trash"></i>
+    </div>
+    <h3>Delete Employee</h3>
+    <p>This action is <strong>irreversible</strong>. All data (Attendance, Payroll, Documents) will be erased permanently.</p>
+    <div class="adm-modal-btns">
+      <button class="adm-btn-cancel" onclick="admCloseModal('admDeleteModal')">Cancel</button>
+      <button class="adm-btn-confirm adm-red" onclick="admPerformAction('delete')">Delete Permanently</button>
+    </div>
+  </div>
+</div>
 
       <!-- ========================== 
              TAB 2: ATTENDANCE 

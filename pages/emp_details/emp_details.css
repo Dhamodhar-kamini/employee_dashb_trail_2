@@ -578,3 +578,158 @@ body {
 /* Animations */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+
+/* admin action buttons */
+/* --- Admin Action Grid (adm-) --- */
+.adm-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.adm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.adm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.adm-btn:active { transform: scale(0.98); }
+
+/* Specific Button Colors */
+.adm-btn-salary { background: linear-gradient(135deg, #f59e0b, #d97706); } /* Amber */
+.adm-btn-login  { background: linear-gradient(135deg, #64748b, #475569); } /* Slate */
+.adm-btn-dismiss{ background: linear-gradient(135deg, #f97316, #ea580c); } /* Orange */
+.adm-btn-delete { background: linear-gradient(135deg, #ef4444, #dc2626); } /* Red */
+
+/* --- Modal Styling (adm-) --- */
+.adm-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.adm-modal-overlay.adm-show {
+  display: flex;
+  opacity: 1;
+}
+
+.adm-modal-card {
+  background: white;
+  width: 400px;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.adm-modal-overlay.adm-show .adm-modal-card {
+  transform: scale(1);
+}
+
+/* Modal Icons */
+.adm-icon-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.adm-icon-circle.adm-warning { background: #fef3c7; color: #d97706; }
+.adm-icon-circle.adm-dark    { background: #f1f5f9; color: #334155; }
+.adm-icon-circle.adm-orange  { background: #ffedd5; color: #ea580c; }
+.adm-icon-circle.adm-red     { background: #fee2e2; color: #dc2626; }
+
+.adm-modal-card h3 { margin: 0 0 10px; color: #1e293b; font-size: 20px; }
+.adm-modal-card p { margin: 0 0 25px; color: #64748b; line-height: 1.5; font-size: 14px; }
+
+/* Modal Buttons */
+.adm-modal-btns { display: flex; gap: 15px; justify-content: center; }
+
+.adm-btn-cancel {
+  background: white; border: 1px solid #e2e8f0; color: #64748b;
+  padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.adm-btn-cancel:hover { background: #f8fafc; }
+
+.adm-btn-confirm {
+  border: none; color: white;
+  padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.adm-btn-confirm.adm-warning { background: #d97706; }
+.adm-btn-confirm.adm-dark    { background: #334155; }
+.adm-btn-confirm.adm-orange  { background: #ea580c; }
+.adm-btn-confirm.adm-red     { background: #dc2626; }
+
+/* Visual States for Salary Held (Applied via JS) */
+.adm-salary-held {
+  position: relative;
+  opacity: 0.6;
+  pointer-events: none;
+  filter: grayscale(100%);
+}
+.adm-salary-held::after {
+  content: "HOLD";
+  position: absolute;
+  top: 50%; right: 10px;
+  transform: translateY(-50%);
+  background: #dc2626; color: white;
+  padding: 4px 10px; font-size: 12px; font-weight: bold; border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+/* Visual State for Salary Held */
+.adm-salary-held {
+  position: relative;
+  opacity: 0.5;                /* Make it faded */
+  pointer-events: none;        /* Prevent clicking/copying */
+  filter: grayscale(100%);     /* Remove color */
+  user-select: none;
+  background-color: #f3f4f6;   /* Light gray background */
+}
+
+/* The "HOLD" Stamp */
+.adm-salary-held::after {
+  content: "ON HOLD";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  border: 2px solid #dc2626;
+  color: #dc2626;
+  font-weight: 900;
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  opacity: 1;
+  z-index: 10;
+  letter-spacing: 1px;
+}

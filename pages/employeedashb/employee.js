@@ -17,14 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
     const deptFilter = document.getElementById("deptFilter");
     const statusFilter = document.getElementById("statusFilter");
-    const downloadBtn = document.getElementById("downloadBtn"); // Ensure ID is added to HTML
+    const empFilter = document.getElementById("empFilter"); // NEW: Get the Type filter
+    const downloadBtn = document.getElementById("downloadBtn"); 
     
     // Main Form Modal Elements
     const modal = document.getElementById("employeeModal");
     const modalTitle = document.querySelector(".modal-header h2");
     const employeeForm = document.getElementById("empForm"); 
     const submitBtn = document.querySelector(".btn-submit");
-    const addBtn = document.getElementById("addEmployeeBtn"); // Ensure ID is in HTML
+    const addBtn = document.getElementById("addEmployeeBtn");
     const closeModalBtn = document.getElementById("closeModalBtn");
     const cancelModalBtn = document.getElementById("cancelModalBtn");
 
@@ -168,7 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const emp = employees.find(e => e.id === id);
         if (!emp) return;
 
-        // Populate Form
         if(document.getElementById("empName")) document.getElementById("empName").value = emp.name;
         if(document.getElementById("empEmail")) document.getElementById("empEmail").value = emp.email;
         if(document.getElementById("empDept")) document.getElementById("empDept").value = emp.dept;
@@ -214,12 +214,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (isEditMode) {
                 const index = employees.findIndex(e => e.id === currentEditId);
                 if (index !== -1) {
-                    // Update existing
                     employees[index] = { ...employees[index], name, email, dept, role, type, status };
                     showSuccess("Updated!", "Employee details have been updated successfully.");
                 }
             } else {
-                // Add new
                 const newId = "EMP-" + String(employees.length + 1).padStart(3, '0');
                 employees.push({
                     id: newId, name, email, dept, role, type, status,
@@ -231,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 showSuccess("Added!", "New employee added successfully.");
             }
 
-            applyFilters(); // Re-render
+            applyFilters(); 
             closeModal();
         });
     }
@@ -249,12 +247,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target === deleteModal) deleteModal.classList.remove("active");
     });
 
-    // --- 10. SEARCH & FILTERS (Unified Logic) ---
+    // --- 10. SEARCH & FILTERS (UPDATED) ---
     function applyFilters() {
         // Get values
         const term = searchInput ? searchInput.value.toLowerCase() : "";
         const deptValue = deptFilter ? deptFilter.value : "all";
         const statusValue = statusFilter ? statusFilter.value : "all";
+        const typeValue = empFilter ? empFilter.value : "all"; // NEW: Get Type Value
 
         const filtered = employees.filter(emp => {
             // 1. Search Check
@@ -269,22 +268,25 @@ document.addEventListener("DOMContentLoaded", function () {
             // 3. Status Check
             const matchesStatus = (statusValue === "all") || (emp.status === statusValue);
 
-            return matchesSearch && matchesDept && matchesStatus;
+            // 4. Type Check (NEW)
+            const matchesType = (typeValue === "all") || (emp.type === typeValue);
+
+            return matchesSearch && matchesDept && matchesStatus && matchesType;
         });
 
         renderTable(filtered);
     }
 
-    // Attach listeners to all inputs
+    // Attach listeners to all inputs including new empFilter
     if(searchInput) searchInput.addEventListener("input", applyFilters);
     if(deptFilter) deptFilter.addEventListener("change", applyFilters);
     if(statusFilter) statusFilter.addEventListener("change", applyFilters);
+    if(empFilter) empFilter.addEventListener("change", applyFilters); // NEW Listener
 
 
     // --- 11. DOWNLOAD CSV FUNCTIONALITY ---
     if(downloadBtn) {
         downloadBtn.addEventListener("click", function() {
-            // Requirement: Download ALL employees
             exportTableToCSV(employees, "all_employees.csv");
         });
     }
@@ -296,24 +298,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         let csvContent = [];
-        // Headers
         const headers = ["ID", "Name", "Email", "Phone", "Department", "Role", "Type", "Status", "Join Date", "Salary", "Location"];
         csvContent.push(headers.join(","));
 
-        // Rows
         dataArray.forEach(item => {
             const row = [
-                `"${item.id}"`,
-                `"${item.name}"`,
-                `"${item.email}"`,
-                `"${item.phone || ''}"`,
-                `"${item.dept}"`,
-                `"${item.role}"`,
-                `"${item.type}"`,
-                `"${item.status}"`,
-                `"${item.joinDate || ''}"`,
-                `"${item.salary || ''}"`,
-                `"${item.location || ''}"`
+                `"${item.id}"`, `"${item.name}"`, `"${item.email}"`, `"${item.phone || ''}"`,
+                `"${item.dept}"`, `"${item.role}"`, `"${item.type}"`, `"${item.status}"`,
+                `"${item.joinDate || ''}"`, `"${item.salary || ''}"`, `"${item.location || ''}"`
             ];
             csvContent.push(row.join(","));
         });
@@ -321,7 +313,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const csvString = csvContent.join("\n");
         const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
         link.setAttribute("download", filename);
