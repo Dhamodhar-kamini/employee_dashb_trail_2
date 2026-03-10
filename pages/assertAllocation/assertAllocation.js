@@ -181,6 +181,7 @@ hraAssetForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     const updatedAsset = {
         id: document.getElementById('hraAssetId').value,
         empId: document.getElementById('hraEmpId').value,
@@ -194,10 +195,18 @@ hraAssetForm.addEventListener('submit', async (e) => {
     const assetData = {
         asset_id: document.getElementById('hraAssetId').value,
         employee: document.getElementById('hraEmpName').value,
+=======
+    const assetData = {
+        asset_id: document.getElementById('hraAssetId').value,
+        employee: document.getElementById('hraEmpName').value,
+>>>>>>> Stashed changes
         asset_type: document.getElementById('hraAssetType').value,
         model_details: document.getElementById('hraModelDetails').value,
         assigned_date: document.getElementById('hraAssignDate').value,
         status: "assigned"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     };
 
