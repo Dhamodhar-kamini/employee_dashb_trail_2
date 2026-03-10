@@ -335,12 +335,12 @@ function ntRenderList() {
     candidates: {
       color: '#3b82f6', // Blue
       title: 'Total Candidates',
-      items: ['John Doe (Applied)', 'Sarah Smith (Screening)', 'Mike Ross (Interview)', 'Rachel Zane (Offer)']
+      items: ['Arya (Applied)', 'Arjun (Screening)', 'Prasad (Interview)', 'Prasad (Offer)']
     },
     interviews: {
       color: '#10b981', // Green
       title: 'Interviews Today',
-      items: ['10:00 AM - Mike Ross', '02:00 PM - Jessica Pearson']
+      items: ['10:00 AM - Arya', '02:00 PM - Priya']
     },
     offers: {
       color: '#1f2937', // Dark
