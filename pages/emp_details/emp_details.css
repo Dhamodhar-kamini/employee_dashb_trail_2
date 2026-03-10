@@ -389,7 +389,6 @@ body {
   }
 }
 
-
 /* download profile section */
 /* Download Modal Specific Styles */
 .download-modal {
@@ -499,7 +498,9 @@ body {
   width: 450px;
   max-width: 90%;
   border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   padding: 0;
   overflow: hidden;
   animation: slideUp 0.3s ease;
@@ -526,7 +527,9 @@ body {
   cursor: pointer;
   line-height: 1;
 }
-.close-btn:hover { color: #ef4444; }
+.close-btn:hover {
+  color: #ef4444;
+}
 
 /* --- DOWNLOAD OPTIONS --- */
 .download-options {
@@ -565,20 +568,59 @@ body {
   margin-right: 16px;
 }
 
-.icon-box.pdf { background-color: #fee2e2; color: #ef4444; }
-.icon-box.csv { background-color: #d1fae5; color: #10b981; }
+.icon-box.pdf {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+.icon-box.csv {
+  background-color: #d1fae5;
+  color: #10b981;
+}
 
-.text-box { flex: 1; }
-.text-box h4 { margin: 0 0 4px 0; font-size: 16px; color: #0f172a; font-weight: 600; }
-.text-box p { margin: 0; font-size: 13px; color: #64748b; }
+.text-box {
+  flex: 1;
+}
+.text-box h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 600;
+}
+.text-box p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
 
-.arrow { color: #cbd5e1; font-size: 14px; transition: transform 0.2s; }
-.option-card:hover .arrow { color: #2563eb; transform: translateX(3px); }
+.arrow {
+  color: #cbd5e1;
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+.option-card:hover .arrow {
+  color: #2563eb;
+  transform: translateX(3px);
+}
 
 /* Animations */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
 /* admin action buttons */
 /* --- Admin Action Grid (adm-) --- */
@@ -601,28 +643,43 @@ body {
   font-size: 14px;
   cursor: pointer;
   color: white;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .adm-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-.adm-btn:active { transform: scale(0.98); }
+.adm-btn:active {
+  transform: scale(0.98);
+}
 
 /* Specific Button Colors */
-.adm-btn-salary { background: linear-gradient(135deg, #f59e0b, #d97706); } /* Amber */
-.adm-btn-login  { background: linear-gradient(135deg, #64748b, #475569); } /* Slate */
-.adm-btn-dismiss{ background: linear-gradient(135deg, #f97316, #ea580c); } /* Orange */
-.adm-btn-delete { background: linear-gradient(135deg, #ef4444, #dc2626); } /* Red */
+.adm-btn-salary {
+  background: linear-gradient(135deg, #eea82e, #f48c15);
+} /* Amber */
+.adm-btn-login {
+  background: linear-gradient(135deg, #7793ba, #677fa0);
+} /* Slate */
+.adm-btn-dismiss {
+  background: linear-gradient(135deg, #f97316, #eb7e44);
+} /* Orange */
+.adm-btn-delete {
+  background: linear-gradient(135deg, #ef4444, #eb5a5a);
+} /* Red */
 
 /* --- Modal Styling (adm-) --- */
 .adm-modal-overlay {
   display: none;
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   z-index: 10000;
@@ -663,31 +720,75 @@ body {
   justify-content: center;
   font-size: 28px;
 }
-.adm-icon-circle.adm-warning { background: #fef3c7; color: #d97706; }
-.adm-icon-circle.adm-dark    { background: #f1f5f9; color: #334155; }
-.adm-icon-circle.adm-orange  { background: #ffedd5; color: #ea580c; }
-.adm-icon-circle.adm-red     { background: #fee2e2; color: #dc2626; }
+.adm-icon-circle.adm-warning {
+  background: #fef3c7;
+  color: #d97706;
+}
+.adm-icon-circle.adm-dark {
+  background: #f1f5f9;
+  color: #334155;
+}
+.adm-icon-circle.adm-orange {
+  background: #ffedd5;
+  color: #ea580c;
+}
+.adm-icon-circle.adm-red {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
-.adm-modal-card h3 { margin: 0 0 10px; color: #1e293b; font-size: 20px; }
-.adm-modal-card p { margin: 0 0 25px; color: #64748b; line-height: 1.5; font-size: 14px; }
+.adm-modal-card h3 {
+  margin: 0 0 10px;
+  color: #1e293b;
+  font-size: 20px;
+}
+.adm-modal-card p {
+  margin: 0 0 25px;
+  color: #64748b;
+  line-height: 1.5;
+  font-size: 14px;
+}
 
 /* Modal Buttons */
-.adm-modal-btns { display: flex; gap: 15px; justify-content: center; }
+.adm-modal-btns {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
 
 .adm-btn-cancel {
-  background: white; border: 1px solid #e2e8f0; color: #64748b;
-  padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
-.adm-btn-cancel:hover { background: #f8fafc; }
+.adm-btn-cancel:hover {
+  background: #f8fafc;
+}
 
 .adm-btn-confirm {
-  border: none; color: white;
-  padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
-.adm-btn-confirm.adm-warning { background: #d97706; }
-.adm-btn-confirm.adm-dark    { background: #334155; }
-.adm-btn-confirm.adm-orange  { background: #ea580c; }
-.adm-btn-confirm.adm-red     { background: #dc2626; }
+.adm-btn-confirm.adm-warning {
+  background: #d97706;
+}
+.adm-btn-confirm.adm-dark {
+  background: #334155;
+}
+.adm-btn-confirm.adm-orange {
+  background: #ea580c;
+}
+.adm-btn-confirm.adm-red {
+  background: #dc2626;
+}
 
 /* Visual States for Salary Held (Applied via JS) */
 .adm-salary-held {
@@ -699,21 +800,26 @@ body {
 .adm-salary-held::after {
   content: "HOLD";
   position: absolute;
-  top: 50%; right: 10px;
+  top: 50%;
+  right: 10px;
   transform: translateY(-50%);
-  background: #dc2626; color: white;
-  padding: 4px 10px; font-size: 12px; font-weight: bold; border-radius: 4px;
+  background: #dc2626;
+  color: white;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
   letter-spacing: 1px;
 }
 
 /* Visual State for Salary Held */
 .adm-salary-held {
   position: relative;
-  opacity: 0.5;                /* Make it faded */
-  pointer-events: none;        /* Prevent clicking/copying */
-  filter: grayscale(100%);     /* Remove color */
+  opacity: 0.5; /* Make it faded */
+  pointer-events: none; /* Prevent clicking/copying */
+  filter: grayscale(100%); /* Remove color */
   user-select: none;
-  background-color: #f3f4f6;   /* Light gray background */
+  background-color: #f3f4f6; /* Light gray background */
 }
 
 /* The "HOLD" Stamp */

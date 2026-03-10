@@ -4,9 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OPPTY HRMS</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/opptylogo2.png">
-    <link rel="stylesheet" href="./helpdesk.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/opptylogo2.png"
+    />
     <link rel="stylesheet" href="../admin_page/admin.css" />
+    <link rel="stylesheet" href="./helpdesk.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -50,7 +55,9 @@
                   ><i class="fas fa-user-tie"></i
                   ><span>Admin Dashboard</span></a
                 >
-                <a href="../employeedashb/employee.html" class="menu-item"
+                <a
+                  href="../employeedashb/employee.html"
+                  class="menu-item active"
                   ><i class="fas fa-user"></i><span>Employee Dashboard</span></a
                 >
                 <a href="../approval/approval.html" class="menu-item"
@@ -65,11 +72,13 @@
                   ><i class="fas fa-search"></i
                   ><span>Recruitment Dashboard</span></a
                 >
-                <a href="../assertAllocation/assertAllocation.html" class="menu-item"
+                <a
+                  href="../assertAllocation/assertAllocation.html"
+                  class="menu-item"
                   ><i class="fas fa-boxes"></i><span>Asset Allocation</span></a
                 >
 
-                <a href="../helpdesk/helpdesk.html" class="menu-item active"
+                <a href="../helpdesk/helpdesk.html" class="menu-item"
                   ><i class="fas fa-headset"></i
                   ><span>Help Desk Dashboard</span></a
                 >
@@ -90,39 +99,37 @@
           </div>
           <div class="header-icons">
             <!-- Existing Icons -->
-            
-            <!-- Notification Container -->
-<div class="nt-container">
-    
-    <!-- Bell Icon & Badge -->
-    <div class="nt-bell-wrapper" id="ntBellBtn">
-        <i class="fas fa-bell nt-icon"></i>
-        <!-- Counter Badge (JS will update this) -->
-        <span class="nt-badge" id="ntBadge">0</span>
-    </div>
 
-    <!-- Dropdown Popup -->
-    <div class="nt-dropdown" id="ntDropdown">
-        
-        <!-- Header -->
-        <div class="nt-header">
-            <span class="nt-title">Notifications</span>
-            <button class="nt-mark-read" id="ntMarkAllRead">Mark all read</button>
-        </div>
+            <div class="nt-container">
+              <!-- Bell Icon & Badge -->
+              <div class="nt-bell-wrapper" id="ntBellBtn">
+                <i class="fas fa-bell nt-icon"></i>
+                <!-- Counter Badge (JS will update this) -->
+                <span class="nt-badge" id="ntBadge">0</span>
+              </div>
 
-        <!-- List of Items -->
-        <div class="nt-body" id="ntList">
-            <!-- JS will inject items here -->
-        </div>
+              <!-- Dropdown Popup -->
+              <div class="nt-dropdown" id="ntDropdown">
+                <!-- Header -->
+                <div class="nt-header">
+                  <span class="nt-title">Notifications</span>
+                  <button class="nt-mark-read" id="ntMarkAllRead">
+                    Mark all read
+                  </button>
+                </div>
 
-        <!-- Footer -->
-        <div class="nt-footer">
-            <a href="#">View all activity</a>
-        </div>
-    </div>
+                <!-- List of Items -->
+                <div class="nt-body" id="ntList">
+                  <!-- JS will inject items here -->
+                </div>
 
-</div>
-           
+                <!-- Footer -->
+                <div class="nt-footer">
+                  <a href="#">View all activity</a>
+                </div>
+              </div>
+            </div>
+
             <!-- MODIFIED PROFILE SECTION -->
             <div class="hdr-profile-wrapper">
               <!-- Profile Image (Clickable) -->
@@ -147,179 +154,97 @@
           </div>
         </header>
 
-        <!-- help desk content -->
-        <main class="main-content">
+        <div class="main-content">
           <!-- Header -->
-          <header class="page-header">
+          <header class="page-header" style="display: flex; align-items: center; gap: 30px;">
             <div>
-              <h2 class="page-title">Help Desk Dashboard</h2>
-              <p class="page-subtitle">
-                Manage employee support requests and inquiries
-              </p>
+              <h2 class="page-title">Help Desk</h2>
+              
             </div>
-
             <div class="breadcrumbs">
-            <i class="fas fa-home"></i>
-            <span><a href="../admin_page/admin.html">Dashboard /</a></span>
-            <span> <a href="../admin_page/admin.html">Admin Dashboard</a></span>
-          </div>
-            <!-- <button class="btn-create-ticket" id="createTicketBtn">
-              <i class="fa-solid fa-plus"></i> Raise New Ticket
+              <i class="fas fa-home"></i>
+              <span><a href="../admin_page/admin.html">Dashboard /</a></span>
+              <span>Admin Dashboard</span>
+            </div>
+            <!-- <button class="btn-primary-orange" id="addEmployeeBtn">
+              <i class="fa-solid fa-plus"></i> Add New Employee
             </button> -->
           </header>
 
-          <!-- HELP REQUEST MODAL -->
-          <div class="hd-modal-overlay" id="helpModal">
-            <div class="hd-modal-box">
-              <div class="hd-modal-header">
-                <h3>Help Request</h3>
-                <button class="hd-close-btn" id="closeHelpModal">&times;</button>
-              </div>
-              <div class="hd-modal-body">
-                <form id="helpForm">
-                  <div class="form-group">
-                    <label for="helpName">Name</label>
-                    <input type="text" id="helpName" placeholder="Your full name" required />
-                  </div>
-                  <div class="form-group">
-                    <label for="helpEmail">Email</label>
-                    <input type="email" id="helpEmail" placeholder="you@example.com" required />
-                  </div>
-                  <div class="form-group">
-                    <label for="helpDescription">Description</label>
-                    <textarea id="helpDescription" rows="4" placeholder="Describe the issue" required></textarea>
-                  </div>
-                  <div class="form-actions">
-                    <button type="submit" class="btn-create-ticket">Submit</button>
-                    <button type="button" class="btn-secondary" id="cancelHelpBtn">Cancel</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
 
-          <!-- 1. STATS OVERVIEW -->
-          <section class="hd-stats-grid">
-            <!-- Total Responses -->
-            <div class="dash-card">
-              <div class="stat-top">
-                <span class="stat-label">Total Responses</span>
-              </div>
-              <h2 class="stat-value" id="totalResponsesVal">142</h2>
-              <div class="stat-bottom">
-                <span class="stat-desc">All open and closed Request</span>
-              </div>
-            </div>
+           <div class="shrp-dashboard-grid" >
+        <div class="shrp-metric-card">
+            <div class="shrp-metric-label">Total Responses</div>
+            <div class="shrp-metric-value">142</div>
+            <div class="shrp-metric-sub">Requests Logged</div>
+        </div>
+        <div class="shrp-metric-card">
+            <div class="shrp-metric-label" style="color: var(--shrp-primary);">Pending</div>
+            <div class="shrp-metric-value" style="color: var(--shrp-primary);">28</div>
+            <div class="shrp-metric-sub">Requires Attention</div>
+        </div>
+        <div class="shrp-metric-card">
+            <div class="shrp-metric-label">Solved</div>
+            <div class="shrp-metric-value">104</div>
+            <div class="shrp-metric-sub">Completed</div>
+        </div>
+    </div>
 
-            <!-- Pending -->
-            <div class="dash-card">
-              <div class="stat-top">
-                <span class="stat-label">Pending</span>
-              </div>
-              <h2 class="stat-value" id="pendingVal">28</h2>
-              <div class="stat-bottom">
-                <span class="stat-desc">Requires attention</span>
-              </div>
-            </div>
+    <!-- Table Section -->
+    <div class="shrp-table-wrapper">
+        <div class="shrp-panel-header">
+            <h2 class="shrp-panel-title">Support Tickets <span class="shrp-count-badge" id="shrp-ticket-counter">0</span></h2>
+        </div>
+        <table class="shrp-data-table">
+            <thead>
+                <tr>
+                    <th width="80px">#</th>
+                    <th>Subject</th>
+                    <th>Requester</th>
+                    <th width="120px">Status</th>
+                    <th width="80px" style="text-align:right">Action</th>
+                </tr>
+            </thead>
+            <tbody id="shrp-table-body">
+                <!-- Rows generated by JS -->
+            </tbody>
+        </table>
+    </div>
 
-            <!-- Solved -->
-            <div class="dash-card">
-              <div class="stat-top">
-                <span class="stat-label">Solved</span>
-              </div>
-              <h2 class="stat-value" id="solvedVal">104</h2>
-              <div class="stat-bottom">
-                <span class="stat-desc">Resolved requests</span>
-              </div>
-            </div>
-          </section>
-
-          <!-- 2. MAIN CONTENT (Table + Chart) -->
-          <section class="hd-middle-section">
-            <!-- Ticket List -->
-            <div class="dash-card ticket-list-card">
-              <div class="card-header-row">
-                <h3>Recent Support Tickets</h3>
-                <div class="filter-group">
-                  <select class="dash-select-clean" id="ticketFilter">
-                    <option value="all">All Status</option>
-                    <option value="Open">Open</option>
-                    <option value="Closed">Closed</option>
-                  </select>
+    <!-- Edit Modal -->
+    <div class="shrp-modal-backdrop" id="shrp-modal-edit">
+        <div class="shrp-modal-content">
+            <h3 class="shrp-modal-heading">Update Ticket</h3>
+            <form id="shrp-form-edit" onsubmit="shrpSaveChanges(event)">
+                <div class="shrp-input-group">
+                    <label class="shrp-input-label">Name</label>
+                    <input type="text" class="shrp-form-input" id="shrp-input-name" required>
                 </div>
-              </div>
-
-              <div class="table-responsive">
-                <table class="hd-table">
-                  <thead>
-                    <tr>
-                      <th>Ticket ID</th>
-                      <th>Subject</th>
-                      <th>Requester</th>
-                      <th>Priority</th>
-                      <th>Status</th>
-                      <th>Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="ticketTableBody">
-                    <!-- JS Populated -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </section>
-        </main>
-
-        <!-- TICKET DETAILS MODAL -->
-        <div class="hd-modal-overlay" id="ticketModal">
-          <div class="hd-modal-box">
-            <div class="hd-modal-header">
-              <div>
-                <h3 id="modalSubject">Unable to access Payroll</h3>
-                <span id="modalId" class="ticket-id-badge">#TCK-2024</span>
-              </div>
-              <button class="hd-close-btn" id="closeTicketModal">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-            <div class="hd-modal-body">
-              <div class="ticket-meta-grid">
-                <div class="meta-item">
-                  <span class="label">Requester</span>
-                  <div class="user-chip">
-                    <img src="../assets/profiledp.jpeg" alt="User" />
-                    <span id="modalRequester">Maisha Lucy</span>
-                  </div>
+                <div class="shrp-input-group">
+                    <label class="shrp-input-label">Email</label>
+                    <input type="email" class="shrp-form-input" id="shrp-input-email" required>
                 </div>
-                <div class="meta-item">
-                  <span class="label">Priority</span>
-                  <span class="prio-badge high" id="modalPriority">High</span>
+                <div class="shrp-input-group">
+                    <label class="shrp-input-label">Status</label>
+                    <select class="shrp-form-select" id="shrp-input-status">
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                    </select>
                 </div>
-                <div class="meta-item">
-                  <span class="label">Date</span>
-                  <span id="modalDate">Oct 24, 2025</span>
-                </div>
-              </div>
-              <div class="ticket-description">
-                <span class="label">Description</span>
-                <p id="modalDesc">
-                  I am getting a 403 Forbidden error when trying to access the
-                  payroll dashboard. Please check my permissions.
-                </p>
-              </div>
+                <button type="submit" class="shrp-btn shrp-btn-primary">Save Changes</button>
+                <button type="button" class="shrp-btn shrp-btn-ghost" onclick="shrpCloseModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
 
-              <div class="ticket-actions">
-                <button class="btn-action-resolve">Mark as Solved</button>
-                <button class="btn-action-reply">Reply</button>
-              </div>
-            </div>
-          </div>
+
         </div>
       </main>
     </div>
+
     <script src="./helpdesk.js"></script>
     <script src="../admin_page/admin.js"></script>
   </body>
 </html>
+
+        

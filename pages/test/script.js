@@ -1,108 +1,66 @@
-// 1. Data State (Starts Empty)
-let meetings = [];
+let tickets = [
+    { subject: 'Unable to access Payroll', name: 'Maisha Lucy', email: 'maisha.lucy@smarthr.com', status: 'Open' },
+    { subject: 'Need new monitor', name: 'Thomas G.', email: 'thomas.g@smarthr.com', status: 'Open' },
+    { subject: 'Password Reset', name: 'Uma Stafford', email: 'uma.stafford@smarthr.com', status: 'Closed' },
+    { subject: 'VPN Connection Failed', name: 'Khubaib A.', email: 'khubaib.a@smarthr.com', status: 'Open' },
+    { subject: 'Software Installation', name: 'Zamora Peck', email: 'zamora.peck@smarthr.com', status: 'Closed' }
+];
 
-// 2. Render Function (Handles Empty State & Sorting)
-function renderMeetings() {
-    const container = document.getElementById('interviewListContainer');
-    const countLabel = document.getElementById('totalCount');
-    
-    container.innerHTML = '';
-    countLabel.textContent = meetings.length;
+let currentIdx = null;
 
-    // Empty State Logic
-    if (meetings.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <img src="https://img.icons8.com/ios/100/cbd5e1/calendar--v1.png"/>
-                <p>No interviews scheduled yet.<br>Click the button to add one.</p>
-            </div>
+function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    document.getElementById('ticketCount').innerText = tickets.length;
+
+    tickets.forEach((ticket, index) => {
+        const isOpen = ticket.status === 'Open';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="serial-id">${index + 1}</td>
+            <td class="subject-text">${ticket.subject}</td>
+            <td>
+                <div class="user-info">
+                    <h4>${ticket.name}</h4>
+                    <span>${ticket.email}</span>
+                </div>
+            </td>
+            <td>
+                <span class="status-badge ${isOpen ? 'status-open' : 'status-closed'}">
+                    ${ticket.status}
+                </span>
+            </td>
+            <td style="text-align: right;">
+                <button class="action-btn" onclick="openModal(${index})">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+            </td>
         `;
-        return;
-    }
-
-    // Sort Logic (Chronological: Date + Time)
-    meetings.sort((a, b) => a.fullDateObj - b.fullDateObj);
-
-    // Render List
-    meetings.forEach(mtg => {
-        const card = document.createElement('div');
-        card.className = 'interview-card';
-        
-        // Truncate link for display
-        const displayLink = mtg.link ? (mtg.link.substring(0, 30) + '...') : 'No link provided';
-
-        card.innerHTML = `
-            <div class="card-info">
-                <h4>${mtg.title}</h4>
-                <p>With: ${mtg.candidate}</p>
-                ${mtg.link ? `<a href="${mtg.link}" target="_blank" class="card-link">🔗 Join Meeting</a>` : ''}
-            </div>
-            <div class="card-time-box">
-                <div class="card-time">${mtg.formattedTime}</div>
-                <div class="card-date">${mtg.formattedDate}</div>
-            </div>
-        `;
-        container.appendChild(card);
+        tbody.appendChild(tr);
     });
 }
 
-// 3. Add Meeting Logic
-function handleSchedule() {
-    // Get values
-    const title = document.getElementById('intTitle').value;
-    const candidate = document.getElementById('intCandidate').value;
-    const link = document.getElementById('intLink').value;
-    const dateVal = document.getElementById('intDate').value;
-    const timeVal = document.getElementById('intTime').value;
+function openModal(index) {
+    currentIdx = index;
+    const ticket = tickets[index];
+    document.getElementById('editName').value = ticket.name;
+    document.getElementById('editEmail').value = ticket.email;
+    document.getElementById('editStatus').value = ticket.status;
+    document.getElementById('editModal').classList.add('active');
+}
 
-    if(!title || !dateVal || !timeVal) {
-        alert("Please fill in Title, Date, and Time.");
-        return;
-    }
+function closeModal() {
+    document.getElementById('editModal').classList.remove('active');
+}
 
-    // Create Date Object for sorting and formatting
-    const fullDateObj = new Date(`${dateVal}T${timeVal}`);
-    
-    // Format Time (AM/PM)
-    const formattedTime = fullDateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    
-    // Format Date (Jan 01)
-    const formattedDate = fullDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-    // Push to array
-    meetings.push({
-        title,
-        candidate,
-        link,
-        fullDateObj,
-        formattedTime,
-        formattedDate
-    });
-
-    // 4. Google Calendar Integration
-    const endObj = new Date(fullDateObj.getTime() + 60 * 60000); // Add 1 Hour
-    function formatGCal(d) { return d.toISOString().replace(/[-:]|\.\d+/g, ""); }
-    
-    // We put the meeting link in the 'Location' field so it's clickable
-    const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${formatGCal(fullDateObj)}/${formatGCal(endObj)}&details=${encodeURIComponent("Attendee: " + candidate + "\nLink: " + link)}&location=${encodeURIComponent(link)}&sf=true&output=xml`;
-    
-    window.open(gCalUrl, '_blank');
-
-    // Reset & Close
-    renderMeetings();
+function saveChanges(e) {
+    e.preventDefault();
+    tickets[currentIdx].name = document.getElementById('editName').value;
+    tickets[currentIdx].email = document.getElementById('editEmail').value;
+    tickets[currentIdx].status = document.getElementById('editStatus').value;
+    renderTable();
     closeModal();
-    
-    // Clear inputs
-    document.getElementById('intTitle').value = '';
-    document.getElementById('intCandidate').value = '';
-    document.getElementById('intLink').value = '';
-    // Leave date/time as is for convenience or clear them too
 }
 
-// Modal Controls
-const modal = document.getElementById('scheduleModal');
-function openModal() { modal.style.display = 'flex'; }
-function closeModal() { modal.style.display = 'none'; }
-
-// Initial call
-renderMeetings();
+// Initial render
+renderTable();

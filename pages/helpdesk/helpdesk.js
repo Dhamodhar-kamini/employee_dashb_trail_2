@@ -1,196 +1,78 @@
-document.addEventListener("DOMContentLoaded", function () {
+let shrpTickets = [
+    { subject: 'Unable to access Payroll', name: 'Maisha Lucy', email: 'maisha.lucy@smarthr.com', status: 'Open' },
+    { subject: 'Need new monitor', name: 'Thomas G.', email: 'thomas.g@smarthr.com', status: 'Open' },
+    { subject: 'Password Reset', name: 'Uma Stafford', email: 'uma.stafford@smarthr.com', status: 'Closed' },
+    { subject: 'VPN Connection Failed', name: 'Khubaib A.', email: 'khubaib.a@smarthr.com', status: 'Open' },
+    { subject: 'Software Installation', name: 'Zamora Peck', email: 'zamora.peck@smarthr.com', status: 'Closed' }
+];
 
-    // ==========================================
-    // 1. TICKET DATA & TABLE RENDERING
-    // ==========================================
-    const tickets = [
-        { id: "#TCK-2024", subject: "Unable to access Payroll", requester: "Maisha Lucy", img: "../assets/profiledp.jpeg", priority: "High", status: "Open", date: "Oct 24, 2025", desc: "I get a 403 error when clicking the payroll tab." },
-        { id: "#TCK-2025", subject: "Need new monitor", requester: "Thomas G.", img: "../assets/profiledp.jpeg", priority: "Medium", status: "Open", date: "Oct 23, 2025", desc: "My screen is flickering intermittently." },
-        { id: "#TCK-2026", subject: "Password Reset", requester: "Uma Stafford", img: "../assets/profiledp.jpeg", priority: "Low", status: "Closed", date: "Oct 22, 2025", desc: "Locked out of my account." },
-        { id: "#TCK-2027", subject: "VPN Connection Failed", requester: "Khubaib A.", img: "../assets/profiledp.jpeg", priority: "High", status: "Open", date: "Oct 21, 2025", desc: "Cannot connect to the US server." },
-        { id: "#TCK-2028", subject: "Software Installation", requester: "Zamora Peck", img: "../assets/profiledp.jpeg", priority: "Low", status: "Closed", date: "Oct 20, 2025", desc: "Requesting VS Code installation." }
-    ];
+let shrpCurrentIdx = null;
 
-    const tableBody = document.getElementById("ticketTableBody");
-    const filterSelect = document.getElementById("ticketFilter");
+function shrpRenderTable() {
+    const tbody = document.getElementById('shrp-table-body');
+    tbody.innerHTML = '';
+    document.getElementById('shrp-ticket-counter').innerText = shrpTickets.length;
 
-    function renderTable(filterStatus = "all") {
-        if(!tableBody) return;
-        tableBody.innerHTML = "";
-
-        const filtered = tickets.filter(t => filterStatus === "all" || t.status === filterStatus);
-
-        if (filtered.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color:#999;">No tickets found.</td></tr>`;
-            updateStats();
-            return;
-        }
-
-        filtered.forEach(ticket => {
-            const prioClass = ticket.priority.toLowerCase();
-            const statusClass = ticket.status.toLowerCase();
-            const statusIcon = statusClass === 'open' ? 'fa-circle-exclamation' : 'fa-circle-check';
-
-            const row = `
-                <tr>
-                    <td class="ticket-id">${ticket.id}</td>
-                    <td style="font-weight: 500;">${ticket.subject}</td>
-                    <td>
-                        <div class="user-cell">
-                            <img src="${ticket.img}" alt="u">
-                            <span>${ticket.requester}</span>
-                        </div>
-                    </td>
-                    <td><span class="prio-badge ${prioClass}">${ticket.priority}</span></td>
-                    <td>
-                        <span class="status-badge ${statusClass}">
-                            <i class="fa-solid ${statusIcon}"></i> ${ticket.status}
-                        </span>
-                    </td>
-                    <td style="color:var(--text-grey);">${ticket.date}</td>
-                    <td>
-                        <button class="btn-view" onclick="openTicketModal('${ticket.id}')">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-
-        updateStats();
-    }
-
-    renderTable(); // Init
-
-    if(filterSelect) {
-        filterSelect.addEventListener("change", (e) => {
-            renderTable(e.target.value);
-        });
-    }
-
-    // ==========================================
-    // 2. STATS COUNTERS
-    // ==========================================
-    const totalResponsesEl = document.getElementById('totalResponsesVal');
-    const pendingValEl = document.getElementById('pendingVal');
-    const solvedValEl = document.getElementById('solvedVal');
-
-    function updateStats() {
-        if (totalResponsesEl) totalResponsesEl.innerText = tickets.length;
-        if (pendingValEl) pendingValEl.innerText = tickets.filter(t => t.status === 'Open').length;
-        if (solvedValEl) solvedValEl.innerText = tickets.filter(t => t.status === 'Closed').length;
-    }
-
-    // Call once on load
-    updateStats();
-
-    // ==========================================
-    // 3. HELP MODAL LOGIC
-    // ==========================================
-    const helpModal = document.getElementById('helpModal');
-    const createTicketBtn = document.getElementById('createTicketBtn');
-    const closeHelpBtn = document.getElementById('closeHelpModal');
-    const cancelHelpBtn = document.getElementById('cancelHelpBtn');
-    const helpForm = document.getElementById('helpForm');
-
-    const formFields = {
-        name: document.getElementById('helpName'),
-        email: document.getElementById('helpEmail'),
-        description: document.getElementById('helpDescription')
-    };
-
-    function openHelpModal() {
-        if (helpModal) helpModal.classList.add('active');
-    }
-
-    // Expose for inline onclick use
-    window.openHelpModal = openHelpModal;
-
-    function closeHelpModal() {
-        if (helpModal) helpModal.classList.remove('active');
-        if (helpForm) helpForm.reset();
-    }
-
-    if (createTicketBtn) createTicketBtn.addEventListener('click', openHelpModal);
-    if (closeHelpBtn) closeHelpBtn.addEventListener('click', closeHelpModal);
-    if (cancelHelpBtn) cancelHelpBtn.addEventListener('click', closeHelpModal);
-
-    function generateTicketId() {
-        const last = tickets[tickets.length - 1];
-        if (!last || !last.id) return `#TCK-${Date.now()}`;
-        const match = last.id.match(/#TCK-(\d+)/);
-        if (!match) return `#TCK-${Date.now()}`;
-        const nextNum = parseInt(match[1], 10) + 1;
-        return `#TCK-${nextNum}`;
-    }
-
-    if (helpForm) {
-        helpForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            if (!formFields.name.value || !formFields.email.value || !formFields.description.value) {
-                return;
-            }
-
-            const newTicket = {
-                id: generateTicketId(),
-                subject: 'Help Request',
-                requester: formFields.name.value,
-                img: '../assets/profiledp.jpeg',
-                priority: 'Medium',
-                status: 'Open',
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-                desc: formFields.description.value
-            };
-
-            tickets.unshift(newTicket);
-            renderTable(filterSelect ? filterSelect.value : 'all');
-            updateStats();
-            closeHelpModal();
-        });
-    }
-
-    // ==========================================
-    // 4. MODAL LOGIC
-    // ==========================================
-    const modal = document.getElementById('ticketModal');
-    const closeBtn = document.getElementById('closeTicketModal');
-
-    // Make function global so HTML onclick works
-    window.openTicketModal = function(id) {
-        const ticket = tickets.find(t => t.id === id);
-        if(!ticket) return;
-
-        // Populate Data
-        document.getElementById('modalSubject').innerText = ticket.subject;
-        document.getElementById('modalId').innerText = ticket.id;
-        document.getElementById('modalRequester').innerText = ticket.requester;
-        
-        const prioEl = document.getElementById('modalPriority');
-        prioEl.innerText = ticket.priority;
-        prioEl.className = `prio-badge ${ticket.priority.toLowerCase()}`;
-
-        document.getElementById('modalDate').innerText = ticket.date;
-        document.getElementById('modalDesc').innerText = ticket.desc;
-
-        // Show Modal
-        if(modal) modal.classList.add('active');
-    };
-
-    if(closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-    }
-    
-    // Close on outside click
-    window.addEventListener('click', (e) => {
-        if(e.target === modal) modal.classList.remove('active');
-        if(e.target === helpModal) helpModal.classList.remove('active');
+    shrpTickets.forEach((ticket, index) => {
+        const isOpen = ticket.status === 'Open';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="shrp-cell-id">${index + 1}</td>
+            <td class="shrp-cell-subject">${ticket.subject}</td>
+            <td>
+                <div class="shrp-user-detail">
+                    <h4>${ticket.name}</h4>
+                    <span>${ticket.email}</span>
+                </div>
+            </td>
+            <td>
+                <span class="shrp-status-pill ${isOpen ? 'shrp-status-open' : 'shrp-status-closed'}">
+                    ${ticket.status}
+                </span>
+            </td>
+            <td style="text-align: right;">
+                <button class="shrp-action-icon" onclick="shrpOpenModal(${index})">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
     });
+}
 
-});
+function shrpOpenModal(index) {
+    shrpCurrentIdx = index;
+    const ticket = shrpTickets[index];
+    
+    // Set values in the modal
+    document.getElementById('shrp-input-name').value = ticket.name;
+    document.getElementById('shrp-input-email').value = ticket.email;
+    document.getElementById('shrp-input-status').value = ticket.status;
+    
+    // Show modal
+    document.getElementById('shrp-modal-edit').classList.add('shrp-is-visible');
+}
+
+function shrpCloseModal() {
+    document.getElementById('shrp-modal-edit').classList.remove('shrp-is-visible');
+}
+
+function shrpSaveChanges(e) {
+    e.preventDefault();
+    
+    // Update data array
+    shrpTickets[shrpCurrentIdx].name = document.getElementById('shrp-input-name').value;
+    shrpTickets[shrpCurrentIdx].email = document.getElementById('shrp-input-email').value;
+    shrpTickets[shrpCurrentIdx].status = document.getElementById('shrp-input-status').value;
+    
+    // Refresh table
+    shrpRenderTable();
+    shrpCloseModal();
+}
+
+// Initial render
+document.addEventListener('DOMContentLoaded', shrpRenderTable);
+
 
 //notification section
 let notifications = [
