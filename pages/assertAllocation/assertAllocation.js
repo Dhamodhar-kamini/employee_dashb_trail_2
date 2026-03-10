@@ -1,10 +1,10 @@
 // --- 1. Dummy Data ---
 let hraAssets = [
-    { id: 'AST-001', employee: 'Sarah Jenkins', type: 'Laptop', model: 'Dell XPS 15', date: '2023-10-15', status: 'assigned' },
-    { id: 'AST-002', employee: 'Mike Ross', type: 'Monitor', model: 'Dell UltraSharp 27', date: '2023-11-01', status: 'assigned' },
-    { id: 'AST-003', employee: 'Rachel Zane', type: 'Phone', model: 'iPhone 13 Work', date: '2023-09-20', status: 'maintenance' },
-    { id: 'AST-004', employee: 'Louis Litt', type: 'Laptop', model: 'MacBook Pro 16', date: '2023-08-10', status: 'returned' },
-    { id: 'AST-005', employee: 'Harvey Specter', type: 'Laptop', model: 'MacBook Air M2', date: '2023-10-05', status: 'assigned' }
+    { id: 'AST-001', employee: 'Sarah Jenkins', email: 'sarah.jenkins@example.com', type: 'Laptop', model: 'Dell XPS 15', date: '2023-10-15', status: 'assigned' },
+    { id: 'AST-002', employee: 'Mike Ross', email: 'mike.ross@example.com', type: 'Monitor', model: 'Dell UltraSharp 27', date: '2023-11-01', status: 'assigned' },
+    { id: 'AST-003', employee: 'Rachel Zane', email: 'rachel.zane@example.com', type: 'Phone', model: 'iPhone 13 Work', date: '2023-09-20', status: 'maintenance' },
+    { id: 'AST-004', employee: 'Louis Litt', email: 'louis.litt@example.com', type: 'Laptop', model: 'MacBook Pro 16', date: '2023-08-10', status: 'returned' },
+    { id: 'AST-005', employee: 'Harvey Specter', email: 'harvey.specter@example.com', type: 'Laptop', model: 'MacBook Air M2', date: '2023-10-05', status: 'assigned' }
 ];
 
 // --- 2. Element Selectors ---
@@ -85,6 +85,7 @@ function hraOpenModalForEdit(asset) {
     hraModalSubmitBtn.textContent = 'Save Changes';
 
     document.getElementById('hraEmpName').value = asset.employee;
+    document.getElementById('hraEmpEmail').value = asset.email || '';
     document.getElementById('hraAssetType').value = asset.type;
     document.getElementById('hraModelDetails').value = asset.model;
     document.getElementById('hraAssetId').value = asset.id;
@@ -166,6 +167,7 @@ hraAssetForm.addEventListener('submit', (e) => {
     const updatedAsset = {
         id: document.getElementById('hraAssetId').value,
         employee: document.getElementById('hraEmpName').value,
+        email: document.getElementById('hraEmpEmail').value,
         type: document.getElementById('hraAssetType').value,
         model: document.getElementById('hraModelDetails').value,
         date: document.getElementById('hraAssignDate').value,
