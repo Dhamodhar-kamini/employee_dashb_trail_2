@@ -1,7 +1,14 @@
-// --- 1. Dummy Data ---
-let hraAssets = [];
+// ==========================================
+// 1. GLOBAL VARIABLES & SELECTORS
+// ==========================================
 
-// --- 2. Element Selectors ---
+// --- Data Storage ---
+let hraAssets = [];
+let hraReturnAssets = [];
+let currentEditingAssetId = null;
+let currentReturningAsset = null;
+
+// --- Asset Allocation Selectors ---
 const hraTableBody = document.getElementById('hraAssetTableBody');
 const hraModal = document.getElementById('hraAssetModal');
 const hraModalTitle = document.getElementById('hraModalTitle');
@@ -10,56 +17,35 @@ const hraAddBtn = document.getElementById('hraAddAssetBtn');
 const hraCloseBtn = document.getElementById('hraCloseModal');
 const hraAssetForm = document.getElementById('hraAssetForm');
 const hraSearchInput = document.getElementById('hraSearchInput');
+
+// --- Sidebar/Global Selectors ---
 const hraSidebar = document.getElementById('hraSidebar');
 const hraMenuToggle = document.getElementById('hraMenuToggle');
-const hraSuccessPopup = document.getElementById('hraSuccessPopup'); // New Popup
+const hraSuccessPopup = document.getElementById('hraSuccessPopup');
 
-let currentEditingAssetId = null;
+// --- Return Assets Selectors ---
+const hraReturnTableBody = document.getElementById('hraReturnTableBody');
+const hraReturnModal = document.getElementById('hraReturnModal');
+const hraReturnForm = document.getElementById('hraReturnForm');
+const hraReturnSearchInput = document.getElementById('hraReturnSearchInput');
+const hraReturnCloseModal = document.getElementById('hraReturnCloseModal');
 
-// --- 3. Core Functions ---
+// --- Notifications Selectors ---
+const bellBtn = document.getElementById('ntBellBtn');
+const dropdown = document.getElementById('ntDropdown');
+const markReadBtn = document.getElementById('ntMarkAllRead');
+const ntListContainer = document.getElementById('ntList');
+const ntBadge = document.getElementById('ntBadge');
 
-function hraRenderTable(data) {
-    hraTableBody.innerHTML = ''; 
 
-    if (data.length === 0) {
-        hraTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No assets found.</td></tr>';
-        return;
-    }
+// ==========================================
+// 2. CORE UTILITY FUNCTIONS
+// ==========================================
 
-    data.forEach(asset => {
-        const tr = document.createElement('tr');
-
-        tr.innerHTML = `
-<td style="font-weight:bold;">${asset.emp_id}</td>
-<td>${asset.employee}</td>
-<td>${asset.email}</td>
-<td>${asset.asset_type}</td>
-<td>${asset.model_details}</td>
-<td>${asset.assigned_date}</td>
-
-<td>
-<span class="hra-status-badge hra-status-${asset.status}">
-${asset.status}
-</span>
-</td>
-
-<td>
-<button class="hra-action-icon hra-edit-btn" data-id="${asset.id}">
-<i class="fa-solid fa-pen"></i>
-</button>
-
-<button class="hra-action-icon hra-delete-btn" data-id="${asset.id}">
-<i class="fa-solid fa-trash"></i>
-</button>
-</td>
-`;
-
-        hraTableBody.appendChild(tr);
-    });
-}
-
+// Helper to get Icon Class based on type
 function hraGetIcon(type) {
-    switch(type.toLowerCase()) {
+    if (!type) return "fa-box";
+    switch (type.toLowerCase()) {
         case 'laptop': return 'fa-laptop';
         case 'monitor': return 'fa-desktop';
         case 'phone': return 'fa-mobile-screen';
@@ -68,404 +54,263 @@ function hraGetIcon(type) {
     }
 }
 
-function hraGetFilteredAssets() {
-    const term = hraSearchInput.value.toLowerCase().trim();
-    if (!term) return hraAssets;
-
-    return hraAssets.filter(asset =>
-    asset.employee.toLowerCase().includes(term) ||
-    asset.emp_id.toLowerCase().includes(term)||
-    asset.model_details.toLowerCase().includes(term)
-);
-}
-
-function hraOpenModalForCreate() {
-    currentEditingAssetId = null;
-    hraModalTitle.textContent = 'Allocate New Asset';
-    hraModalSubmitBtn.textContent = 'Confirm Allocation';
-    
-    document.getElementById('hraEmpId').value = '';
-    document.getElementById('hraEmpEmail').value = '';
-    hraModal.style.display = 'flex';
-}
-
-function hraOpenModalForEdit(asset) {
-    currentEditingAssetId = asset.id;
-    hraModalTitle.textContent = 'Edit Asset Details';
-    hraModalSubmitBtn.textContent = 'Save Changes';
-
-    document.getElementById('hraEmpId').value = asset.empId || '';
-    document.getElementById('hraEmpName').value = asset.employee;
-    document.getElementById('hraEmpEmail').value = asset.email || '';
-    document.getElementById('hraAssetType').value = asset.type;
-    document.getElementById('hraModelDetails').value = asset.model;
-    document.getElementById('hraAssetId').value = asset.id;
-    document.getElementById('hraAssignDate').value = asset.date;
-
-    hraModal.style.display = 'flex';
-}
-
-function hraCloseModal() {
-    currentEditingAssetId = null;
-    hraModal.style.display = 'none';
-    hraModalTitle.textContent = 'Allocate New Asset';
-    hraModalSubmitBtn.textContent = 'Confirm Allocation';
-    hraAssetForm.reset();
-}
-
-// Function to Show Success Popup
+// Helper to Show Success Popup
 function showSuccessPopup() {
+    if (!hraSuccessPopup) return;
     hraSuccessPopup.classList.add('hra-show');
-    // Hide after 3 seconds
     setTimeout(() => {
         hraSuccessPopup.classList.remove('hra-show');
     }, 3000);
 }
 
-// --- 4. Event Listeners ---
 
+// ==========================================
+// 3. ASSET ALLOCATION LOGIC
+// ==========================================
 
-// Open Modal
-hraAddBtn.addEventListener('click', () => {
-    hraOpenModalForCreate();
-});
-
-// Close Modal
-hraCloseBtn.addEventListener('click', () => {
-    hraCloseModal();
-});
-
-// Close Modal Outside Click
-window.addEventListener('click', (e) => {
-    if (e.target == hraModal) {
-        hraCloseModal();
-    }
-});
-
-// Table Action Buttons (Edit/Delete/Return)
-hraTableBody.addEventListener('click', (e) => {
-    const button = e.target.closest('button');
-    if (!button) return;
-
-    const assetId = button.getAttribute('data-id');
-    if (!assetId) return;
-
-    // Edit
-    if (button.classList.contains('hra-edit-btn')) {
-        const asset = hraAssets.find(a => a.id === assetId);
-        if (!asset) return;
-        hraOpenModalForEdit(asset);
-        return;
-    }
-
-    // Delete
-    if (button.classList.contains('hra-delete-btn')) {
-        hraAssets = hraAssets.filter(a => a.id !== assetId);
-        hraRenderTable(hraGetFilteredAssets());
-        showSuccessPopup();
-        return;
-    }
-
-
-});
-
-// Form Submission
-hraAssetForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-
-    const updatedAsset = {
-        emp_id: document.getElementById('hraEmpId').value,
-        employee: document.getElementById('hraEmpName').value,
-        email: document.getElementById('hraEmpEmail').value,
-        asset_type: document.getElementById('hraAssetType').value,
-        model_details: document.getElementById('hraModelDetails').value,
-        assigned_date: document.getElementById('hraAssignDate').value,
-        status: 'assigned'
-
-    }
-
-    // const assetData = {
-    //     asset_id: document.getElementById('hraAssetId').value,
-    //     employee: document.getElementById('hraEmpName').value,
-
-    //     asset_type: document.getElementById('hraAssetType').value,
-    //     model_details: document.getElementById('hraModelDetails').value,
-    //     assigned_date: document.getElementById('hraAssignDate').value,
-    //     status: "assigned"
-
-    // };
-
+// Fetch Assets from API
+async function loadAssets() {
     try {
-
-        const response = await fetch("http://127.0.0.1:8000/api/assets/save/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedAsset)
-        });
-        const result = await response.json();
-        console.log("Saved:", result);
-
+        const response = await fetch("http://127.0.0.1:8000/api/assets/");
         if (response.ok) {
-
-            console.log("Saved:", result);
-
-            loadAssets(); // reload from backend
-
-            hraCloseModal();
-            showSuccessPopup();
+            const data = await response.json();
+            hraAssets = data;
+            hraRenderTable(hraAssets);
+        } else {
+            console.error("Failed to fetch assets");
         }
-
     } catch (error) {
-        console.error("Error saving asset:", error);
+        console.error("Error loading assets:", error);
     }
-});
-async function loadAssets(){
-
-    const response = await fetch("http://127.0.0.1:8000/api/assets/");
-    const data = await response.json();
-
-    hraAssets = data;
-    hraRenderTable(hraAssets);
 }
 
-document.addEventListener("DOMContentLoaded", loadAssets);
-
-// Search Filter
-hraSearchInput.addEventListener('input', () => {
-    hraRenderTable(hraGetFilteredAssets());
-});
-
-// Mobile Sidebar Toggle
-hraMenuToggle.addEventListener('click', () => {
-    hraSidebar.classList.toggle('hra-active');
-});
-
-// --- RETURN ASSETS FUNCTIONALITY ---
-
-// Return Assets Data Storage
-let hraReturnAssets = [];
-let currentReturningAsset = null; // Track which asset is being returned
-
-// Return Assets Element Selectors
-const hraReturnTableBody = document.getElementById('hraReturnTableBody');
-const hraReturnModal = document.getElementById('hraReturnModal');
-const hraReturnForm = document.getElementById('hraReturnForm');
-const hraReturnSearchInput = document.getElementById('hraReturnSearchInput');
-const hraReturnCloseModal = document.getElementById('hraReturnCloseModal');
-
-// Function to render Return Assets Table
-function hraRenderReturnTable(data) {
-    hraReturnTableBody.innerHTML = '';
+// Render Asset Table
+function hraRenderTable(data) {
+    if (!hraTableBody) return;
+    hraTableBody.innerHTML = '';
 
     if (data.length === 0) {
-        hraReturnTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">No returned assets yet.</td></tr>';
+        hraTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No assets found.</td></tr>';
+        return;
+    }
+
+    data.forEach(asset => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:bold;">${asset.asset_id}</td>
+            <td>${asset.emp_id}</td>
+            <td>${asset.employee}</td>
+            <td><i class="fa-solid ${hraGetIcon(asset.asset_type)}"></i> ${asset.asset_type}</td>
+            <td>${asset.model_details}</td>
+            <td>${asset.assigned_date}</td>
+            <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
+            <td>
+                <button class="hra-action-icon hra-edit-btn" data-id="${asset.asset_id}">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button class="hra-action-icon hra-delete-btn" data-id="${asset.asset_id}" style="color:#ef4444;">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        `;
+        hraTableBody.appendChild(tr);
+    });
+}
+
+// Filter Assets
+function hraGetFilteredAssets() {
+    const term = hraSearchInput ? hraSearchInput.value.toLowerCase().trim() : '';
+    if (!term) return hraAssets;
+
+    return hraAssets.filter(asset =>
+        (asset.employee && asset.employee.toLowerCase().includes(term)) ||
+        (asset.asset_id && asset.asset_id.toLowerCase().includes(term)) ||
+        (asset.model_details && asset.model_details.toLowerCase().includes(term))
+    );
+}
+
+// Modal Operations
+function hraOpenModalForCreate() {
+    currentEditingAssetId = null;
+    if (hraModalTitle) hraModalTitle.textContent = 'Allocate New Asset';
+    if (hraModalSubmitBtn) hraModalSubmitBtn.textContent = 'Confirm Allocation';
+    if (hraAssetForm) {
+        hraAssetForm.reset();
+        document.getElementById('hraEmpId').value = '';
+        document.getElementById('hraEmpEmail').value = '';
+    }
+    if (hraModal) hraModal.style.display = 'flex';
+}
+
+function hraOpenModalForEdit(asset) {
+    currentEditingAssetId = asset.asset_id;
+    if (hraModalTitle) hraModalTitle.textContent = 'Edit Asset Details';
+    if (hraModalSubmitBtn) hraModalSubmitBtn.textContent = 'Save Changes';
+
+    document.getElementById('hraEmpId').value = asset.emp_id || '';
+    document.getElementById('hraEmpName').value = asset.employee;
+    document.getElementById('hraEmpEmail').value = asset.email || '';
+    document.getElementById('hraAssetType').value = asset.asset_type;
+    document.getElementById('hraModelDetails').value = asset.model_details;
+    document.getElementById('hraAssetId').value = asset.asset_id;
+    document.getElementById('hraAssignDate').value = asset.assigned_date;
+
+    if (hraModal) hraModal.style.display = 'flex';
+}
+
+function hraCloseModal() {
+    currentEditingAssetId = null;
+    if (hraModal) hraModal.style.display = 'none';
+    if (hraAssetForm) hraAssetForm.reset();
+}
+
+
+// ==========================================
+// 4. RETURN ASSETS LOGIC (UPDATED)
+// ==========================================
+
+// Fetch Return Assets from API + DUMMY DATA FALLBACK
+async function loadReturnAssets() {
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/return-assets/");
+        if (response.ok) {
+            const data = await response.json();
+            // Ensure status defaults to pending
+            hraReturnAssets = data.map(item => ({
+                ...item,
+                status: item.status || 'pending'
+            }));
+        } else {
+            throw new Error("API Failed");
+        }
+    } catch (error) {
+        console.warn("API Error, loading dummy data:", error);
+        // --- DUMMY DATA FOR DEMO ---
+        hraReturnAssets = [
+            { id: 101, name: 'Alice Johnson', assetType: 'Laptop', condition: 'Good', reason: 'Resignation', status: 'pending' },
+            { id: 102, name: 'Bob Smith', assetType: 'Monitor', condition: 'Damaged', reason: 'Screen Broken', status: 'pending' }
+        ];
+    }
+    hraRenderReturnTable(hraReturnAssets);
+}
+
+// Render Return Table (Without Status Column, Actions Only)
+function hraRenderReturnTable(data) {
+    if (!hraReturnTableBody) return;
+    hraReturnTableBody.innerHTML = '';
+
+    if (!data || data.length === 0) {
+        hraReturnTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: #6b7280;">No returned assets yet.</td></tr>';
         return;
     }
 
     data.forEach(item => {
         const tr = document.createElement('tr');
+        
+        // --- Actions Logic ---
+        let actionsHtml = '';
+
+        // Delete Button (Always visible)
+        const deleteBtn = `
+            <button class="hra-action-icon hra-return-delete-btn" data-id="${item.id}" title="Delete" style="border:none; background:transparent; cursor:pointer; color: #ef4444; font-size: 14px;">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        `;
+
+        // If 'received' -> Show Text "Received"
+        if (item.status === 'received') {
+            actionsHtml = `<span style="color:#166534; font-weight:600; font-size:13px; margin-right:10px;">Received</span> ${deleteBtn}`;
+        } 
+        // If 'not_received' -> Show Text "Not Received"
+        else if (item.status === 'not_received') {
+            actionsHtml = `<span style="color:#991b1b; font-weight:600; font-size:13px; margin-right:10px;">Not Received</span> ${deleteBtn}`;
+        } 
+        // If 'pending' -> Show Tick & Cross Buttons
+        else {
+            actionsHtml = `
+                <div style="display:flex; align-items:center; gap: 8px;">
+                    <button class="hra-return-confirm-btn" data-id="${item.id}" title="Mark Received" 
+                        style="border: 1px solid #10b981; background: transparent; color: #10b981; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                    
+                    <button class="hra-return-reject-btn" data-id="${item.id}" title="Mark Not Received" 
+                        style="border: 1px solid #ef4444; background: transparent; color: #ef4444; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div style="width:1px; height:18px; background:#e5e7eb; margin:0 4px;"></div>
+                    ${deleteBtn}
+                </div>
+            `;
+        }
+
+        // Handle inconsistent API field names
+        const name = item.employee_name || item.name || 'Unknown';
+        const type = item.asset_type || item.assetType || 'Unknown';
+        const condition = item.condition || 'Unknown';
+        const reason = item.description || item.reason || '-';
+
         tr.innerHTML = `
-            <td>${item.name}</td>
-            <td><i class="fa-solid ${hraGetIcon(item.assetType)}"></i> ${item.assetType}</td>
-            <td><span class="hra-status-badge hra-status-${item.condition.toLowerCase()}">${item.condition || 'N/A'}</span></td>
-            <td>${item.reason || 'No reason provided'}</td>
-            <td>
-                <button class="hra-action-icon hra-return-delete-btn" data-id="${item.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
-            </td>
+            <td style="padding:12px 15px;">${name}</td>
+            <td style="padding:12px 15px;"><i class="fa-solid ${hraGetIcon(type)}"></i> ${type}</td>
+            <td style="padding:12px 15px;">${condition}</td>
+            <td style="padding:12px 15px;">${reason}</td>
+            <td style="padding:12px 15px;">${actionsHtml}</td>
         `;
         hraReturnTableBody.appendChild(tr);
     });
 }
 
-// Function to filter returned assets by search
 function hraGetFilteredReturnAssets() {
-    const term = hraReturnSearchInput.value.toLowerCase().trim();
+    const term = hraReturnSearchInput ? hraReturnSearchInput.value.toLowerCase().trim() : '';
     if (!term) return hraReturnAssets;
-
-    return hraReturnAssets.filter(item =>
-        item.name.toLowerCase().includes(term) ||
-        item.assetId.toLowerCase().includes(term)
-    );
+    return hraReturnAssets.filter(item => {
+        const name = item.employee_name || item.name || '';
+        const type = item.asset_type || item.assetType || '';
+        return name.toLowerCase().includes(term) || type.toLowerCase().includes(term);
+    });
 }
 
-// Close Return Modal
-function hraCloseReturnModal() {
-    hraReturnModal.style.display = 'none';
-    hraReturnForm.reset();
+function hraCloseReturnModalFunc() {
+    if (hraReturnModal) hraReturnModal.style.display = 'none';
+    if (hraReturnForm) hraReturnForm.reset();
 }
 
-// Return Return Modal Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Close Return Modal
-    hraReturnCloseModal.addEventListener('click', () => {
-        hraCloseReturnModal();
-    });
 
-    // Close Return Modal Outside Click
-    window.addEventListener('click', (e) => {
-        if (e.target == hraReturnModal) {
-            hraCloseReturnModal();
-        }
-    });
-
-    // Return Form Submission
-    hraReturnForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const condition = document.getElementById('hraReturnCondition').value;
-        const reason = document.getElementById('hraReturnReason').value;
-
-        if (!condition || !reason) {
-            alert('Please fill in all fields');
-            return;
-        }
-
-        if (!currentReturningAsset) return;
-
-        // Update asset status
-        currentReturningAsset.status = 'returned';
-
-        // Add to return assets
-        const returnData = {
-            id: Date.now(),
-            name: currentReturningAsset.employee,
-            assetType: currentReturningAsset.type,
-            assetId: currentReturningAsset.id,
-            condition: condition,
-            reason: reason,
-            returnDate: new Date().toISOString().split('T')[0]
-        };
-
-        hraReturnAssets.push(returnData);
-        hraRenderReturnTable(hraGetFilteredReturnAssets());
-        hraRenderTable(hraGetFilteredAssets());
-        hraCloseReturnModal();
-        currentReturningAsset = null;
-        showSuccessPopup();
-    });
-
-    // Return Table Delete Button
-    hraReturnTableBody.addEventListener('click', (e) => {
-        const button = e.target.closest('button');
-        if (!button) return;
-
-        const returnId = button.getAttribute('data-id');
-        if (!returnId) return;
-
-        if (button.classList.contains('hra-return-delete-btn')) {
-            hraReturnAssets = hraReturnAssets.filter(a => a.id != returnId);
-            hraRenderReturnTable(hraGetFilteredReturnAssets());
-            showSuccessPopup();
-            return;
-        }
-    });
-
-    // Return Search Filter
-    hraReturnSearchInput.addEventListener('input', () => {
-        hraRenderReturnTable(hraGetFilteredReturnAssets());
-    });
-
-    // Initial render of empty return table
-    hraRenderReturnTable(hraReturnAssets);
-});
-
-//notification section
+// ==========================================
+// 5. NOTIFICATIONS LOGIC
+// ==========================================
 let notifications = [
-    {
-        id: 1,
-        text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
-        time: "2 mins ago",
-        icon: "👩‍💼", // Using emojis as placeholders for images
-        read: false
-    },
-    {
-        id: 2,
-        text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.",
-        time: "15 mins ago",
-        icon: "📅",
-        read: false
-    },
-    {
-        id: 3,
-        text: "New system update available.",
-        time: "1 hour ago",
-        icon: "⚙️",
-        read: true
-    },
-    {
-        id: 4,
-        text: "<strong>Arjun</strong> accepted the offer.",
-        time: "3 hours ago",
-        icon: "✅",
-        read: true
-    }
+    { id: 1, text: "<strong>Dhamodhar</strong> applied for the UX Designer position.", time: "2 mins ago", icon: "👩‍💼", read: false },
+    { id: 2, text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.", time: "15 mins ago", icon: "📅", read: false },
+    { id: 3, text: "New system update available.", time: "1 hour ago", icon: "⚙️", read: true },
+    { id: 4, text: "<strong>Arjun</strong> accepted the offer.", time: "3 hours ago", icon: "✅", read: true }
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Select Elements
-    const bellBtn = document.getElementById('ntBellBtn');
-    const dropdown = document.getElementById('ntDropdown');
-    const markReadBtn = document.getElementById('ntMarkAllRead');
-
-    // Initialize
-    ntRenderList();
-
-    // Toggle Dropdown
-    bellBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent immediate closing
-        const isVisible = dropdown.style.display === 'block';
-        dropdown.style.display = isVisible ? 'none' : 'block';
-    });
-
-    // Mark All as Read
-    markReadBtn.addEventListener('click', () => {
-        notifications.forEach(n => n.read = true);
-        ntRenderList();
-    });
-
-    // Close Dropdown when clicking outside
-    window.addEventListener('click', (e) => {
-        if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
-});
-
-// Render Function
 function ntRenderList() {
-    const listContainer = document.getElementById('ntList');
-    const badge = document.getElementById('ntBadge');
-    
-    // Clear current list
-    listContainer.innerHTML = '';
+    if (!ntListContainer) return;
 
-    // Count unread
+    ntListContainer.innerHTML = '';
     const unreadCount = notifications.filter(n => !n.read).length;
 
-    // Update Badge
-    if (unreadCount > 0) {
-        badge.style.display = 'flex';
-        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-    } else {
-        badge.style.display = 'none';
+    if (ntBadge) {
+        if (unreadCount > 0) {
+            ntBadge.style.display = 'flex';
+            ntBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+        } else {
+            ntBadge.style.display = 'none';
+        }
     }
 
-    // Check if empty
     if (notifications.length === 0) {
-        listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
+        ntListContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
         return;
     }
 
-    // Build List
     notifications.forEach(item => {
         const itemDiv = document.createElement('div');
-        // Add class 'nt-unread' if not read
         itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
-        
         itemDiv.innerHTML = `
             <div class="nt-avatar">${item.icon}</div>
             <div class="nt-content">
@@ -473,13 +318,255 @@ function ntRenderList() {
                 <span class="nt-time">${item.time}</span>
             </div>
         `;
-
-        // Click individual item to mark as read
         itemDiv.addEventListener('click', () => {
             item.read = true;
             ntRenderList();
         });
-
-        listContainer.appendChild(itemDiv);
+        ntListContainer.appendChild(itemDiv);
     });
+}
+
+
+// ==========================================
+// 6. MAIN EVENT LISTENERS
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Load Data
+    loadAssets();
+    loadReturnAssets();
+    
+    // 2. Initialize Notifications
+    if (bellBtn) ntRenderList();
+
+    // ----------------------------
+    // Event Listeners: Asset Allocation
+    // ----------------------------
+    if (hraAddBtn) hraAddBtn.addEventListener('click', hraOpenModalForCreate);
+    if (hraCloseBtn) hraCloseBtn.addEventListener('click', hraCloseModal);
+    
+    // Search
+    if (hraSearchInput) {
+        hraSearchInput.addEventListener('input', () => hraRenderTable(hraGetFilteredAssets()));
+    }
+
+    // Asset Form Submit (Save/Update)
+    if (hraAssetForm) {
+        hraAssetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const assetData = {
+                asset_id: document.getElementById('hraAssetId').value,
+                emp_id: document.getElementById('hraEmpId').value,
+                employee: document.getElementById('hraEmpName').value,
+                email: document.getElementById('hraEmpEmail').value,
+                asset_type: document.getElementById('hraAssetType').value,
+                model_details: document.getElementById('hraModelDetails').value,
+                assigned_date: document.getElementById('hraAssignDate').value,
+                status: "assigned"
+            };
+
+            try {
+                // Backend Save Call
+                const response = await fetch("http://127.0.0.1:8000/api/assets/save/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(assetData)
+                });
+
+                if (response.ok) {
+                    loadAssets(); // Reload data
+                    hraCloseModal();
+                    showSuccessPopup();
+                } else {
+                    console.error("Failed to save asset");
+                }
+            } catch (error) {
+                console.error("Error saving asset:", error);
+            }
+        });
+    }
+
+    // Asset Table Actions (Edit/Delete)
+    if (hraTableBody) {
+        hraTableBody.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+            const assetId = button.getAttribute('data-id');
+
+            if (button.classList.contains('hra-edit-btn')) {
+                const asset = hraAssets.find(a => a.asset_id === assetId);
+                if (asset) hraOpenModalForEdit(asset);
+            }
+
+            if (button.classList.contains('hra-delete-btn')) {
+                if(confirm("Are you sure you want to delete this asset?")) {
+                    hraAssets = hraAssets.filter(a => a.asset_id !== assetId);
+                    hraRenderTable(hraGetFilteredAssets());
+                    showSuccessPopup();
+                }
+            }
+        });
+    }
+
+    // ----------------------------
+    // Event Listeners: Return Assets
+    // ----------------------------
+    if (hraReturnCloseModal) {
+        hraReturnCloseModal.addEventListener('click', hraCloseReturnModalFunc);
+    }
+    
+    // Return Form Submit
+    if (hraReturnForm) {
+        hraReturnForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const condition = document.getElementById('hraReturnCondition').value;
+            const reason = document.getElementById('hraReturnReason').value;
+
+            if (!condition || !reason) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Save Return Data Logic
+            const returnData = {
+                id: Date.now(),
+                employee_name: "Current Selection", 
+                asset_type: "Unknown",
+                condition: condition,
+                description: reason,
+                status: 'pending' 
+            };
+
+            hraReturnAssets.push(returnData);
+            hraRenderReturnTable(hraGetFilteredReturnAssets());
+            hraCloseReturnModalFunc();
+            showSuccessPopup();
+        });
+    }
+
+    // Search Return
+    if (hraReturnSearchInput) {
+        hraReturnSearchInput.addEventListener('input', () => hraRenderReturnTable(hraGetFilteredReturnAssets()));
+    }
+
+    // Return Table Actions (Tick/Cross/Delete)
+    if (hraReturnTableBody) {
+        hraReturnTableBody.addEventListener('click', async (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+            const returnId = button.getAttribute('data-id'); 
+            // Handle different ID types (string/number)
+            const assetIndex = hraReturnAssets.findIndex(a => a.id == returnId);
+
+            if (assetIndex === -1) return;
+
+            // 1. Mark Received (Green Tick)
+            if (button.classList.contains('hra-return-confirm-btn')) {
+                hraReturnAssets[assetIndex].status = 'received';
+                hraRenderReturnTable(hraGetFilteredReturnAssets());
+                showSuccessPopup();
+            }
+
+            // 2. Mark Not Received (Red Cross)
+            if (button.classList.contains('hra-return-reject-btn')) {
+                hraReturnAssets[assetIndex].status = 'not_received';
+                hraRenderReturnTable(hraGetFilteredReturnAssets());
+                showSuccessPopup();
+            }
+
+            // 3. Delete Return Record
+            if (button.classList.contains('hra-return-delete-btn')) {
+                if(confirm("Delete this return record?")) {
+                    hraReturnAssets.splice(assetIndex, 1);
+                    hraRenderReturnTable(hraGetFilteredReturnAssets());
+                    showSuccessPopup();
+                }
+            }
+        });
+    }
+
+    // ----------------------------
+    // Event Listeners: Notifications & Sidebar
+    // ----------------------------
+    if (bellBtn && dropdown) {
+        bellBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        });
+    }
+
+    if (markReadBtn) {
+        markReadBtn.addEventListener('click', () => {
+            notifications.forEach(n => n.read = true);
+            ntRenderList();
+        });
+    }
+
+    if (hraMenuToggle) {
+        hraMenuToggle.addEventListener('click', () => {
+            hraSidebar.classList.toggle('hra-active');
+        });
+    }
+
+    // Close Modals/Dropdowns on Outside Click
+    window.addEventListener('click', (e) => {
+        if (hraModal && e.target == hraModal) hraCloseModal();
+        if (hraReturnModal && e.target == hraReturnModal) hraCloseReturnModalFunc();
+        if (dropdown && bellBtn && !dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+});
+
+
+//logout section
+/* --- Toggle Profile Dropdown --- */
+function hdr_toggleProfilePopup() {
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    dropdown.classList.toggle("show");
+}
+
+/* --- Show Logout Modal --- */
+function hdr_showLogoutModal() {
+    // 1. Hide the dropdown menu first (optional UI polish)
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    if (dropdown) dropdown.classList.remove("show");
+
+    // 2. Show the modal
+    const modal = document.getElementById("hdrLogoutModal");
+    if (modal) modal.classList.add("show-modal");
+}
+
+/* --- Hide Logout Modal --- */
+function hdr_hideLogoutModal() {
+    const modal = document.getElementById("hdrLogoutModal");
+    if (modal) modal.classList.remove("show-modal");
+}
+
+/* --- Perform Actual Logout --- */
+function hdr_confirmLogout() {
+    // 1. Clear session/local storage
+    sessionStorage.clear();
+    localStorage.clear();
+
+    // 2. Redirect to Login Page
+    window.location.href = "../adminlogin/adminlogin.html";
+}
+
+/* --- Close Dropdown when clicking outside --- */
+window.onclick = function(event) {
+    // If click is NOT on the profile wrapper
+    if (!event.target.closest(".hdr-profile-wrapper")) {
+        const dropdown = document.getElementById("hdrProfileDropdown");
+        if (dropdown && dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    }
+
+    // Optional: Close modal if clicking on the overlay background
+    const modal = document.getElementById("hdrLogoutModal");
+    if (event.target === modal) {
+        hdr_hideLogoutModal();
+    }
 }

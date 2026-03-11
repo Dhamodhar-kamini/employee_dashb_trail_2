@@ -1,309 +1,238 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. GLOBAL DEFAULTS
-    Chart.defaults.font.family = "'Inter', sans-serif";
-    Chart.defaults.color = '#6B7280';
+const monthPicker = document.getElementById("monthPicker");
 
-    // ==========================================
-    // 2. SALARY RANGE BAR CHART (Vertical Pill Bars)
-    // ==========================================
-    const barChartCanvas = document.getElementById('salaryBarChart');
-    
-    if (barChartCanvas) {
-        const ctxBar = barChartCanvas.getContext('2d');
-        
-        // Define data outside so we can calculate the max value for coloring
-        const salaryData = [20, 65, 30, 40, 50, 25, 60, 55, 45, 30, 55, 20];
-        const maxSalary = Math.max(...salaryData); // Find the highest number (65)
+const now = new Date();
 
-        new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 
-                datasets: [{
-                    label: 'Salary Distribution',
-                    data: salaryData,
-                    
-                    // --- COLOR FILL LOGIC ---
-                    // Automatically fills the highest bar with Orange, others Gray
-                    backgroundColor: function(context) {
-                        // Check if the current bar's value equals the maximum value
-                        return context.raw === maxSalary ? '#FF5B1E' : '#F3F4F6'; 
-                    },
-                    
-                    // Hover color logic
-                    hoverBackgroundColor: function(context) {
-                        return context.raw === maxSalary ? '#FF5B1E' : '#E5E7EB'; 
-                    },
-                    
-                    // --- SHAPE STYLING ---
-                    borderRadius: 50,      // Fully rounded ends (Pill shape)
-                    borderSkipped: false,  // false = rounds the bottom as well
-                    barThickness: 16,      // Width of the bars
-                    borderWidth: 0         // No border stroke, purely filled
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { 
-                        enabled: true,
-                        backgroundColor: '#1F2937', // Dark tooltip background
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false, // Hides the color square
-                        callbacks: {
-                            title: () => null, // Hide title
-                            label: (context) => `Avg: $${context.raw}k`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 80, // Adjust this based on your highest data point
-                        ticks: {
-                            callback: function(value) { return '$' + value + 'k'; }, 
-                            color: '#9CA3AF',
-                            font: { size: 11 },
-                            stepSize: 20,
-                            padding: 10
-                        },
-                        grid: { display: false }, // Clean look, no grid
-                        border: { display: false }
-                    },
-                    x: {
-                        grid: { display: false },
-                        border: { display: false },
-                        ticks: { display: false } // Hide X-axis labels (abstract look)
-                    }
-                }
-            }
-        });
-    }
+const currentYear = now.getFullYear();
+const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
 
+monthPicker.value = `${currentYear}-${currentMonth}`;
+monthPicker.max = `${currentYear}-${currentMonth}`;
+monthPicker.min = `${currentYear - 50}-01`;
 
-    // ==========================================
-    // 3. TREND LINE CHART (Stepped Lines)
-    // ==========================================
-    const lineChartCanvas = document.getElementById('trendChart');
+function formatRupee(number) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(number);
+}
 
-    if (lineChartCanvas) {
-        const ctxLine = lineChartCanvas.getContext('2d');
+function formatCompact(number) {
+  return new Intl.NumberFormat("en-IN", {
+    notation: "compact",
+    compactDisplay: "short",
+    style: "currency",
+    currency: "INR",
+  }).format(number);
+}
 
-        new Chart(ctxLine, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [
-                    {
-                        label: 'Federal Tax',
-                        data: [300, 300, 220, 220, 220, 220],
-                        borderColor: '#164E63', // Navy Blue
-                        backgroundColor: '#164E63',
-                        pointBackgroundColor: '#164E63',
-                        borderWidth: 2,
-                        stepped: 'middle', // Squared lines
-                        pointRadius: 0,    // Hide dots until hover
-                        pointHoverRadius: 6,
-                        tension: 0,
-                        fill: false
-                    },
-                    {
-                        label: 'Deductions',
-                        data: [150, 150, 150, 10, 70, 150],
-                        borderColor: '#FF5B1E', // Orange
-                        backgroundColor: '#FF5B1E',
-                        pointBackgroundColor: '#FF5B1E',
-                        borderWidth: 2,
-                        stepped: 'middle',
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
-                        tension: 0,
-                        fill: false
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                plugins: {
-                    legend: { display: false }, 
-                    tooltip: {
-                        backgroundColor: '#FFFFFF',
-                        titleColor: '#111827',
-                        bodyColor: '#4B5563',
-                        borderColor: '#E5E7EB',
-                        borderWidth: 1,
-                        padding: 10,
-                        usePointStyle: true,
-                        callbacks: {
-                            label: function(context) {
-                                return ' ' + context.dataset.label + ': $' + context.parsed.y + 'k';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 350,
-                        ticks: {
-                            callback: function(value) { return '$' + value + 'k'; },
-                            color: '#9CA3AF',
-                            font: { size: 10 },
-                            stepSize: 87.5
-                        },
-                        grid: {
-                            color: '#F3F4F6',
-                            drawBorder: false
-                        },
-                        border: { display: false }
-                    },
-                    x: {
-                        grid: {
-                            color: '#F3F4F6',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#9CA3AF',
-                            font: { size: 10 }
-                        },
-                        border: { display: false }
-                    }
-                }
-            }
-        });
-    }
+function getDataForYear(year) {
+  const baseSalary = 800000 + (year - 2000) * 50000;
 
-    // ==========================================
-    // 4. UI INTERACTIONS (Chips & Buttons)
-    // ==========================================
-    
-    // Chip Selection (Time Range)
-    const chips = document.querySelectorAll('.chip');
-    chips.forEach(chip => {
-        chip.addEventListener('click', function() {
-            // Remove active class from siblings
-            const container = this.parentNode;
-            container.querySelectorAll('.chip').forEach(s => s.classList.remove('active'));
-            // Add active class to clicked chip
-            this.classList.add('active');
-        });
-    });
+  let monthlyData = [];
 
-    // Button Press Animation
-    const buttons = document.querySelectorAll('button:not([type="submit"])');
-    buttons.forEach(btn => {
-        btn.addEventListener('mousedown', function() { this.style.transform = "scale(0.96)"; });
-        btn.addEventListener('mouseup', function() { this.style.transform = "scale(1)"; });
-        btn.addEventListener('mouseleave', function() { this.style.transform = "scale(1)"; });
-    });
+  for (let i = 0; i < 12; i++) {
+    let randomFactor = 0.8 + Math.random() * 0.4;
 
+    monthlyData.push(Math.floor(baseSalary * randomFactor));
+  }
+
+  return monthlyData;
+}
+
+const ctx = document.getElementById("payrollChart").getContext("2d");
+
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+let currentData = getDataForYear(currentYear);
+
+let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+
+gradient.addColorStop(0, "#c2410c");
+gradient.addColorStop(1, "#fb923c");
+
+const payrollChart = new Chart(ctx, {
+  type: "bar",
+
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: "Salary",
+        data: currentData,
+        backgroundColor: gradient,
+        borderRadius: 6,
+        maxBarThickness: 30,
+      },
+    ],
+  },
+
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    plugins: {
+      legend: { display: false },
+
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return formatRupee(context.raw);
+          },
+        },
+      },
+    },
+
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function (value) {
+            return formatCompact(value);
+          },
+        },
+      },
+
+      x: {
+        grid: { display: false },
+      },
+    },
+  },
+});
+
+function updateDashboard(dateString) {
+  const year = parseInt(dateString.split("-")[0]);
+
+  const newData = getDataForYear(year);
+
+  payrollChart.data.datasets[0].data = newData;
+
+  payrollChart.update();
+
+  const total = newData.reduce((a, b) => a + b, 0);
+
+  const average = total / 12;
+
+  document.getElementById("totalPayout").textContent = formatRupee(total);
+
+  document.getElementById("avgPayout").textContent = formatRupee(average);
+}
+
+updateDashboard(`${currentYear}-${currentMonth}`);
+
+monthPicker.addEventListener("change", (e) => {
+  if (e.target.value) {
+    updateDashboard(e.target.value);
+  }
 });
 
 //notification section
-//notification section
 let notifications = [
-    {
-        id: 1,
-        text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
-        time: "2 mins ago",
-        icon: "👩‍💼", // Using emojis as placeholders for images
-        read: false
-    },
-    {
-        id: 2,
-        text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.",
-        time: "15 mins ago",
-        icon: "📅",
-        read: false
-    },
-    {
-        id: 3,
-        text: "New system update available.",
-        time: "1 hour ago",
-        icon: "⚙️",
-        read: true
-    },
-    {
-        id: 4,
-        text: "<strong>Arjun</strong> accepted the offer.",
-        time: "3 hours ago",
-        icon: "✅",
-        read: true
-    }
+  {
+    id: 1,
+    text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
+    time: "2 mins ago",
+    icon: "👩‍💼", // Using emojis as placeholders for images
+    read: false,
+  },
+  {
+    id: 2,
+    text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.",
+    time: "15 mins ago",
+    icon: "📅",
+    read: false,
+  },
+  {
+    id: 3,
+    text: "New system update available.",
+    time: "1 hour ago",
+    icon: "⚙️",
+    read: true,
+  },
+  {
+    id: 4,
+    text: "<strong>Arjun</strong> accepted the offer.",
+    time: "3 hours ago",
+    icon: "✅",
+    read: true,
+  },
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Select Elements
-    const bellBtn = document.getElementById('ntBellBtn');
-    const dropdown = document.getElementById('ntDropdown');
-    const markReadBtn = document.getElementById('ntMarkAllRead');
+document.addEventListener("DOMContentLoaded", () => {
+  // Select Elements
+  const bellBtn = document.getElementById("ntBellBtn");
+  const dropdown = document.getElementById("ntDropdown");
+  const markReadBtn = document.getElementById("ntMarkAllRead");
 
-    // Initialize
+  // Initialize
+  ntRenderList();
+
+  // Toggle Dropdown
+  bellBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent immediate closing
+    const isVisible = dropdown.style.display === "block";
+    dropdown.style.display = isVisible ? "none" : "block";
+  });
+
+  // Mark All as Read
+  markReadBtn.addEventListener("click", () => {
+    notifications.forEach((n) => (n.read = true));
     ntRenderList();
+  });
 
-    // Toggle Dropdown
-    bellBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent immediate closing
-        const isVisible = dropdown.style.display === 'block';
-        dropdown.style.display = isVisible ? 'none' : 'block';
-    });
-
-    // Mark All as Read
-    markReadBtn.addEventListener('click', () => {
-        notifications.forEach(n => n.read = true);
-        ntRenderList();
-    });
-
-    // Close Dropdown when clicking outside
-    window.addEventListener('click', (e) => {
-        if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
+  // Close Dropdown when clicking outside
+  window.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
+      dropdown.style.display = "none";
+    }
+  });
 });
 
 // Render Function
 function ntRenderList() {
-    const listContainer = document.getElementById('ntList');
-    const badge = document.getElementById('ntBadge');
-    
-    // Clear current list
-    listContainer.innerHTML = '';
+  const listContainer = document.getElementById("ntList");
+  const badge = document.getElementById("ntBadge");
 
-    // Count unread
-    const unreadCount = notifications.filter(n => !n.read).length;
+  // Clear current list
+  listContainer.innerHTML = "";
 
-    // Update Badge
-    if (unreadCount > 0) {
-        badge.style.display = 'flex';
-        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-    } else {
-        badge.style.display = 'none';
-    }
+  // Count unread
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
-    // Check if empty
-    if (notifications.length === 0) {
-        listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
-        return;
-    }
+  // Update Badge
+  if (unreadCount > 0) {
+    badge.style.display = "flex";
+    badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
+  } else {
+    badge.style.display = "none";
+  }
 
-    // Build List
-    notifications.forEach(item => {
-        const itemDiv = document.createElement('div');
-        // Add class 'nt-unread' if not read
-        itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
-        
-        itemDiv.innerHTML = `
+  // Check if empty
+  if (notifications.length === 0) {
+    listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
+    return;
+  }
+
+  // Build List
+  notifications.forEach((item) => {
+    const itemDiv = document.createElement("div");
+    // Add class 'nt-unread' if not read
+    itemDiv.className = `nt-item ${!item.read ? "nt-unread" : ""}`;
+
+    itemDiv.innerHTML = `
             <div class="nt-avatar">${item.icon}</div>
             <div class="nt-content">
                 <p class="nt-text">${item.text}</p>
@@ -311,12 +240,65 @@ function ntRenderList() {
             </div>
         `;
 
-        // Click individual item to mark as read
-        itemDiv.addEventListener('click', () => {
-            item.read = true;
-            ntRenderList();
-        });
-
-        listContainer.appendChild(itemDiv);
+    // Click individual item to mark as read
+    itemDiv.addEventListener("click", () => {
+      item.read = true;
+      ntRenderList();
     });
+
+    listContainer.appendChild(itemDiv);
+  });
 }
+
+
+
+//logout section
+/* --- Toggle Profile Dropdown --- */
+function hdr_toggleProfilePopup() {
+  const dropdown = document.getElementById("hdrProfileDropdown");
+  dropdown.classList.toggle("show");
+}
+
+/* --- Show Logout Modal --- */
+function hdr_showLogoutModal() {
+  // 1. Hide the dropdown menu first (optional UI polish)
+  const dropdown = document.getElementById("hdrProfileDropdown");
+  if (dropdown) dropdown.classList.remove("show");
+
+  // 2. Show the modal
+  const modal = document.getElementById("hdrLogoutModal");
+  if (modal) modal.classList.add("show-modal");
+}
+
+/* --- Hide Logout Modal --- */
+function hdr_hideLogoutModal() {
+  const modal = document.getElementById("hdrLogoutModal");
+  if (modal) modal.classList.remove("show-modal");
+}
+
+/* --- Perform Actual Logout --- */
+function hdr_confirmLogout() {
+  // 1. Clear session/local storage
+  sessionStorage.clear();
+  localStorage.clear();
+
+  // 2. Redirect to Login Page
+  window.location.href = "../adminlogin/adminlogin.html";
+}
+
+/* --- Close Dropdown when clicking outside --- */
+window.onclick = function (event) {
+  // If click is NOT on the profile wrapper
+  if (!event.target.closest(".hdr-profile-wrapper")) {
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    if (dropdown && dropdown.classList.contains("show")) {
+      dropdown.classList.remove("show");
+    }
+  }
+
+  // Optional: Close modal if clicking on the overlay background
+  const modal = document.getElementById("hdrLogoutModal");
+  if (event.target === modal) {
+    hdr_hideLogoutModal();
+  }
+};

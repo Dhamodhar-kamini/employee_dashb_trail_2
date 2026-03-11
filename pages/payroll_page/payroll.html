@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payroll Dashboard</title>
+    <title>OPPTY HRMS</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/opptylogo2.png">
     
     <!-- Fonts: Inter -->
@@ -128,39 +128,56 @@
     
 
     <!-- MODIFIED PROFILE SECTION -->
-    <div class="hdr-profile-wrapper">
-        
-        <!-- Profile Image (Clickable) -->
-        <div class="user-profile" onclick="hdr_toggleProfilePopup()">
-            <img src="../assets/profiledp.jpeg" alt="User Avatar" />
-        </div>
+    <!-- Profile Wrapper (Existing) -->
+<div class="hdr-profile-wrapper">
+  <!-- Profile Image (Clickable) -->
+  <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+    <!-- Update src to your actual image path -->
+    <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+  </div>
 
-        <!-- The Popup Menu -->
-        <div class="hdr-popup-menu" id="hdrProfileDropdown">
-            <!-- Optional Header info -->
-            <div class="hdr-popup-header">
-                <p><strong>Employee Profile</strong></p>
-                <span class="hdr-email-text">user@example.com</span>
-            </div>
-            
-            <!-- Logout Button -->
-            <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </div>
-
+  <!-- The Popup Menu -->
+  <div class="hdr-popup-menu" id="hdrProfileDropdown">
+    <!-- Optional Header info -->
+    <div class="hdr-popup-header">
+      <p><strong>Employee Profile</strong></p>
+      <span class="hdr-email-text">user@example.com</span>
     </div>
+
+    <!-- Logout Button (Triggers Popup) -->
+    <button class="hdr-logout-btn" onclick="hdr_showLogoutModal()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- NEW: Logout Confirmation Modal Structure -->
+<!-- ========================================= -->
+<div id="hdrLogoutModal" class="hdr-modal-overlay">
+  <div class="hdr-modal-content">
+    <div class="hdr-modal-icon">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <h3>Confirm Logout</h3>
+    <p>Are you sure you want to log out of your account?</p>
+    <div class="hdr-modal-actions">
+      <button class="hdr-btn-cancel" onclick="hdr_hideLogoutModal()">Cancel</button>
+      <button class="hdr-btn-confirm" onclick="hdr_confirmLogout()">Logout</button>
+    </div>
+  </div>
+</div>
 </div>
         </header>
 
     
     <!-- Main Container -->
-    <div class="container">
+    <div class="container" style="margin-top: 50px; margin-left: 30px;">
         
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1>Payroll Dashboard</h1>
+                <h1 style="font-size: 28px;">Payroll Dashboard</h1>
                 <div class="breadcrumbs">
                     <i class="fa-solid fa-house"></i>
                     <i class="fa-solid fa-chevron-right"></i>
@@ -191,405 +208,49 @@
             
         </div>
 
-        <!-- Floating Settings Gear -->
+
+        <div class="dashboard-card">
+
+    <div class="card-header">
+        <div class="header-text">
+            <h2>Annual Salary Distribution</h2>
+            <p>Revenue breakdown per month for selected fiscal year</p>
+        </div>
+
+        <div class="date-selector-container">
+            <input type="month" id="monthPicker">
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-label">Total Annual Payout</span>
+            <div class="stat-value" id="totalPayout">₹0</div>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Avg. Monthly Salary</span>
+            <div class="stat-value" id="avgPayout">₹0</div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="payrollChart"></canvas>
+    </div>
+
+    <div class="card-footer">
+        <div class="legend-item">
+            <span class="legend-dot"></span>
+            Salary Revenue (INR)
+        </div>
+    </div>
+
+</div>
+
+
         
-        <!-- Main Grid Layout -->
-        <main class="dashboard-grid">
-            
-            <!-- Column 1 (Left Top) -->
-            <!-- <div class="col-left-top">
-                
-                <div class="card card-dark">
-                    <div class="card-header">
-                        <h3>Overview</h3>
-                        <button class="icon-btn-light"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                    </div>
-                    
-                    <div class="overview-main">
-                        <div class="ov-icon"><i class="fa-solid fa-sack-dollar"></i></div>
-                        <div>
-                            <div class="ov-amount">$2,458,320</div>
-                            <div class="ov-label">Total Gross Payroll</div>
-                        </div>
-                        <div class="ov-net">
-                            <div class="ov-icon-sm"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-                            <div>
-                                <div class="ov-amount-sm">$1,987,450</div>
-                                <div class="ov-label">Net Payable Amount</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-stats">
-                        <div class="glass-box">
-                            <div class="gb-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                            <div class="gb-val">$1,987,450</div>
-                            <div class="gb-lbl">Total Deductions</div>
-                        </div>
-                        <div class="glass-box">
-                            <div class="gb-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                            <div class="gb-val">12</div>
-                            <div class="gb-lbl">Pending Approvals</div>
-                        </div>
-                        <div class="glass-box">
-                            <div class="gb-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <div class="gb-val">24</div>
-                            <div class="gb-lbl">Total Payroll Errors</div>
-                        </div>
-                    </div>
-                </div> -->
-
-                <!-- 4 Small Cards Grid -->
-                <!-- <div class="small-cards-grid"> -->
-                    <!-- Card 1 -->
-                    <!-- <div class="card card-sm">
-                        <div class="card-header-sm">
-                            <div class="icon-circle dark"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                            <span>Highest Salary</span>
-                        </div>
-                        <div class="stat-val-row">
-                            <span class="stat-num">$24,500</span>
-                            <span class="trend up">+18% <i class="fa-solid fa-arrow-up"></i></span>
-                        </div>
-                        <div class="stat-sub">CTO - Engineering</div>
-                    </div> -->
-                    <!-- Card 2 -->
-                    <!-- <div class="card card-sm">
-                        <div class="card-header-sm">
-                            <div class="icon-circle dark"><i class="fa-solid fa-coins"></i></div>
-                            <span>Variable Pay</span>
-                        </div>
-                        <div class="stat-val-row">
-                            <span class="stat-num">$284K</span>
-                            <span class="trend up">+18% <i class="fa-solid fa-arrow-up"></i></span>
-                        </div>
-                        <div class="stat-sub">Bonuses + Commissions</div>
-                    </div> -->
-                    <!-- Card 3 -->
-                    <!-- <div class="card card-sm">
-                        <div class="card-header-sm">
-                            <div class="icon-circle dark"><i class="fa-solid fa-calculator"></i></div>
-                            <span>After Deduction</span>
-                        </div>
-                        <div class="stat-val-row">
-                            <span class="stat-num">$1.99M</span>
-                            <span class="trend down">-16% <i class="fa-solid fa-arrow-down"></i></span>
-                        </div>
-                        <div class="stat-sub">Employee take-home</div>
-                    </div> -->
-                    <!-- Card 4 -->
-                    <!-- <div class="card card-sm">
-                        <div class="card-header-sm">
-                            <div class="icon-circle dark"><i class="fa-solid fa-users"></i></div>
-                            <span>Average Salary</span>
-                        </div>
-                        <div class="stat-val-row">
-                            <span class="stat-num">$78,450</span>
-                            <span class="trend up">+18% <i class="fa-solid fa-arrow-up"></i></span>
-                        </div>
-                        <div class="stat-sub">Median: $72,000</div>
-                    </div>
-                </div>
-            </div> -->
-
-            <!-- Column 2 (Right Top - Tall) -->
-            <div class="col-right-top">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div>
-                            <h3>Salary Range Distribution</h3>
-                            <div class="sub-header">Average Salary <span class="text-dark-lg">$78,450</span></div>
-                        </div>
-                        <div class="header-actions">
-                            <span class="legend-dot"></span> Salary Range
-                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Bar Chart Container -->
-                    <div class="chart-container-bar">
-                        <canvas id="salaryBarChart"></canvas>
-                    </div>
-
-                    <!-- Range List -->
-                    <div class="range-section">
-                        <div class="range-header">
-                            <h3>Range</h3>
-                            <span class="select-text">Last 7 Days <i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="range-list">
-                            <div class="range-item">
-                                <div class="ri-top"><span>$30k-50k</span> <span>285 (22.8%)</span></div>
-                                <div class="progress-track"><div class="progress-fill orange" style="width: 22.8%"></div></div>
-                            </div>
-                            <div class="range-item">
-                                <div class="ri-top"><span>$50k-80k</span> <span>478 (38.3%)</span></div>
-                                <div class="progress-track"><div class="progress-fill orange" style="width: 38.3%"></div></div>
-                            </div>
-                            <div class="range-item">
-                                <div class="ri-top"><span>$80k-120k</span> <span>342 (27.4%)</span></div>
-                                <div class="progress-track"><div class="progress-fill orange" style="width: 27.4%"></div></div>
-                            </div>
-                            <div class="range-item">
-                                <div class="ri-top"><span>$120k-180k</span> <span>98 (7.8%)</span></div>
-                                <div class="progress-track"><div class="progress-fill orange" style="width: 7.8%"></div></div>
-                            </div>
-                            <div class="range-item">
-                                <div class="ri-top"><span>$180k-250k</span> <span>45 (3.6%)</span></div>
-                                <div class="progress-track"><div class="progress-fill orange" style="width: 3.6%"></div></div>
-                            </div>
-                        </div>
-                        <div class="view-report">
-                            View Salary Report in realtime <button class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Middle Row: Batch, Trend, Insurance -->
-            <!-- <div class="col-full row-middle"> -->
-                
-                <!-- Batch Processing -->
-                <!-- <div class="card">
-                    <div class="card-header">
-                        <h3>Batch Processing Status</h3>
-                        <button class="btn-xs-outline"><i class="fa-regular fa-calendar"></i> Monthly <i class="fa-solid fa-chevron-down"></i></button>
-                    </div>
-                    <div class="batch-content">
-                        <div class="batch-label">Combined Total</div>
-                        <div class="batch-total">$2,459,320 <span class="badge-pill">3 Batches</span></div>
-                        
-                        <div class="batch-cols">
-                            <div>
-                                <div class="b-head">1120 Employees</div>
-                                <div class="b-sub">$2,184,500</div>
-                            </div>
-                            <div>
-                                <div class="b-head">60 Employees</div>
-                                <div class="b-sub">$124,850</div>
-                            </div>
-                            <div>
-                                <div class="b-head">63 Employees</div>
-                                <div class="b-sub">$154,850</div>
-                            </div>
-                        </div>
-
-                        <div class="batch-visual">
-                            <div class="b-pill orange"></div>
-                            <div class="b-pill blue"></div>
-                            <div class="b-pill dark"></div>
-                        </div>
-                        <div class="batch-legend">
-                            <span><span class="dot orange"></span> Full Time</span>
-                            <span><span class="dot blue"></span> Part Time</span>
-                            <span><span class="dot dark"></span> Contractors</span>
-                        </div>
-                    </div>
-                </div> -->
-
-                <!-- Trend Chart -->
-                <!-- <div class="card">
-                    <div class="card-header">
-                        <h3>6 Months Tax & Deduction Trend</h3>
-                    </div>
-                    <div class="chart-container-line">
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                    <div class="trend-footer">
-                        <div class="tf-total">$1.71M <span class="circle-up"><i class="fa-solid fa-arrow-up"></i></span></div>
-                        <div class="tf-legend">
-                            <span><i class="fa-solid fa-circle-check" style="color: #1e3a8a"></i> Federal Tax</span>
-                            <span><i class="fa-solid fa-circle-check" style="color: #ff5b1e"></i> Deductions</span>
-                        </div>
-                    </div>
-                </div> -->
-
-                <!-- Insurance -->
-                <!-- <div class="card insurance-card">
-                     -->
-                    <!-- Life Insurance -->
-                    <!-- <div class="ins-row">
-                        <div class="ins-info">
-                            <h4>Life Insurance</h4>
-                            <span>Per Employee</span>
-                        </div>
-                        <div class="ins-graph">
-                            <div class="equalizer orange">
-                                <span></span><span></span><span></span><span></span><span></span><span></span>
-                            </div>
-                            <div class="ins-val">$24.87</div>
-                        </div>
-                    </div> -->
-
-                    <!-- 401k -->
-                    <!-- <div class="ins-row">
-                        <div class="ins-info">
-                            <h4>401(k) Contribution</h4>
-                            <span>Per Employee</span>
-                        </div>
-                        <div class="ins-graph">
-                            <div class="equalizer blue">
-                                <span></span><span></span><span></span><span></span><span></span><span></span>
-                            </div>
-                            <div class="ins-val">$10.47</div>
-                        </div>
-                    </div> -->
-
-                    <!-- Health -->
-                    <!-- <div class="ins-row">
-                        <div class="ins-info">
-                            <h4>Health Insurance</h4>
-                            <span>Per Employee</span>
-                        </div>
-                        <div class="ins-graph">
-                            <div class="equalizer yellow">
-                                <span></span><span></span><span></span><span></span><span></span><span></span>
-                            </div>
-                            <div class="ins-val">$26.87</div>
-                        </div>
-                    </div>
-
-                </div>
-            </div> -->
-
-            <!-- Bottom Row: Pipeline & AI -->
-            <!-- <div class="col-full row-bottom"> -->
-                
-                <!-- Pipeline -->
-                <!-- <div class="card">
-                    <div class="card-header">
-                        <h3>Payroll Processing Pipeline</h3>
-                        <span class="badge-red-light">Processing 4 to 6</span>
-                    </div>
-                    <div class="progress-summary">
-                        <span>Overall Progress</span>
-                        <span>(40%)</span>
-                    </div>
-                    <div class="progress-track main"><div class="progress-fill dark" style="width: 40%"></div></div>
-
-                    <div class="pipeline-steps"> -->
-                        <!-- Step 1 -->
-                        <!-- <div class="step">
-                            <div class="step-icon completed"><i class="fa-regular fa-circle-dot"></i></div>
-                            <div class="step-content">
-                                <div class="sc-head">
-                                    <h4>Data Validation</h4>
-                                    <span class="tag green">• Completed</span>
-                                    <div class="time-circle">2 Min</div>
-                                </div>
-                                <p>All employee records validated</p>
-                            </div>
-                        </div> -->
-                        <!-- Step 2 -->
-                        <!-- <div class="step">
-                            <div class="step-icon completed"><i class="fa-regular fa-circle"></i></div>
-                            <div class="step-content">
-                                <div class="sc-head">
-                                    <h4>Attendance Calculation</h4>
-                                    <span class="tag green">• Completed</span>
-                                    <div class="time-circle">4 Min</div>
-                                </div>
-                                <p>Working days and hours calculated</p>
-                            </div>
-                        </div> -->
-                        <!-- Step 3 -->
-                        <!-- <div class="step">
-                            <div class="step-icon completed"><i class="fa-regular fa-circle"></i></div>
-                            <div class="step-content">
-                                <div class="sc-head">
-                                    <h4>Salary Computation</h4>
-                                    <span class="tag green">• Completed</span>
-                                    <div class="time-circle">3 Min</div>
-                                </div>
-                                <p>Base salary + allowances calculated</p>
-                            </div>
-                        </div> -->
-                        <!-- Step 4 -->
-                        <!-- <div class="step">
-                            <div class="step-icon running"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                            <div class="step-content">
-                                <div class="sc-head">
-                                    <h4>Deductions Processing</h4>
-                                    <span class="tag blue">• Running</span>
-                                    <div class="time-circle empty"></div>
-                                </div>
-                                <p>Tax, PF, and other deductions</p>
-                            </div>
-                        </div> -->
-                        <!-- Step 5 -->
-                        <!-- <div class="step">
-                            <div class="step-icon pending"><i class="fa-regular fa-circle"></i></div>
-                            <div class="step-content">
-                                <div class="sc-head">
-                                    <h4>Final Verification</h4>
-                                    <span class="tag gray">• Pending</span>
-                                    <div class="time-circle empty"></div>
-                                </div>
-                                <p>Admin approval required</p>
-                            </div>
-                        </div> -->
-                        <!-- Step 6 -->
-                        <!-- <div class="step last">
-                            <div class="step-icon pending"><i class="fa-regular fa-circle"></i></div>
-                            <div class="step-content">
-                                <div class="sc-head">
-                                    <h4>Payment Generation</h4>
-                                    <span class="tag gray">• Pending</span>
-                                    <div class="time-circle empty"></div>
-                                </div>
-                                <p>Bank file creation</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="pipeline-actions">
-                        <button class="btn-primary full-width"><i class="fa-solid fa-rotate-right"></i> Continue Processing</button>
-                        <button class="btn-outline full-width"><i class="fa-regular fa-file-pdf"></i> Export Report</button>
-                    </div>
-                </div> -->
-
-                <!-- AI Assistant -->
-                <!-- <div class="card ai-card">
-                    <div class="ai-header">
-                        <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
-                        <div>
-                            <h3>How can i help you today</h3>
-                            <div class="ai-sub">AI Payroll Assistant</div>
-                        </div>
-                        <span class="status-online">• Online</span>
-                    </div>
-
-                    <div class="ai-section-title">Quick Actions</div>
-                    <div class="ai-chips">
-                        <span class="chip active">Calculate overtime pay</span>
-                        <span class="chip">Generate tax report</span>
-                        <span class="chip">Error Detection</span>
-                        <span class="chip">Compliance Monitoring</span>
-                        <span class="chip">Analyze salary trends</span>
-                        <span class="chip">Review payroll errors</span>
-                    </div>
-
-                    <div class="ai-section-title ai-assistant-label"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Assistant</div>
-                    <div class="ai-message">
-                        Hello! I'm your AI Payroll Assistant. I can help you with payroll calculations, tax questions, compliance issues. How can I assist you today?
-                        <div class="msg-time">11:45 PM</div>
-                    </div>
-
-                    <div class="ai-footer">
-                        <div class="ai-section-title">Suggested Questions</div>
-                        <div class="suggested-q">How do I process a bonus payment? What are the tax implications of workers?</div>
-                        
-                        <div class="chat-input-wrapper">
-                            <input type="text" placeholder="Ask me anything about payroll">
-                            <button class="send-btn"><i class="fa-regular fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                </div> -->
-
-            <!-- </div>
-
         </main>
-    </div> -->
+    </div>
 
     <!-- Chart Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

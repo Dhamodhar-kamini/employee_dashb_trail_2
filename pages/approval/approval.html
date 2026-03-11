@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leave Requests - Oppty</title>
+  <title>OPPTY HRMS</title>
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -106,26 +106,45 @@
           </div>
 
           <!-- MODIFIED PROFILE SECTION -->
-          <div class="hdr-profile-wrapper">
-            <!-- Profile Image (Clickable) -->
-            <div class="user-profile" onclick="hdr_toggleProfilePopup()">
-              <img src="../assets/profiledp.jpeg" alt="User Avatar" />
-            </div>
+          <!-- Profile Wrapper (Existing) -->
+<div class="hdr-profile-wrapper">
+  <!-- Profile Image (Clickable) -->
+  <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+    <!-- Update src to your actual image path -->
+    <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+  </div>
 
-            <!-- The Popup Menu -->
-            <div class="hdr-popup-menu" id="hdrProfileDropdown">
-              <!-- Optional Header info -->
-              <div class="hdr-popup-header">
-                <p><strong>Employee Profile</strong></p>
-                <span class="hdr-email-text">user@example.com</span>
-              </div>
+  <!-- The Popup Menu -->
+  <div class="hdr-popup-menu" id="hdrProfileDropdown">
+    <!-- Optional Header info -->
+    <div class="hdr-popup-header">
+      <p><strong>Employee Profile</strong></p>
+      <span class="hdr-email-text">user@example.com</span>
+    </div>
 
-              <!-- Logout Button -->
-              <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-              </button>
-            </div>
-          </div>
+    <!-- Logout Button (Triggers Popup) -->
+    <button class="hdr-logout-btn" onclick="hdr_showLogoutModal()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- NEW: Logout Confirmation Modal Structure -->
+<!-- ========================================= -->
+<div id="hdrLogoutModal" class="hdr-modal-overlay">
+  <div class="hdr-modal-content">
+    <div class="hdr-modal-icon">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <h3>Confirm Logout</h3>
+    <p>Are you sure you want to log out of your account?</p>
+    <div class="hdr-modal-actions">
+      <button class="hdr-btn-cancel" onclick="hdr_hideLogoutModal()">Cancel</button>
+      <button class="hdr-btn-confirm" onclick="hdr_confirmLogout()">Logout</button>
+    </div>
+  </div>
+</div>
         </div>
       </header>
 
@@ -145,19 +164,20 @@
                 </div> -->
       <!-- </header> -->
       <!-- Page Header -->
-      <header class="page-header">
+      <header class="page-header" style="margin-top: 50px; margin-left: 30px;">
         <h1 class="page-title" id="pageTitle">Leaves</h1>
 
         <div class="breadcrumb">
           <i class="fa-solid fa-house"></i>
-          Dashboard <i class="ph ph-caret-right"></i>
+          <i class="fa-solid fa-chevron-right"></i>
+          Dashboard <i class="fa-solid fa-chevron-right"></i>
           <span id="breadcrumbActive">Leave Requests</span>
         </div>
       </header>
 
 
       <!-- Tabs -->
-      <div class="tabs-nav">
+      <div class="tabs-nav" style="margin-left: 30px;">
 
         <button class="tab-btn active" onclick="switchTab('leave', this)">
           <i class="ph ph-calendar-blank"></i> Leaves
@@ -175,7 +195,7 @@
 
 
       <!-- Main Card -->
-      <div class="card fade-in">
+      <div class="card fade-in" style="margin-left: 30px;">
 
         <!-- Toolbar -->
         <div class="toolbar">

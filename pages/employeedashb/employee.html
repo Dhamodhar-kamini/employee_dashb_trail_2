@@ -131,26 +131,45 @@
             </div>
 
             <!-- MODIFIED PROFILE SECTION -->
-            <div class="hdr-profile-wrapper">
-              <!-- Profile Image (Clickable) -->
-              <div class="user-profile" onclick="hdr_toggleProfilePopup()">
-                <img src="../assets/profiledp.jpeg" alt="User Avatar" />
-              </div>
+            <!-- Profile Wrapper (Existing) -->
+<div class="hdr-profile-wrapper">
+  <!-- Profile Image (Clickable) -->
+  <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+    <!-- Update src to your actual image path -->
+    <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+  </div>
 
-              <!-- The Popup Menu -->
-              <div class="hdr-popup-menu" id="hdrProfileDropdown">
-                <!-- Optional Header info -->
-                <div class="hdr-popup-header">
-                  <p><strong>Employee Profile</strong></p>
-                  <span class="hdr-email-text">user@example.com</span>
-                </div>
+  <!-- The Popup Menu -->
+  <div class="hdr-popup-menu" id="hdrProfileDropdown">
+    <!-- Optional Header info -->
+    <div class="hdr-popup-header">
+      <p><strong>Employee Profile</strong></p>
+      <span class="hdr-email-text">user@example.com</span>
+    </div>
 
-                <!-- Logout Button -->
-                <button class="hdr-logout-btn" onclick="hdr_logoutUser()">
-                  <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-              </div>
-            </div>
+    <!-- Logout Button (Triggers Popup) -->
+    <button class="hdr-logout-btn" onclick="hdr_showLogoutModal()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- NEW: Logout Confirmation Modal Structure -->
+<!-- ========================================= -->
+<div id="hdrLogoutModal" class="hdr-modal-overlay">
+  <div class="hdr-modal-content">
+    <div class="hdr-modal-icon">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <h3>Confirm Logout</h3>
+    <p>Are you sure you want to log out of your account?</p>
+    <div class="hdr-modal-actions">
+      <button class="hdr-btn-cancel" onclick="hdr_hideLogoutModal()">Cancel</button>
+      <button class="hdr-btn-confirm" onclick="hdr_confirmLogout()">Logout</button>
+    </div>
+  </div>
+</div>
           </div>
         </header>
 
@@ -158,14 +177,15 @@
           <!-- Header -->
           <header class="page-header">
             <div>
-              <h2 class="page-title">Employee Management</h2>
+              <h2 class="page-title" style="color: black; font-size: 30px;">Employee Management</h2>
               <p class="page-subtitle">
                 Manage your team members and their details
               </p>
             </div>
             <div class="breadcrumbs">
               <i class="fas fa-home"></i>
-              <span><a href="../admin_page/admin.html">Dashboard</a></span>
+              <i class="fa-solid fa-chevron-right"></i>
+              <span><a href="../admin_page/admin.html">Dashboard <i class="fa-solid fa-chevron-right"></i></a></span>
               <span>Admin Dashboard</span>
             </div>
             <!-- <button class="btn-primary-orange" id="addEmployeeBtn">
@@ -547,7 +567,7 @@
       </main>
     </div>
 
-    <script src="employee.js"></script>
+    <script src="./employee.js"></script>
     <script src="../admin_page/admin.js"></script>
   </body>
 </html>

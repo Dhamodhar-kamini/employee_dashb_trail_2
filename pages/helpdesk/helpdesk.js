@@ -1,9 +1,9 @@
 let shrpTickets = [
-    { subject: 'Unable to access Payroll', name: 'Maisha Lucy', email: 'maisha.lucy@smarthr.com', status: 'Open' },
-    { subject: 'Need new monitor', name: 'Thomas G.', email: 'thomas.g@smarthr.com', status: 'Open' },
-    { subject: 'Password Reset', name: 'Uma Stafford', email: 'uma.stafford@smarthr.com', status: 'Closed' },
-    { subject: 'VPN Connection Failed', name: 'Khubaib A.', email: 'khubaib.a@smarthr.com', status: 'Open' },
-    { subject: 'Software Installation', name: 'Zamora Peck', email: 'zamora.peck@smarthr.com', status: 'Closed' }
+    { subject: 'Unable to access Payroll', name: 'Dhamu', email: 'dhamu@oppty.in', status: 'Open' },
+    { subject: 'Need new monitor', name: 'Saleem', email: 'saleem@oppty.in', status: 'Open' },
+    { subject: 'Password Reset', name: 'Mani', email: 'mani@oppty.in', status: 'Closed' },
+    { subject: 'VPN Connection Failed', name: 'Arjun', email: 'arjun@oppty.in', status: 'Open' },
+    { subject: 'Software Installation', name: 'Siddu', email: 'siddu@oppty.in', status: 'Closed' }
 ];
 
 let shrpCurrentIdx = null;
@@ -202,4 +202,55 @@ function ntRenderList() {
 
         listContainer.appendChild(itemDiv);
     });
+}
+
+//logout section
+/* --- Toggle Profile Dropdown --- */
+function hdr_toggleProfilePopup() {
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    dropdown.classList.toggle("show");
+}
+
+/* --- Show Logout Modal --- */
+function hdr_showLogoutModal() {
+    // 1. Hide the dropdown menu first (optional UI polish)
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    if (dropdown) dropdown.classList.remove("show");
+
+    // 2. Show the modal
+    const modal = document.getElementById("hdrLogoutModal");
+    if (modal) modal.classList.add("show-modal");
+}
+
+/* --- Hide Logout Modal --- */
+function hdr_hideLogoutModal() {
+    const modal = document.getElementById("hdrLogoutModal");
+    if (modal) modal.classList.remove("show-modal");
+}
+
+/* --- Perform Actual Logout --- */
+function hdr_confirmLogout() {
+    // 1. Clear session/local storage
+    sessionStorage.clear();
+    localStorage.clear();
+
+    // 2. Redirect to Login Page
+    window.location.href = "../adminlogin/adminlogin.html";
+}
+
+/* --- Close Dropdown when clicking outside --- */
+window.onclick = function(event) {
+    // If click is NOT on the profile wrapper
+    if (!event.target.closest(".hdr-profile-wrapper")) {
+        const dropdown = document.getElementById("hdrProfileDropdown");
+        if (dropdown && dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    }
+
+    // Optional: Close modal if clicking on the overlay background
+    const modal = document.getElementById("hdrLogoutModal");
+    if (event.target === modal) {
+        hdr_hideLogoutModal();
+    }
 }
