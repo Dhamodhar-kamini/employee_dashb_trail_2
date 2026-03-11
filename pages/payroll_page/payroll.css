@@ -52,6 +52,11 @@
   margin-bottom: 20px;
 }
 
+.header-left {
+  display: flex;
+  gap: 100px;
+}
+
 .header-left h1 {
   font-size: 20px;
   font-weight: 700;

@@ -1,9 +1,9 @@
 let shrpTickets = [
-    { subject: 'Unable to access Payroll', name: 'Maisha Lucy', email: 'maisha.lucy@smarthr.com', status: 'Open' },
-    { subject: 'Need new monitor', name: 'Thomas G.', email: 'thomas.g@smarthr.com', status: 'Open' },
-    { subject: 'Password Reset', name: 'Uma Stafford', email: 'uma.stafford@smarthr.com', status: 'Closed' },
-    { subject: 'VPN Connection Failed', name: 'Khubaib A.', email: 'khubaib.a@smarthr.com', status: 'Open' },
-    { subject: 'Software Installation', name: 'Zamora Peck', email: 'zamora.peck@smarthr.com', status: 'Closed' }
+    { subject: 'Unable to access Payroll', name: 'Dhamu', email: 'dhamu@oppty.in', status: 'Open' },
+    { subject: 'Need new monitor', name: 'Saleem', email: 'saleem@oppty.in', status: 'Open' },
+    { subject: 'Password Reset', name: 'Mani', email: 'mani@oppty.in', status: 'Closed' },
+    { subject: 'VPN Connection Failed', name: 'Arjun', email: 'arjun@oppty.in', status: 'Open' },
+    { subject: 'Software Installation', name: 'Siddu', email: 'siddu@oppty.in', status: 'Closed' }
 ];
 
 let shrpCurrentIdx = null;
