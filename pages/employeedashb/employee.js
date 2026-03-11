@@ -59,28 +59,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- 4. RENDER TABLE ---
-    function renderTable(data) {
+
+    function renderTable() 
+    {
         if (!tableBody) return;
         tableBody.innerHTML = "";
+        fetch("http://13.60.26.193:8000/api/employees/")
+        .then(res => res.json())
+        .then(data => 
+          {
+            console.log("Data fetched:", data);
 
-        if (data.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color:#999;">No employees found.</td></tr>`;
-            return;
-        }
-
-        data.forEach(emp => {
+        data.forEach(emp => 
+            {
             let statusClass = "status-active";
             let icon = "fa-check";
-
-            if (emp.status === "On Leave") { statusClass = "status-leave"; icon = "fa-clock"; }
-            else if (emp.status === "Remote") { statusClass = "status-remote"; icon = "fa-house-laptop"; }
-
             const row = `
                 <tr>
                     <td>
                         <div class="user-cell">
-                            <img src="${emp.img}" alt="u">
+                           
                             <div class="user-info">
                                 <span class="user-name view-profile-btn" data-id="${emp.id}" 
                                       style="cursor:pointer; color:#FF5B1E; font-weight:600;">
@@ -90,10 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                     </td>
-                    <td>${emp.id}</td>
-                    <td>${emp.dept}</td>
+                    <td>EMP-${emp.id}</td>
+                    <td>Development-${emp.department}</td>
                     <td>${emp.role}</td>
-                    <td>${emp.type}</td>
+                    <td>${emp.full_time}</td>
                     <td><span class="status-pill ${statusClass}"><i class="fa-solid ${icon}"></i> ${emp.status}</span></td>
                     <td>
                         <div class="action-menu">
@@ -104,10 +102,61 @@ document.addEventListener("DOMContentLoaded", function () {
                 </tr>
             `;
             tableBody.innerHTML += row;
-        });
-    }
+        }
+    )
+    })
+}     
+   
 
-    // --- 5. EVENT DELEGATION (View, Edit, Delete) ---
+    // --- 4. RENDER TABLE ---
+    // function renderTable(data) {
+    //     if (!tableBody) return;
+    //     tableBody.innerHTML = "";
+
+    //     if (data.length === 0) {
+    //         tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color:#999;">No employees found.</td></tr>`;
+    //         return;
+    //     }
+
+    //     data.forEach(emp => {
+    //         let statusClass = "status-active";
+    //         let icon = "fa-check";
+
+    //         if (emp.status === "On Leave") { statusClass = "status-leave"; icon = "fa-clock"; }
+    //         else if (emp.status === "Remote") { statusClass = "status-remote"; icon = "fa-house-laptop"; }
+
+    //         const row = `
+    //             <tr>
+    //                 <td>
+    //                     <div class="user-cell">
+    //                         <img src="${emp.img}" alt="u">
+    //                         <div class="user-info">
+    //                             <span class="user-name view-profile-btn" data-id="${emp.id}" 
+    //                                   style="cursor:pointer; color:#FF5B1E; font-weight:600;">
+    //                                 ${emp.name}
+    //                             </span>
+    //                             <span class="user-email">${emp.email}</span>
+    //                         </div>
+    //                     </div>
+    //                 </td>
+    //                 <td>${emp.id}</td>
+    //                 <td>${emp.dept}</td>
+    //                 <td>${emp.role}</td>
+    //                 <td>${emp.type}</td>
+    //                 <td><span class="status-pill ${statusClass}"><i class="fa-solid ${icon}"></i> ${emp.status}</span></td>
+    //                 <td>
+    //                     <div class="action-menu">
+    //                         <button class="btn-action edit-btn" data-id="${emp.id}" title="Edit"><i class="fa-regular fa-pen-to-square"></i></button>
+    //                         <button class="btn-action delete-btn" data-id="${emp.id}" title="Delete" style="color:#FF5B5B;"><i class="fa-regular fa-trash-can"></i></button>
+    //                     </div>
+    //                 </td>
+    //             </tr>
+    //         `;
+    //         tableBody.innerHTML += row;
+    //     });
+    // }
+
+    // // --- 5. EVENT DELEGATION (View, Edit, Delete) ---
     if(tableBody) {
         tableBody.addEventListener("click", function(e) {
             
@@ -115,11 +164,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (e.target.classList.contains("view-profile-btn") || e.target.closest(".view-profile-btn")) {
                 const btn = e.target.closest(".view-profile-btn") || e.target;
                 const id = btn.getAttribute("data-id");
-                const selectedEmp = employees.find(emp => emp.id === id);
-                if (selectedEmp) {
-                    localStorage.setItem("viewEmployeeData", JSON.stringify(selectedEmp));
+                // const selectedEmp = employees.find(emp => emp.id === id);
+               
+                    localStorage.setItem('employee_id', id);
                     window.location.href = "../emp_details/emp_details.html"; 
-                }
+                
             }
 
             // DELETE

@@ -5,22 +5,38 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==================================================
   // --- 1. INITIALIZATION & DATA NORMALIZATION ---
   // ==================================================
-  const storedData = localStorage.getItem("viewEmployeeData");
-
-  if (storedData) {
-    currentEmpData = normalizeEmployee(JSON.parse(storedData));
-    originalEmpId = currentEmpData.id;
+  const emp_id = localStorage.getItem("employee_id");
+  console.log(emp_id)
+  
+    fetch(`http://13.60.26.193:8000/api/employee/dashboard/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
+          currentEmpData = data; 
+          console.log('data:',data)
+          document.getElementById('p_name').innerText=data.name
+          document.getElementById('p_role').innerText=data.role
+          document.getElementById('p_dept').innerText=data.department
+          document.getElementById('p_id').innerText=`EMP-${data.employee_id}`
+          document.getElementById('p_join').innerText=data.joining
+          document.getElementById('p_salary').innerText=data.salary
+          document.getElementById('p_email').innerText=data.email
+          document.getElementById('p_phone').innerText=data.other_details[0].mobile
+          document.getElementById('p_location').innerText=data.other_details[0].address
+        })
+  // if (storedData) {
+  //   currentEmpData = normalizeEmployee(JSON.parse(storedData));
+  //   originalEmpId = currentEmpData.id;
     
-    // re-save normalized version
-    localStorage.setItem("viewEmployeeData", JSON.stringify(currentEmpData));
+  //   // re-save normalized version
+  //   localStorage.setItem("viewEmployeeData", JSON.stringify(currentEmpData));
 
-    populateUI(currentEmpData);
-    admUpdateUIState();
-  } else {
-    alert("No employee selected.");
-    window.history.back();
-    return;
-  }
+  //   populateUI(currentEmpData);
+  //   admUpdateUIState();
+  // } else {
+  //   alert("No employee selected.");
+  //   window.history.back();
+  //   return;
+  // }
 
   // Inject modals/popups (once)
   injectEditModal();
@@ -98,10 +114,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (el) el.innerText = text || "-";
     };
 
-    // Header
+
+    Header
     setText("p_name", emp.name);
     setText("p_role", emp.role);
-    setText("p_dept", emp.dept);
+    setText("p_dept", emp.department);
     setText(
       "p_initials",
       emp.name
@@ -111,10 +128,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Overview Tab
     setText("p_id", emp.id);
-    setText("p_join", emp.joinDate);
+    setText("p_join", emp.joining);
     setText("p_salary", emp.salary);
     setText("p_email", emp.email);
-    setText("p_phone", emp.phone);
+    setText("p_phone", emp.mobile);
     setText("p_location", emp.location);
 
     // Details
@@ -322,6 +339,134 @@ document.addEventListener("DOMContentLoaded", function () {
     window.history.back();
   }
 
+
+
+
+
+
+// function fetchDocuments() {
+
+// fetch(`http://13.60.26.193:8000/api/employee-documents/${emp_id}/`)
+// .then(res => res.json())
+// .then(data => {
+// console.log(data)
+// const docsGrid = document.getElementById("documentsGrid");
+// docsGrid.innerHTML = "";
+
+// if(!data.documents || data.documents.length === 0){
+// docsGrid.innerHTML = "<p>No documents uploaded</p>";
+// return;
+// }
+
+// data.documents.forEach(doc => {
+
+// const fileUrl = `http://13.60.26.193/${doc.file}`;
+
+// const card = `
+// <div class="doc-card">
+// <div class="doc-header">
+// <i class="fa-regular fa-file-pdf doc-icon"></i>
+// <span class="file-size">PDF</span>
+// </div>
+
+// <div class="doc-info">
+// <h4>
+// <a href="${fileUrl}" target="_blank">
+// ${doc.description}
+// </a>
+// </h4>
+
+// <p class="doc-type">${doc.doc_type}</p>
+// <p class="upload-date">Uploaded: ${doc.uploaded_at}</p>
+// </div>
+
+// </div>
+// `;
+
+// docsGrid.innerHTML += card;
+
+// });
+
+// });
+// }
+const leave_table = document.getElementById('leavebody')
+fetch(`http://13.60.26.193:8000/api/employee/apply-leave/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
+            leave_table.innerHTML = "";
+            console.log(data)
+            if (!data || data.length === 0) {
+                leave_table.innerHTML = `<tr><td colspan="4">No leaves found</td></tr>`;
+                return;
+            }
+
+            data.forEach(p => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${p.leave_type}</td>
+                    <td>${p.from_date}</td>
+                    <td>${p.to_date}</td>
+                    <td>${p.number_of_days}</td>
+                    <td>${p.status}</td>
+                `;
+                leave_table.appendChild(row);
+            });
+        })
+
+
+function fetchDocuments() {
+
+fetch(`http://13.60.26.193:8000/api/employee-documents/${emp_id}/`)
+.then(res => res.json())
+.then(data => {
+
+console.log("API Response:", data);
+
+
+
+const docsGrid = document.getElementById("documentsGrid");
+docsGrid.innerHTML = "";
+
+if(!data || data.length === 0){
+docsGrid.innerHTML = "<p>No documents uploaded</p>";
+return;
+}
+
+data.forEach(doc => {
+
+const fileUrl = `http://13.60.26.193${doc.file}`;
+
+const card = `
+<div class="doc-card">
+<div class="doc-header">
+<i class="fa-regular fa-file-pdf doc-icon"></i>
+<span class="file-size">PDF</span>
+</div>
+
+<div class="doc-info">
+<h4>
+<a href="${fileUrl}" target="_blank">
+${doc.description}
+</a>
+</h4>
+
+<p class="doc-type">${doc.doc_type}</p>
+<p class="upload-date">Uploaded: ${doc.uploaded_at}</p>
+</div>
+</div>
+`;
+
+docsGrid.innerHTML += card;
+
+});
+
+})
+.catch(err => console.error("Error:", err));
+}
+
+
+
+fetchDocuments();
   // ==================================================
   // --- 5. EDIT PROFILE MODAL ---
   // ==================================================
@@ -438,12 +583,12 @@ document.addEventListener("DOMContentLoaded", function () {
     $("edit_id").value = currentEmpData.id || "";
     $("edit_name").value = currentEmpData.name || "";
     $("edit_role").value = currentEmpData.role || "";
-    $("edit_dept").value = currentEmpData.dept || "";
+    $("edit_dept").value = currentEmpData.department || "";
     $("edit_email").value = currentEmpData.email || "";
-    $("edit_phone").value = currentEmpData.phone || "";
+    $("edit_phone").value = currentEmpData.other_details[0].mobile || "";
     $("edit_location").value = currentEmpData.location || "";
     $("edit_marital").value = currentEmpData.maritalStatus || "Single";
-    $("edit_joinDate").value = currentEmpData.joinDate || "";
+    $("edit_joinDate").value = currentEmpData.joining || "";
     $("edit_salary").value = currentEmpData.salary || "";
     $("edit_status").value = currentEmpData.status || "Active";
     $("edit_stat_pan").value = currentEmpData.statutoryDetails.pan || "";

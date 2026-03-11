@@ -500,35 +500,8 @@
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Sick</td>
-                <td>10 Jan 2024</td>
-                <td>12 Jan 2024</td>
-                <td>3</td>
-                <td><span class="status-pill approved">approved</span></td>
-              </tr>
-              <tr>
-                <td>Casual</td>
-                <td>05 Dec 2023</td>
-                <td>05 Dec 2023</td>
-                <td>1</td>
-                <td><span class="status-pill approved">approved</span></td>
-              </tr>
-              <tr>
-                <td>Privilege</td>
-                <td>20 Nov 2023</td>
-                <td>25 Nov 2023</td>
-                <td>5</td>
-                <td><span class="status-pill rejected">rejected</span></td>
-              </tr>
-              <tr>
-                <td>Sick</td>
-                <td>01 Nov 2023</td>
-                <td>02 Nov 2023</td>
-                <td>2</td>
-                <td><span class="status-pill pending">pending</span></td>
-              </tr>
+            <tbody id="leavebody">
+            
             </tbody>
           </table>
         </div>
@@ -596,53 +569,10 @@
         =========================== -->
       <div id="documents" class="tab-content" style="display: none">
         <h3 class="section-title" style="margin-top: 0">Documents</h3>
-        <div class="docs-grid">
-          <div class="doc-card">
-            <div class="doc-header">
-              <i class="fa-regular fa-file-pdf doc-icon"></i
-              ><span class="file-size">85 KB</span>
-            </div>
-            <div class="doc-info">
-              <h4>Resume.pdf</h4>
-              <p class="doc-type">Resume</p>
-              <p class="upload-date">Uploaded: 10 Mar 2020</p>
-            </div>
-          </div>
-          <div class="doc-card">
-            <div class="doc-header">
-              <i class="fa-regular fa-file-lines doc-icon"></i
-              ><span class="file-size">120 KB</span>
-            </div>
-            <div class="doc-info">
-              <h4>Aadhar Card.pdf</h4>
-              <p class="doc-type">ID Proof</p>
-              <p class="upload-date">Uploaded: 12 Mar 2020</p>
-            </div>
-          </div>
-          <div class="doc-card">
-            <div class="doc-header">
-              <i class="fa-regular fa-file-lines doc-icon"></i
-              ><span class="file-size">95 KB</span>
-            </div>
-            <div class="doc-info">
-              <h4>PAN Card.pdf</h4>
-              <p class="doc-type">Tax Document</p>
-              <p class="upload-date">Uploaded: 12 Mar 2020</p>
-            </div>
-          </div>
-          <div class="doc-card">
-            <div class="doc-header">
-              <i class="fa-regular fa-file-pdf doc-icon"></i
-              ><span class="file-size">150 KB</span>
-            </div>
-            <div class="doc-info">
-              <h4>Experience Letter.pdf</h4>
-              <p class="doc-type">Experience</p>
-              <p class="upload-date">Uploaded: 14 Mar 2020</p>
-            </div>
-          </div>
+        <div class="docs-grid" id="documentsGrid">
+          
+        
         </div>
-      </div>
     </div>
 
     

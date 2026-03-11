@@ -1,35 +1,35 @@
 
-employee_details_table = document.getElementById('employeeTBody')
-function loademployees()
-{
+// employee_details_table = document.getElementById('employeeTBody')
+// function loademployees()
+// {
     
-  fetch("http://13.60.240.189:8000/api/employees/")
-  .then(res => res.json())
-        .then(data => 
-          {
-            console.log("Data fetched:", data);
-            employee_details_table.innerHTML = "";
-            data.forEach(p => 
-              {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${p.employee_id}</td>
-                    <td>${p.name}</td>
-                    <td>₹${p.email}</td>
-                    <td>₹${p.role}</td>
-                    <td>₹${p.salary}</td>
-                `;
-                employee_details_table.appendChild(row);
+//   fetch("http://13.60.240.189:8000/api/employees/")
+//   .then(res => res.json())
+//         .then(data => 
+//           {
+//             console.log("Data fetched:", data);
+//             employee_details_table.innerHTML = "";
+//             data.forEach(p => 
+//               {
+//                 const row = document.createElement("tr");
+//                 row.innerHTML = `
+//                     <td>${p.employee_id}</td>
+//                     <td>${p.name}</td>
+//                     <td>₹${p.email}</td>
+//                     <td>₹${p.role}</td>
+//                     <td>₹${p.salary}</td>
+//                 `;
+//                 employee_details_table.appendChild(row);
                 
-            }).catch(err => {
-            console.error("Error fetching payslips:", err);
-            employee_details.innerHTML = `<tr><td colspan="4">Error loading payslips</td></tr>`;
-        });
-          });
+//             }).catch(err => {
+//             console.error("Error fetching payslips:", err);
+//             employee_details.innerHTML = `<tr><td colspan="4">Error loading payslips</td></tr>`;
+//         });
+//           });
         
-}
+// }
 
-document.addEventListener("DOMContentLoaded",loademployees)
+// document.addEventListener("DOMContentLoaded",loademployees)
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("oppty Dashboard JS Initialized.");
@@ -79,131 +79,131 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
   // Initialize the default view based on the image (Applicants selected)
-  applicantListContainer.innerHTML = APPLICANTS_CONTENT;
+//   applicantListContainer.innerHTML = APPLICANTS_CONTENT;
 
-  applicantTabsContainer.addEventListener("click", (e) => {
-    const tabButton = e.target.closest(".tab-btn");
-    if (!tabButton) return;
+//   applicantTabsContainer.addEventListener("click", (e) => {
+//     const tabButton = e.target.closest(".tab-btn");
+//     if (!tabButton) return;
 
-    // Remove active state from all
-    document.querySelectorAll("#job-applicants .tab-btn").forEach((btn) => {
-      btn.classList.remove("active");
-      btn.style.cssText = ""; // Reset inline styles applied for active state
-    });
+//     // Remove active state from all
+//     document.querySelectorAll("#job-applicants .tab-btn").forEach((btn) => {
+//       btn.classList.remove("active");
+//       btn.style.cssText = ""; // Reset inline styles applied for active state
+//     });
 
-    // Add active state to clicked tab
-    tabButton.classList.add("active");
-    tabButton.style.cssText =
-      "background: var(--card-bg); box-shadow: 0 1px 3px rgba(0,0,0,0.1); color: var(--color-blue);";
+//     // Add active state to clicked tab
+//     tabButton.classList.add("active");
+//     tabButton.style.cssText =
+//       "background: var(--card-bg); box-shadow: 0 1px 3px rgba(0,0,0,0.1); color: var(--color-blue);";
 
-    const tabType = tabButton.getAttribute("data-tab");
+//     const tabType = tabButton.getAttribute("data-tab");
 
-    if (tabType === "openings") {
-      applicantListContainer.innerHTML = OPENINGS_CONTENT;
-    } else {
-      applicantListContainer.innerHTML = APPLICANTS_CONTENT;
-    }
-  });
+//     if (tabType === "openings") {
+//       applicantListContainer.innerHTML = OPENINGS_CONTENT;
+//     } else {
+//       applicantListContainer.innerHTML = APPLICANTS_CONTENT;
+//     }
+//   });
 
   // --- 2. Sidebar Menu Submenu Toggle (Simulated) ---
-  const superAdminItem = document.querySelector(
-    ".applications-section .active-parent",
-  );
-  const submenu = superAdminItem.nextElementSibling;
+//   const superAdminItem = document.querySelector(
+//     ".applications-section .active-parent",
+//   );
+//   const submenu = superAdminItem.nextElementSibling;
 
-  superAdminItem.addEventListener("click", (e) => {
-    e.preventDefault();
-    submenu.classList.toggle("hidden");
-    const icon = superAdminItem.querySelector(
-      ".fa-chevron-down, .fa-chevron-right",
-    );
-    if (icon) {
-      icon.classList.toggle("fa-chevron-down");
-      icon.classList.toggle("fa-chevron-right");
-    }
-  });
+//   superAdminItem.addEventListener("click", (e) => {
+//     e.preventDefault();
+//     submenu.classList.toggle("hidden");
+//     const icon = superAdminItem.querySelector(
+//       ".fa-chevron-down, .fa-chevron-right",
+//     );
+//     if (icon) {
+//       icon.classList.toggle("fa-chevron-down");
+//       icon.classList.toggle("fa-chevron-right");
+//     }
+//   });
 });
 
 // Attendance Doughnut Chart
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Attendance Data
-  const data = {
-    present: 90,
-    late: 30,
-    absent: 5,
-    wfh: 25,
-  };
+// document.addEventListener("DOMContentLoaded", function () {
+//   // Attendance Data
+//   const data = {
+//     present: 90,
+//     late: 30,
+//     absent: 5,
+//     wfh: 25,
+//   };
 
-  const total = data.present + data.late + data.absent + data.wfh;
-  document.getElementById("totalCount").textContent = total;
+//   const total = data.present + data.late + data.absent + data.wfh;
+//   document.getElementById("totalCount").textContent = total;
 
-  // Set percentage text
-  document.getElementById("pPresent").textContent =
-    Math.round((data.present / total) * 100) + "%";
-  document.getElementById("pLate").textContent =
-    Math.round((data.late / total) * 100) + "%";
-  document.getElementById("pAbsent").textContent =
-    Math.round((data.absent / total) * 100) + "%";
-  document.getElementById("pWFH").textContent =
-    Math.round((data.wfh / total) * 100) + "%";
+//   // Set percentage text
+//   document.getElementById("pPresent").textContent =
+//     Math.round((data.present / total) * 100) + "%";
+//   document.getElementById("pLate").textContent =
+//     Math.round((data.late / total) * 100) + "%";
+//   document.getElementById("pAbsent").textContent =
+//     Math.round((data.absent / total) * 100) + "%";
+//   document.getElementById("pWFH").textContent =
+//     Math.round((data.wfh / total) * 100) + "%";
 
-  // Arc settings
-  const radius = 80;
-  const centerX = 100;
-  const centerY = 100;
+//   // Arc settings
+//   const radius = 80;
+//   const centerX = 100;
+//   const centerY = 100;
 
-  let startAngle = Math.PI; // 180 degrees (left side)
+//   let startAngle = Math.PI; // 180 degrees (left side)
 
-  function describeArc(startAngle, endAngle) {
-    const start = polarToCartesian(centerX, centerY, radius, endAngle);
-    const end = polarToCartesian(centerX, centerY, radius, startAngle);
+//   function describeArc(startAngle, endAngle) {
+//     const start = polarToCartesian(centerX, centerY, radius, endAngle);
+//     const end = polarToCartesian(centerX, centerY, radius, startAngle);
 
-    return [
-      "M",
-      start.x,
-      start.y,
-      "A",
-      radius,
-      radius,
-      0,
-      0,
-      0,
-      end.x,
-      end.y,
-    ].join(" ");
-  }
+//     return [
+//       "M",
+//       start.x,
+//       start.y,
+//       "A",
+//       radius,
+//       radius,
+//       0,
+//       0,
+//       0,
+//       end.x,
+//       end.y,
+//     ].join(" ");
+//   }
 
-  function polarToCartesian(cx, cy, r, angle) {
-    return {
-      x: cx + r * Math.cos(angle),
-      y: cy + r * Math.sin(angle),
-    };
-  }
+//   function polarToCartesian(cx, cy, r, angle) {
+//     return {
+//       x: cx + r * Math.cos(angle),
+//       y: cy + r * Math.sin(angle),
+//     };
+//   }
 
-  function drawArc(value, elementId) {
-    const angle = (value / total) * Math.PI;
-    const endAngle = startAngle + angle;
+//   function drawArc(value, elementId) {
+//     const angle = (value / total) * Math.PI;
+//     const endAngle = startAngle + angle;
 
-    const path = describeArc(startAngle, endAngle);
-    document.getElementById(elementId).setAttribute("d", path);
+//     const path = describeArc(startAngle, endAngle);
+//     document.getElementById(elementId).setAttribute("d", path);
 
-    startAngle = endAngle;
-  }
+//     startAngle = endAngle;
+//   }
 
-  // Draw arcs in order
-  drawArc(data.present, "arc-present");
-  drawArc(data.late, "arc-late");
-  drawArc(data.absent, "arc-absent");
-  drawArc(data.wfh, "arc-wfh");
-});
+//   // Draw arcs in order
+//   drawArc(data.present, "arc-present");
+//   drawArc(data.late, "arc-late");
+//   drawArc(data.absent, "arc-absent");
+//   drawArc(data.wfh, "arc-wfh");
+// });
 
-document.getElementById("dashboardMenu").addEventListener("click", function () {
-  const submenu = document.getElementById("dashboardSubmenu");
+// document.getElementById("dashboardMenu").addEventListener("click", function () {
+//   const submenu = document.getElementById("dashboardSubmenu");
 
-  submenu.classList.toggle("open");
-  this.classList.toggle("open");
-});
+//   submenu.classList.toggle("open");
+//   this.classList.toggle("open");
+// });
 
 
 //attendance details modal
@@ -516,18 +516,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const empIdNum = parseInt(empIdVal);
       const newEmpId = String(empIdNum).padStart(3, "0");
-      const formattedSalary = salaryVal ? "₹" + parseInt(salaryVal).toLocaleString() : "₹0";
+    //   const formattedSalary = salaryVal ? "₹" + parseInt(salaryVal).toLocaleString() : "₹0";
 
       const newEmployee = {
-        id: empIdNum,
         name: nameVal,
+        employee_id: newEmpId,
         email: emailVal,
-        position: jobVal || "Not Specified",
-        type: typeVal, // Save the type
-        emp_id: newEmpId, 
-        salary: formattedSalary,
-      };
+        password:document.getElementById("passwordInput").value,
+        role: jobVal || "Not Specified",
+        salary: document.getElementById("salaryInput").value,
+        joining:document.getElementById("dateInput").value,
+        department:document.getElementById("deptInput").value, 
+        manager_employee:document.getElementById("managerInput").value,
+        location:document.getElementById("locationInput").value,
+        full_time:document.getElementById("typeInput").value
 
+      };
+      fetch("http://127.0.0.1:8000/api/create/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(newEmployee)
+            })
+            .then(res => res.json())
+            .then(response => {
+                // updateAttendance();
+                // alert("Employee added successfully!");
+                // form.reset(); 
+                // total_employees_count ++;
+                 // Clear form
+                console.log(response); // Check created employee in console
+            })
       // Update Data
       EMPLOYEES.push(newEmployee);
       
