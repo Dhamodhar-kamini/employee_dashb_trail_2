@@ -1,9 +1,37 @@
+:root {
 
+--primary-color: #ea580c;
+--primary-gradient-start: #c2410c;
+--primary-gradient-end: #fb923c;
+
+--text-dark: #1f2937;
+--text-gray: #6b7280;
+--bg-color: #f3f4f6;
+--card-bg: #ffffff;
+--border-radius: 16px;
+
+}
+
+body {
+
+font-family: 'Inter', sans-serif;
+background-color: var(--bg-color);
+
+display: flex;
+justify-content: center;
+align-items: center;
+
+min-height: 100vh;
+margin: 0;
+padding: 20px;
+
+}
 
 .dashboard-card {
 
 background: var(--card-bg);
 width: 100%;
+max-width: 800px;
 
 border-radius: var(--border-radius);
 

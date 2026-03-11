@@ -1,210 +1,166 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. GLOBAL DEFAULTS
-    Chart.defaults.font.family = "'Inter', sans-serif";
-    Chart.defaults.color = '#6B7280';
+const monthPicker = document.getElementById("monthPicker");
 
-    // ==========================================
-    // 2. SALARY RANGE BAR CHART (Vertical Pill Bars)
-    // ==========================================
-    const barChartCanvas = document.getElementById('salaryBarChart');
-    
-    if (barChartCanvas) {
-        const ctxBar = barChartCanvas.getContext('2d');
-        
-        // Define data outside so we can calculate the max value for coloring
-        const salaryData = [20, 65, 30, 40, 50, 25, 60, 55, 45, 30, 55, 20];
-        const maxSalary = Math.max(...salaryData); // Find the highest number (65)
+const now = new Date();
 
-        new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 
-                datasets: [{
-                    label: 'Salary Distribution',
-                    data: salaryData,
-                    
-                    // --- COLOR FILL LOGIC ---
-                    // Automatically fills the highest bar with Orange, others Gray
-                    backgroundColor: function(context) {
-                        // Check if the current bar's value equals the maximum value
-                        return context.raw === maxSalary ? '#FF5B1E' : '#F3F4F6'; 
-                    },
-                    
-                    // Hover color logic
-                    hoverBackgroundColor: function(context) {
-                        return context.raw === maxSalary ? '#FF5B1E' : '#E5E7EB'; 
-                    },
-                    
-                    // --- SHAPE STYLING ---
-                    borderRadius: 50,      // Fully rounded ends (Pill shape)
-                    borderSkipped: false,  // false = rounds the bottom as well
-                    barThickness: 16,      // Width of the bars
-                    borderWidth: 0         // No border stroke, purely filled
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { 
-                        enabled: true,
-                        backgroundColor: '#1F2937', // Dark tooltip background
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false, // Hides the color square
-                        callbacks: {
-                            title: () => null, // Hide title
-                            label: (context) => `Avg: $${context.raw}k`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 80, // Adjust this based on your highest data point
-                        ticks: {
-                            callback: function(value) { return '$' + value + 'k'; }, 
-                            color: '#9CA3AF',
-                            font: { size: 11 },
-                            stepSize: 20,
-                            padding: 10
-                        },
-                        grid: { display: false }, // Clean look, no grid
-                        border: { display: false }
-                    },
-                    x: {
-                        grid: { display: false },
-                        border: { display: false },
-                        ticks: { display: false } // Hide X-axis labels (abstract look)
-                    }
-                }
-            }
-        });
-    }
+const currentYear = now.getFullYear();
+const currentMonth = String(now.getMonth()+1).padStart(2,"0");
+
+monthPicker.value = `${currentYear}-${currentMonth}`;
+monthPicker.max = `${currentYear}-${currentMonth}`;
+monthPicker.min = `${currentYear-50}-01`;
 
 
-    // ==========================================
-    // 3. TREND LINE CHART (Stepped Lines)
-    // ==========================================
-    const lineChartCanvas = document.getElementById('trendChart');
+function formatRupee(number){
 
-    if (lineChartCanvas) {
-        const ctxLine = lineChartCanvas.getContext('2d');
+return new Intl.NumberFormat('en-IN',{
 
-        new Chart(ctxLine, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [
-                    {
-                        label: 'Federal Tax',
-                        data: [300, 300, 220, 220, 220, 220],
-                        borderColor: '#164E63', // Navy Blue
-                        backgroundColor: '#164E63',
-                        pointBackgroundColor: '#164E63',
-                        borderWidth: 2,
-                        stepped: 'middle', // Squared lines
-                        pointRadius: 0,    // Hide dots until hover
-                        pointHoverRadius: 6,
-                        tension: 0,
-                        fill: false
-                    },
-                    {
-                        label: 'Deductions',
-                        data: [150, 150, 150, 10, 70, 150],
-                        borderColor: '#FF5B1E', // Orange
-                        backgroundColor: '#FF5B1E',
-                        pointBackgroundColor: '#FF5B1E',
-                        borderWidth: 2,
-                        stepped: 'middle',
-                        pointRadius: 0,
-                        pointHoverRadius: 6,
-                        tension: 0,
-                        fill: false
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                plugins: {
-                    legend: { display: false }, 
-                    tooltip: {
-                        backgroundColor: '#FFFFFF',
-                        titleColor: '#111827',
-                        bodyColor: '#4B5563',
-                        borderColor: '#E5E7EB',
-                        borderWidth: 1,
-                        padding: 10,
-                        usePointStyle: true,
-                        callbacks: {
-                            label: function(context) {
-                                return ' ' + context.dataset.label + ': $' + context.parsed.y + 'k';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 350,
-                        ticks: {
-                            callback: function(value) { return '$' + value + 'k'; },
-                            color: '#9CA3AF',
-                            font: { size: 10 },
-                            stepSize: 87.5
-                        },
-                        grid: {
-                            color: '#F3F4F6',
-                            drawBorder: false
-                        },
-                        border: { display: false }
-                    },
-                    x: {
-                        grid: {
-                            color: '#F3F4F6',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#9CA3AF',
-                            font: { size: 10 }
-                        },
-                        border: { display: false }
-                    }
-                }
-            }
-        });
-    }
+style:'currency',
+currency:'INR',
+maximumFractionDigits:0
 
-    // ==========================================
-    // 4. UI INTERACTIONS (Chips & Buttons)
-    // ==========================================
-    
-    // Chip Selection (Time Range)
-    const chips = document.querySelectorAll('.chip');
-    chips.forEach(chip => {
-        chip.addEventListener('click', function() {
-            // Remove active class from siblings
-            const container = this.parentNode;
-            container.querySelectorAll('.chip').forEach(s => s.classList.remove('active'));
-            // Add active class to clicked chip
-            this.classList.add('active');
-        });
-    });
+}).format(number);
 
-    // Button Press Animation
-    const buttons = document.querySelectorAll('button:not([type="submit"])');
-    buttons.forEach(btn => {
-        btn.addEventListener('mousedown', function() { this.style.transform = "scale(0.96)"; });
-        btn.addEventListener('mouseup', function() { this.style.transform = "scale(1)"; });
-        btn.addEventListener('mouseleave', function() { this.style.transform = "scale(1)"; });
-    });
+}
+
+
+function formatCompact(number){
+
+return new Intl.NumberFormat('en-IN',{
+
+notation:"compact",
+compactDisplay:"short",
+style:'currency',
+currency:'INR'
+
+}).format(number);
+
+}
+
+
+function getDataForYear(year){
+
+const baseSalary = 800000 + ((year-2000)*50000);
+
+let monthlyData=[];
+
+for(let i=0;i<12;i++){
+
+let randomFactor = 0.8 + Math.random()*0.4;
+
+monthlyData.push(Math.floor(baseSalary*randomFactor));
+
+}
+
+return monthlyData;
+
+}
+
+
+const ctx = document.getElementById("payrollChart").getContext("2d");
+
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+let currentData = getDataForYear(currentYear);
+
+
+let gradient = ctx.createLinearGradient(0,0,0,400);
+
+gradient.addColorStop(0,'#c2410c');
+gradient.addColorStop(1,'#fb923c');
+
+
+const payrollChart = new Chart(ctx,{
+
+type:'bar',
+
+data:{
+labels:months,
+datasets:[{
+label:'Salary',
+data:currentData,
+backgroundColor:gradient,
+borderRadius:6,
+maxBarThickness:30
+}]
+},
+
+options:{
+
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{display:false},
+
+tooltip:{
+callbacks:{
+label:function(context){
+
+return formatRupee(context.raw);
+
+}
+}
+}
+
+},
+
+scales:{
+
+y:{
+beginAtZero:true,
+ticks:{
+callback:function(value){
+
+return formatCompact(value);
+
+}
+}
+},
+
+x:{
+grid:{display:false}
+}
+
+}
+
+}
+
+});
+
+
+function updateDashboard(dateString){
+
+const year = parseInt(dateString.split('-')[0]);
+
+const newData = getDataForYear(year);
+
+payrollChart.data.datasets[0].data = newData;
+
+payrollChart.update();
+
+
+const total = newData.reduce((a,b)=>a+b,0);
+
+const average = total/12;
+
+
+document.getElementById("totalPayout").textContent = formatRupee(total);
+
+document.getElementById("avgPayout").textContent = formatRupee(average);
+
+}
+
+
+updateDashboard(`${currentYear}-${currentMonth}`);
+
+
+monthPicker.addEventListener("change",(e)=>{
+
+if(e.target.value){
+
+updateDashboard(e.target.value);
+
+}
 
 });
 

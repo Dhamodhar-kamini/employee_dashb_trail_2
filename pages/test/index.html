@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Payroll Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="dashboard-card">
+
+    <div class="card-header">
+        <div class="header-text">
+            <h2>Annual Salary Distribution</h2>
+            <p>Revenue breakdown per month for selected fiscal year</p>
+        </div>
+
+        <div class="date-selector-container">
+            <input type="month" id="monthPicker">
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-label">Total Annual Payout</span>
+            <div class="stat-value" id="totalPayout">₹0</div>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-label">Avg. Monthly Salary</span>
+            <div class="stat-value" id="avgPayout">₹0</div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="payrollChart"></canvas>
+    </div>
+
+    <div class="card-footer">
+        <div class="legend-item">
+            <span class="legend-dot"></span>
+            Salary Revenue (INR)
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
