@@ -1,8 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- DOM Elements ---
     const toggle = document.getElementById('calcModeToggle');
     const ctcInput = document.getElementById('ctcInput');
     
+    // Buttons & Popup Elements
+    const generateBtn = document.getElementById('generateBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const successPopup = document.getElementById("successPopup");
+    const popupCloseBtn = document.querySelector(".btn-popup-primary"); // "Done" button
+    const popupViewBtn = document.querySelector(".btn-popup-secondary"); // "View PDF" button
+    const sentEmpName = document.getElementById("sentEmpName");
+
     // Inputs
     const inputs = {
         month: document.getElementById('monthSelect'),
@@ -15,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         empName: document.getElementById('empSelect')
     };
 
-    // Preview Elements
+    // Preview Elements (Ensure IDs match your HTML, if present)
     const preview = {
         monthYear: document.getElementById('prevMonthYear'),
         name: document.getElementById('prevName'),
@@ -35,87 +44,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. Automatic Date Initialization ---
     function initDates() {
         const today = new Date();
-        document.getElementById('systemDate').textContent = today.toDateString(); 
+        const sysDate = document.getElementById('systemDate');
+        if(sysDate) sysDate.textContent = today.toDateString(); 
 
         // Default to Current Month and Year
-        const targetMonth = today.getMonth(); // 0-11
+        const targetMonth = today.getMonth(); 
         const targetYear = today.getFullYear();
 
-        // Populate Year Dropdown (Last year, This year, Next year)
-        inputs.year.innerHTML = '';
-        for (let y = targetYear - 1; y <= targetYear + 1; y++) {
-            let opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
-            if(y === targetYear) opt.selected = true;
-            inputs.year.appendChild(opt);
+        // Populate Year Dropdown
+        if (inputs.year) {
+            inputs.year.innerHTML = '';
+            for (let y = targetYear - 1; y <= targetYear + 1; y++) {
+                let opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                if(y === targetYear) opt.selected = true;
+                inputs.year.appendChild(opt);
+            }
         }
 
         // Populate Month Dropdown
-        inputs.month.innerHTML = '';
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        monthNames.forEach((m, index) => {
-            let opt = document.createElement('option');
-            opt.value = index; // 0 for Jan
-            opt.textContent = m;
-            if(index === targetMonth) opt.selected = true;
-            inputs.month.appendChild(opt);
-        });
+        if (inputs.month) {
+            inputs.month.innerHTML = '';
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthNames.forEach((m, index) => {
+                let opt = document.createElement('option');
+                opt.value = index; 
+                opt.textContent = m;
+                if(index === targetMonth) opt.selected = true;
+                inputs.month.appendChild(opt);
+            });
+        }
     }
 
     // --- 2. Calculation Logic ---
     function calculateSalary() {
-        const selYear = parseInt(inputs.year.value);
-        const selMonth = parseInt(inputs.month.value); // 0 = Jan, 1 = Feb
+        if (!inputs.year || !inputs.month) return;
 
-        // --- FIX FOR PAYROLL CYCLE DISPLAY ---
-        
-        // 1. Determine Previous Month Index
+        const selYear = parseInt(inputs.year.value);
+        const selMonth = parseInt(inputs.month.value);
+
+        // Payroll Cycle Logic
         let prevMonthIndex = selMonth - 1;
         let prevYear = selYear;
 
-        // 2. Handle Year Transition (If current is Jan, prev is Dec of last year)
         if (prevMonthIndex < 0) {
-            prevMonthIndex = 11; // December
+            prevMonthIndex = 11; 
             prevYear = selYear - 1;
         }
 
-        // 3. Array of Month Names
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const prevMonthName = monthNames[prevMonthIndex];
-        const currMonthName = monthNames[selMonth];
-
-        // 4. Update Header Text
-        // If the cycle crosses a year (Dec -> Jan), show both years.
-        if (prevYear !== selYear) {
-            preview.monthYear.textContent = `26 ${prevMonthName} ${prevYear} - 25 ${currMonthName} ${selYear}`;
-        } else {
-            // Otherwise just show the standard format
-            preview.monthYear.textContent = `26 ${prevMonthName} - 25 ${currMonthName} ${selYear}`;
+        
+        if (preview.monthYear) {
+            if (prevYear !== selYear) {
+                preview.monthYear.textContent = `26 ${monthNames[prevMonthIndex]} ${prevYear} - 25 ${monthNames[selMonth]} ${selYear}`;
+            } else {
+                preview.monthYear.textContent = `26 ${monthNames[prevMonthIndex]} - 25 ${monthNames[selMonth]} ${selYear}`;
+            }
         }
 
-        // --- END FIX ---
-
-        // Calculate Days in Payroll Month (approx 30/31)
+        // Days in Month Calculation
         const startDate = new Date(prevYear, prevMonthIndex, 26);
         const endDate = new Date(selYear, selMonth, 25);
         const timeDiff = endDate.getTime() - startDate.getTime();
-        const daysInMonth = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // +1 to include start date
-
+        const daysInMonth = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 
         let basic = 0, pf = 0, tax = 0, lopDays = 0, lopVal = 0, finalBasic = 0;
 
         lopDays = parseFloat(inputs.lopDays.value) || 0;
         tax = parseFloat(inputs.tax.value) || 0;
 
-        // Auto vs Manual Mode
-        if (toggle.checked) {
+        if (toggle && toggle.checked) {
             const annualCTC = parseFloat(ctcInput.value) || 0;
             const monthlyCTC = annualCTC / 12;
-
             basic = monthlyCTC;
 
-            // LOP Calculation
             if (basic > 0) {
                 let perDaySalary = basic / daysInMonth;
                 lopVal = perDaySalary * lopDays;
@@ -135,17 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 let perDaySalary = basic / daysInMonth;
                 lopVal = perDaySalary * lopDays;
             }
-
             finalBasic = basic - lopVal;
         }
 
         inputs.lopAmount.value = lopVal.toFixed(2);
 
-        // Final Salary Calculation
         let gross = finalBasic;
         let totalDeductions = pf + tax;
         let net = gross - totalDeductions;
-
         if (net < 0) net = 0;
 
         updateUI(basic, gross, pf, tax, lopDays, lopVal, net, daysInMonth);
@@ -158,10 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(preview.tax) preview.tax.textContent = "-" + formatINR(tax);
         if(preview.lopDays) preview.lopDays.textContent = lopDays;
         if(preview.lop) preview.lop.textContent = "-" + formatINR(lopVal);
-        
-        // Days Paid
         if(preview.days) preview.days.textContent = Math.max(0, totalDays - lopDays);
-
         if(preview.net) preview.net.textContent = formatINR(net);
         if(preview.words) preview.words.textContent = net > 0 ? convertNumberToWords(Math.round(net)) + " Only" : "Zero Only";
     }
@@ -174,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function convertNumberToWords(amount) {
         if (amount === 0) return "Zero";
         return "Amount in Words"; 
-        // You can add a library here for full Indian numbering text conversion
     }
 
     // --- Listeners ---
@@ -207,28 +203,72 @@ document.addEventListener('DOMContentLoaded', () => {
     if(inputs.empName) {
         inputs.empName.addEventListener('change', () => {
             const selectedText = inputs.empName.options[inputs.empName.selectedIndex].text;
-            // Assuming format is "Name (ID)", split to get just name
             if(preview.name) preview.name.textContent = selectedText.split('(')[0].trim();
         });
     }
 
-    window.resetForm = function() {
-        initDates();
-        if(toggle) toggle.checked = true;
-        if(ctcInput) ctcInput.value = 420000;
-        if(inputs.lopDays) inputs.lopDays.value = 0;
-        if(inputs.basic) inputs.basic.readOnly = true;
-        calculateSalary();
-    }
-    
-    window.sendPayslip = function() {
-        const btn = document.querySelector('.btn-primary');
-        const old = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
-        setTimeout(() => { alert("Payslip Sent!"); btn.innerHTML = old; }, 1000);
+    // --- BUTTON ACTIONS (Reset) ---
+    if(resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            initDates();
+            if(toggle) toggle.checked = true;
+            if(ctcInput) ctcInput.value = 420000;
+            if(inputs.lopDays) inputs.lopDays.value = 0;
+            if(inputs.basic) inputs.basic.readOnly = true;
+            calculateSalary();
+        });
     }
 
-    // Initialization
+    // ==========================================
+    // 3. POPUP LOGIC (INTEGRATED HERE)
+    // ==========================================
+
+    if(generateBtn) {
+        generateBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Stop form submission/reload
+
+            // Get Employee Name
+            const empName = inputs.empName.options[inputs.empName.selectedIndex].text;
+
+            // Show Loading State
+            const originalText = generateBtn.innerHTML;
+            generateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending...`;
+            generateBtn.disabled = true;
+
+            // Simulate API Delay (1.5s)
+            setTimeout(() => {
+                // Reset Button
+                generateBtn.innerHTML = originalText;
+                generateBtn.disabled = false;
+
+                // Show Success Popup
+                if (sentEmpName) sentEmpName.innerText = empName;
+                if (successPopup) successPopup.classList.add("active");
+
+            }, 1500);
+        });
+    }
+
+    // Close Popup Function
+    function closePopup() {
+        if(successPopup) successPopup.classList.remove("active");
+    }
+
+    if(popupCloseBtn) popupCloseBtn.addEventListener('click', closePopup);
+    
+    if(popupViewBtn) {
+        popupViewBtn.addEventListener('click', () => {
+            alert("Opening PDF...");
+            closePopup();
+        });
+    }
+
+    // Close on Outside Click
+    window.addEventListener('click', (e) => {
+        if (e.target === successPopup) closePopup();
+    });
+
+    // --- INITIALIZATION ---
     initDates();
     calculateSalary();
 });
