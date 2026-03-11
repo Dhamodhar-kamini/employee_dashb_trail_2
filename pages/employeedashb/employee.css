@@ -16,12 +16,12 @@
   --status-remote-text: #2196f3;
 }
 
-body {
+/* body {
   background-color: var(--bg-body);
   font-family: "DM Sans", sans-serif;
   color: var(--text-dark);
   margin: 0;
-}
+} */
 
 .main-content {
   padding: 20px;

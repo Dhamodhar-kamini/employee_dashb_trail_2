@@ -18,6 +18,7 @@
   overflow: hidden;
   border: 1px solid white;
   min-height: 400px;
+  margin-left: 30px;
 }
 
 /* Left Side: Actions & Summary */
@@ -263,7 +264,7 @@
   justify-content: flex-start;
   gap: 20px;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 15px;
   /* background: var(--rd-bg-card); */
   padding: 16px 24px;
   /* border-radius: 12px;
@@ -309,6 +310,7 @@
   grid-template-columns: 2fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
+  margin-left: 20px;
 }
 
 .rd-card {
@@ -374,6 +376,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-bottom: 24px;
+  margin-left: 30px;
 }
 
 .rd-stat-card {
