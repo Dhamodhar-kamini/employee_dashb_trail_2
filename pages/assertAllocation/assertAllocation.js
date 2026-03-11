@@ -1,4 +1,3 @@
-// --- 1. Dummy Data ---
 let hraAssets = [
     { id: 'AST-001', empId: 'EMP-001', employee: 'Sarah Jenkins', email: 'sarah.jenkins@example.com', type: 'Laptop', model: 'Dell XPS 15', date: '2023-10-15', status: 'assigned' },
     { id: 'AST-002', empId: 'EMP-002', employee: 'Mike Ross', email: 'mike.ross@example.com', type: 'Monitor', model: 'Dell UltraSharp 27', date: '2023-11-01', status: 'assigned' },
