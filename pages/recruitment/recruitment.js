@@ -324,120 +324,282 @@ function ntRenderList() {
 
 
 //position cards
- // 1. Data Store
-  // The 'count' on the dashboard will be the length of these arrays.
-  const dashboardData = {
-    positions: {
-      color: '#f97316', // Orange
-      title: 'Open Positions',
-      items: ['Senior React Developer', 'UI/UX Designer', 'Backend Node.js Lead']
-    },
-    candidates: {
-      color: '#3b82f6', // Blue
-      title: 'Total Candidates',
-      items: ['Arya (Applied)', 'Arjun (Screening)', 'Prasad (Interview)', 'Prasad (Offer)']
-    },
-    interviews: {
-      color: '#10b981', // Green
-      title: 'Interviews Today',
-      items: ['10:00 AM - Arya', '02:00 PM - Priya']
-    },
-    offers: {
-      color: '#1f2937', // Dark
-      title: 'Offers Released',
-      items: ['Rachel Zane - Legal Counsel', 'Louis Litt - Finance Head']
+ // --- 1. Data Store (Complex Objects) ---
+const dashboardData = {
+  positions: {
+    color: '#f97316',
+    title: 'Open Positions',
+    // Simple strings for positions, objects for others
+    items: [
+      { title: 'Senior React Developer' },
+      { title: 'UI/UX Designer' },
+      { title: 'Backend Node.js Lead' }
+    ]
+  },
+  candidates: {
+    color: '#f97316',
+    title: 'Total Candidates',
+    items: [
+      { name: 'Arya', email: 'arya@example.com', job: 'React Developer', status: 'Interested' },
+      { name: 'Arjun', email: 'arjun@example.com', job: 'UI Designer', status: 'Screening' },
+      { name: 'Prasad', email: 'prasad@example.com', job: 'Backend Lead', status: 'Not Interested' }
+    ]
+  },
+  interviews: {
+    color: '#f97316',
+    title: 'Interviews Today',
+    items: [
+      { name: 'Arya', job: 'React Developer', email: 'arya@example.com', date: '2023-10-25', time: '10:00' },
+      { name: 'Priya', job: 'HR Manager', email: 'priya@example.com', date: '2023-10-25', time: '14:00' }
+    ]
+  },
+  offers: {
+    color: '#f97316',
+    title: 'Offers Released',
+    items: [
+      { name: 'Rachel Zane', job: 'Legal Counsel', interviewDate: '2023-10-20', offerSent: true },
+      { name: 'Louis Litt', job: 'Finance Head', interviewDate: '2023-10-22', offerSent: false }
+    ]
+  }
+};
+
+let currentKey = null; // 'positions', 'candidates', 'interviews', or 'offers'
+
+// --- 2. Initialize Dashboard Counts ---
+function updateDashboardCounts() {
+  document.getElementById('count-positions').innerText = dashboardData.positions.items.length;
+  // Candidates: 81 (base) + dynamic count
+  document.getElementById('count-candidates').innerText = 81 + dashboardData.candidates.items.length;
+  document.getElementById('count-interviews').innerText = dashboardData.interviews.items.length;
+  document.getElementById('count-offers').innerText = dashboardData.offers.items.length;
+}
+
+// --- 3. Open Main Modal ---
+function openMainModal(key) {
+  currentKey = key;
+  const data = dashboardData[key];
+  
+  // Style Header
+  const header = document.getElementById('modalHeader');
+  header.style.backgroundColor = data.color;
+  document.getElementById('modalTitle').innerText = data.title;
+
+  hideForm(); // Ensure form is hidden initially
+  renderList(); // Show list of items
+  
+  document.getElementById('mainModal').classList.add('active');
+}
+
+function closeMainModal() {
+  document.getElementById('mainModal').classList.remove('active');
+  currentKey = null;
+}
+
+// --- 4. Render Lists (Different Layouts per Card) ---
+function renderList() {
+  const container = document.getElementById('listContainer');
+  container.innerHTML = '';
+  const items = dashboardData[currentKey].items;
+
+  if (items.length === 0) {
+    container.innerHTML = '<div style="text-align:center; color:#999;">No items found.</div>';
+    return;
+  }
+
+  items.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'rd-list-item';
+
+    let contentHTML = '';
+    let actionsHTML = `
+      <div class="rd-actions">
+        <button class="rd-btn rd-btn-edit" onclick="editItem(${index})"><i class="fa-solid fa-pen"></i> Edit</button>
+        <button class="rd-btn rd-btn-delete" onclick="deleteItem(${index})"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+
+    // --- Template Logic Based on Key ---
+    if (currentKey === 'positions') {
+      contentHTML = `<div class="rd-item-details"><div class="rd-item-title">${item.title}</div></div>`;
+    } 
+    else if (currentKey === 'candidates') {
+      let badgeClass = item.status === 'Interested' ? 'rd-badge-green' : (item.status === 'Not Interested' ? 'rd-badge-red' : 'rd-badge-blue');
+      contentHTML = `
+        <div class="rd-item-details">
+          <div class="rd-item-title">${item.name} <span class="rd-badge ${badgeClass}">${item.status}</span></div>
+          <div class="rd-item-sub">${item.job} | ${item.email}</div>
+        </div>`;
+    } 
+    else if (currentKey === 'interviews') {
+      contentHTML = `
+        <div class="rd-item-details">
+          <div class="rd-item-title">${item.name} - ${item.time}</div>
+          <div class="rd-item-sub">Role: ${item.job} | Date: ${item.date}</div>
+          <div class="rd-item-sub">${item.email}</div>
+        </div>`;
+    } 
+    else if (currentKey === 'offers') {
+      let offerBtn = item.offerSent 
+        ? `<span class="rd-badge rd-badge-green"><i class="fa-solid fa-check"></i> Offer Sent</span>` 
+        : `<button class="rd-btn rd-btn-primary" onclick="sendOffer(${index})">Send Offer</button>`;
+        
+      contentHTML = `
+        <div class="rd-item-details">
+          <div class="rd-item-title">${item.name}</div>
+          <div class="rd-item-sub">Role: ${item.job} | Interviewed: ${item.interviewDate}</div>
+          <div style="margin-top:5px;">${offerBtn}</div>
+        </div>`;
     }
-  };
 
-  let currentKey = null; // Tracks which card is currently open
-
-  // 2. Initialize Dashboard Counts
-  function updateDashboardCounts() {
-    document.getElementById('count-positions').innerText = dashboardData.positions.items.length;
-    // For candidates, let's pretend there are more in the DB, but we show list length + 81
-    document.getElementById('count-candidates').innerText = 81 + dashboardData.candidates.items.length; 
-    document.getElementById('count-interviews').innerText = dashboardData.interviews.items.length;
-    document.getElementById('count-offers').innerText = dashboardData.offers.items.length;
-  }
-
-  // 3. Open Modal
-  function openModal(key) {
-    currentKey = key;
-    const data = dashboardData[key];
-    const modal = document.getElementById('rdModal');
-    const header = document.getElementById('modalHeader');
-    
-    // Set Header Style
-    header.style.backgroundColor = data.color;
-    document.getElementById('modalTitle').innerText = data.title;
-
-    // Render List
-    renderList();
-
-    // Show Modal
-    modal.classList.add('active');
-  }
-
-  // 4. Close Modal
-  function closeModal() {
-    const modal = document.getElementById('rdModal');
-    modal.classList.remove('active');
-    currentKey = null;
-  }
-
-  // 5. Render List Items in Modal
-  function renderList() {
-    const listContainer = document.getElementById('detailsList');
-    listContainer.innerHTML = ''; // Clear current
-
-    const items = dashboardData[currentKey].items;
-
-    if(items.length === 0) {
-      listContainer.innerHTML = '<li style="color:#999; text-align:center; padding:10px;">No items found.</li>';
-      return;
-    }
-
-    items.forEach((item, index) => {
-      const li = document.createElement('li');
-      li.className = 'rd-list-item';
-      li.innerHTML = `
-        <span>${item}</span>
-        <button class="rd-delete-btn" onclick="deleteItem(${index})">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      `;
-      listContainer.appendChild(li);
-    });
-  }
-
-  // 6. Add Item Logic
-  function addItem() {
-    const input = document.getElementById('newItemInput');
-    const value = input.value.trim();
-
-    if (value && currentKey) {
-      dashboardData[currentKey].items.push(value);
-      input.value = ''; // Clear input
-      renderList(); // Refresh list inside modal
-      updateDashboardCounts(); // Refresh number on dashboard card
-    } else {
-      alert("Please enter a detail.");
-    }
-  }
-
-  // 7. Delete Item Logic
-  function deleteItem(index) {
-    if (confirm("Are you sure you want to remove this item?")) {
-      dashboardData[currentKey].items.splice(index, 1);
-      renderList(); // Refresh list inside modal
-      updateDashboardCounts(); // Refresh number on dashboard card
-    }
-  }
-
-  // Close modal when clicking outside
-  document.getElementById('rdModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+    div.innerHTML = contentHTML + actionsHTML;
+    container.appendChild(div);
   });
+}
 
-  // Initial Render
+// --- 5. Form Handling (Add/Edit) ---
+function showAddForm() {
+  document.getElementById('formTitle').innerText = "Add New Item";
+  document.getElementById('editIndex').value = "-1"; // -1 indicates ADD mode
+  injectFormFields();
+  document.getElementById('dynamicForm').classList.add('active');
+  // Scroll to bottom
+  document.querySelector('.rd-modal-body').scrollTop = document.querySelector('.rd-modal-body').scrollHeight;
+}
+
+function editItem(index) {
+  document.getElementById('formTitle').innerText = "Edit Item";
+  document.getElementById('editIndex').value = index;
+  injectFormFields(dashboardData[currentKey].items[index]);
+  document.getElementById('dynamicForm').classList.add('active');
+  // Scroll to bottom
+  document.querySelector('.rd-modal-body').scrollTop = document.querySelector('.rd-modal-body').scrollHeight;
+}
+
+function hideForm() {
+  document.getElementById('dynamicForm').classList.remove('active');
+}
+
+// Inject Fields based on Card Type
+function injectFormFields(data = {}) {
+  const container = document.getElementById('formFields');
+  let fieldsHTML = '';
+
+  if (currentKey === 'positions') {
+    fieldsHTML = `
+      <div class="form-group"><label>Job Title</label><input type="text" id="inp_title" value="${data.title || ''}"></div>
+    `;
+  } 
+  else if (currentKey === 'candidates') {
+    fieldsHTML = `
+      <div class="form-group"><label>Candidate Name</label><input type="text" id="inp_name" value="${data.name || ''}"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="inp_email" value="${data.email || ''}"></div>
+      <div class="form-group"><label>Job Applied For</label><input type="text" id="inp_job" value="${data.job || ''}"></div>
+      <div class="form-group"><label>Status</label>
+        <select id="inp_status">
+          <option value="Interested" ${data.status === 'Interested' ? 'selected' : ''}>Interested</option>
+          <option value="Screening" ${data.status === 'Screening' ? 'selected' : ''}>Screening</option>
+          <option value="Not Interested" ${data.status === 'Not Interested' ? 'selected' : ''}>Not Interested</option>
+        </select>
+      </div>
+    `;
+  }
+  else if (currentKey === 'interviews') {
+    fieldsHTML = `
+      <div class="form-group"><label>Candidate Name</label><input type="text" id="inp_name" value="${data.name || ''}"></div>
+      <div class="form-group"><label>Job Role</label><input type="text" id="inp_job" value="${data.job || ''}"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="inp_email" value="${data.email || ''}"></div>
+      <div class="form-group"><label>Interview Date</label><input type="date" id="inp_date" value="${data.date || ''}"></div>
+      <div class="form-group"><label>Interview Time</label><input type="time" id="inp_time" value="${data.time || ''}"></div>
+    `;
+  }
+  else if (currentKey === 'offers') {
+    fieldsHTML = `
+      <div class="form-group"><label>Candidate Name</label><input type="text" id="inp_name" value="${data.name || ''}"></div>
+      <div class="form-group"><label>Job Role</label><input type="text" id="inp_job" value="${data.job || ''}"></div>
+      <div class="form-group"><label>Interview Completed Date</label><input type="date" id="inp_date" value="${data.interviewDate || ''}"></div>
+      <div class="form-group"><label>Offer Status</label>
+        <select id="inp_sent">
+          <option value="false" ${!data.offerSent ? 'selected' : ''}>Not Sent</option>
+          <option value="true" ${data.offerSent ? 'selected' : ''}>Sent</option>
+        </select>
+      </div>
+    `;
+  }
+
+  container.innerHTML = fieldsHTML;
+}
+
+// --- 6. Save Data (Add or Update) ---
+function saveData() {
+  const index = parseInt(document.getElementById('editIndex').value);
+  const itemsArray = dashboardData[currentKey].items;
+  let newItem = {};
+
+  // Construct Object based on Key
+  if (currentKey === 'positions') {
+    newItem = { title: document.getElementById('inp_title').value };
+  } 
+  else if (currentKey === 'candidates') {
+    newItem = {
+      name: document.getElementById('inp_name').value,
+      email: document.getElementById('inp_email').value,
+      job: document.getElementById('inp_job').value,
+      status: document.getElementById('inp_status').value
+    };
+  }
+  else if (currentKey === 'interviews') {
+    newItem = {
+      name: document.getElementById('inp_name').value,
+      job: document.getElementById('inp_job').value,
+      email: document.getElementById('inp_email').value,
+      date: document.getElementById('inp_date').value,
+      time: document.getElementById('inp_time').value
+    };
+  }
+  else if (currentKey === 'offers') {
+    newItem = {
+      name: document.getElementById('inp_name').value,
+      job: document.getElementById('inp_job').value,
+      interviewDate: document.getElementById('inp_date').value,
+      offerSent: document.getElementById('inp_sent').value === 'true'
+    };
+  }
+
+  // Validate basic
+  if (!Object.values(newItem).every(val => val !== '')) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  if (index === -1) {
+    // Add New
+    itemsArray.push(newItem);
+  } else {
+    // Update Existing
+    itemsArray[index] = newItem;
+  }
+
+  hideForm();
+  renderList();
   updateDashboardCounts();
+}
+
+// --- 7. Delete Logic ---
+function deleteItem(index) {
+  if (confirm("Are you sure?")) {
+    dashboardData[currentKey].items.splice(index, 1);
+    renderList();
+    updateDashboardCounts();
+  }
+}
+
+// --- 8. Specific Logic for Offers (Send Button) ---
+function sendOffer(index) {
+  if (confirm("Mark offer letter as sent?")) {
+    dashboardData.offers.items[index].offerSent = true;
+    renderList();
+  }
+}
+
+// Initial Load
+updateDashboardCounts();
