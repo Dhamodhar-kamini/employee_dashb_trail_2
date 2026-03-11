@@ -307,50 +307,43 @@
 
         <!-- Return Assets Section -->
         <section class="hra-main-content hra-section-spacing">
-          <header class="hra-header">
-            <div class="hra-header-left">
-              <i
-                class="fa-solid fa-bars hra-mobile-toggle"
-                id="hraMenuToggle"
-              ></i>
-              <div class="hra-page-title">
-                <h2>Return Assets</h2>
-                <p>Manage asset returns from employees</p>
-              </div>
-            </div>
-          </header>
+  <header class="hra-header">
+    <div class="hra-header-left">
+      <i class="fa-solid fa-bars hra-mobile-toggle" id="hraMenuToggle"></i>
+      <div class="hra-page-title">
+        <h2>Return Assets</h2>
+        <p>Manage asset returns from employees</p>
+      </div>
+    </div>
+  </header>
 
-          <!-- Actions Bar -->
-          <div class="hra-actions-bar">
-            <div class="hra-search-box">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <input
-                type="text"
-                id="hraReturnSearchInput"
-                placeholder="Search by name or asset ID..."
-              />
-            </div>
-          </div>
+  <!-- Actions Bar -->
+  <div class="hra-actions-bar">
+    <div class="hra-search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="hraReturnSearchInput" placeholder="Search by name or asset ID..." />
+    </div>
+  </div>
 
-          <!-- Data Table -->
-          <div class="hra-table-wrapper">
-            <table class="hra-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Asset Type</th>
-                  <th>Condition</th>
-                  <th>Reason</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="hraReturnTableBody">
-                <!-- Javascript will inject rows here -->
-              </tbody>
-            </table>
-          </div>
-        </section>
-
+  <!-- Data Table -->
+  <div class="hra-table-wrapper">
+    <table class="hra-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Asset Type</th>
+          <th>Condition</th>
+          <th>Reason</th>
+          
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="hraReturnTableBody">
+        <!-- Javascript will inject rows here -->
+      </tbody>
+    </table>
+  </div>
+</section>
         <!-- Return Asset Form Modal -->
         <div class="hra-modal-overlay" id="hraReturnModal">
           <div class="hra-modal-content">
