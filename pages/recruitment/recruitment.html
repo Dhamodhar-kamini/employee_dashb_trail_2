@@ -222,28 +222,61 @@
       </div>
     </div>
 
-    <div class="rd-stats-grid">
-      <div class="rd-stat-card rd-stat-orange">
-        <div class="rd-stat-value">0</div>
-        <div class="rd-stat-label">Open Positions</div>
-      </div>
+  <!-- Dashboard Grid -->
+  <div class="rd-stats-grid">
+    <div class="rd-stat-card rd-stat-orange" onclick="openMainModal('positions')">
+      <div class="rd-icon-bg"><i class="fa-solid fa-briefcase"></i></div>
+      <div class="rd-stat-value" id="count-positions">0</div>
+      <div class="rd-stat-label">Open Positions</div>
+    </div>
+    <div class="rd-stat-card rd-stat-blue" onclick="openMainModal('candidates')">
+      <div class="rd-icon-bg"><i class="fa-solid fa-users"></i></div>
+      <div class="rd-stat-value" id="count-candidates">0</div>
+      <div class="rd-stat-label">Total Candidates</div>
+    </div>
+    <div class="rd-stat-card rd-stat-green" onclick="openMainModal('interviews')">
+      <div class="rd-icon-bg"><i class="fa-solid fa-calendar-check"></i></div>
+      <div class="rd-stat-value" id="count-interviews">0</div>
+      <div class="rd-stat-label">Interviews Today</div>
+    </div>
+    <div class="rd-stat-card rd-stat-dark" onclick="openMainModal('offers')">
+      <div class="rd-icon-bg"><i class="fa-solid fa-file-signature"></i></div>
+      <div class="rd-stat-value" id="count-offers">0</div>
+      <div class="rd-stat-label">Offers Released</div>
+    </div>
+  </div>
 
-      <div class="rd-stat-card rd-stat-blue">
-        <div class="rd-stat-value">85</div>
-        <div class="rd-stat-label">Total Candidates</div>
+  <!-- Main Data Modal -->
+  <div class="rd-modal-overlay" id="mainModal">
+    <div class="rd-modal-card">
+      <div class="rd-modal-header" id="modalHeader">
+        <h3 id="modalTitle">Details</h3>
+        <button class="rd-close-btn" onclick="closeMainModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
+      <div class="rd-modal-body">
+        
+        <!-- List Container -->
+        <div id="listContainer"></div>
 
-      <div class="rd-stat-card rd-stat-green">
-        <div class="rd-stat-value">2</div>
-        <div class="rd-stat-label">Interviews Today</div>
-      </div>
+        <!-- Add New Button -->
+        <button class="rd-btn-add" onclick="showAddForm()">+ Add New Item</button>
 
-      <div class="rd-stat-card rd-stat-dark">
-        <div class="rd-stat-value">2</div>
-        <div class="rd-stat-label">Offers Released</div>
+        <!-- Dynamic Form for Add/Edit -->
+        <div id="dynamicForm" class="form-overlay">
+          <h4 id="formTitle" style="margin-top:0;">Add New</h4>
+          <input type="hidden" id="editIndex"> <!-- Hidden field to store index if editing -->
+          
+          <div id="formFields"></div> <!-- Fields injected by JS -->
+          
+          <div style="margin-top:15px; display:flex; gap:10px;">
+            <button class="rd-btn rd-btn-primary" onclick="saveData()">Save</button>
+            <button class="rd-btn rd-btn-edit" onclick="hideForm()">Cancel</button>
+          </div>
+        </div>
+
       </div>
     </div>
-
+  </div>
 
     <!-- Unified Interview Widget Container -->
     <div class="im-widget-container">

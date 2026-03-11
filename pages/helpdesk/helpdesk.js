@@ -57,6 +57,19 @@ function shrpCloseModal() {
     document.getElementById('shrp-modal-edit').classList.remove('shrp-is-visible');
 }
 
+// New Function to Trigger Toast
+function shrpShowToast() {
+    const toast = document.getElementById('shrp-toast');
+    
+    // Add active class to show it
+    toast.classList.add('shrp-active');
+    
+    // Remove active class after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('shrp-active');
+    }, 3000);
+}
+
 function shrpSaveChanges(e) {
     e.preventDefault();
     
@@ -67,7 +80,12 @@ function shrpSaveChanges(e) {
     
     // Refresh table
     shrpRenderTable();
+    
+    // Close Modal
     shrpCloseModal();
+    
+    // Trigger Success Popup
+    shrpShowToast();
 }
 
 // Initial render
