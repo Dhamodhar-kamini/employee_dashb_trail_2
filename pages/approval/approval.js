@@ -621,207 +621,207 @@
 //     renderAssetTable();
 // });
 
-// //notification section
-// let notifications = [
-//     {
-//         id: 1,
-//         text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
-//         time: "2 mins ago",
-//         icon: "👩‍💼", // Using emojis as placeholders for images
-//         read: false
-//     },
-//     {
-//         id: 2,
-//         text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.",
-//         time: "15 mins ago",
-//         icon: "📅",
-//         read: false
-//     },
-//     {
-//         id: 3,
-//         text: "New system update available.",
-//         time: "1 hour ago",
-//         icon: "⚙️",
-//         read: true
-//     },
-//     {
-//         id: 4,
-//         text: "<strong>Arjun</strong> accepted the offer.",
-//         time: "3 hours ago",
-//         icon: "✅",
-//         read: true
-//     }
-// ];
+//notification section
+let notifications = [
+    {
+        id: 1,
+        text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
+        time: "2 mins ago",
+        icon: "👩‍💼", // Using emojis as placeholders for images
+        read: false
+    },
+    {
+        id: 2,
+        text: "Meeting with <strong>Dev Team</strong> starts in 15 minutes.",
+        time: "15 mins ago",
+        icon: "📅",
+        read: false
+    },
+    {
+        id: 3,
+        text: "New system update available.",
+        time: "1 hour ago",
+        icon: "⚙️",
+        read: true
+    },
+    {
+        id: 4,
+        text: "<strong>Arjun</strong> accepted the offer.",
+        time: "3 hours ago",
+        icon: "✅",
+        read: true
+    }
+];
 
-// document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
-//     // Select Elements
-//     const bellBtn = document.getElementById('ntBellBtn');
-//     const dropdown = document.getElementById('ntDropdown');
-//     const markReadBtn = document.getElementById('ntMarkAllRead');
+    // Select Elements
+    const bellBtn = document.getElementById('ntBellBtn');
+    const dropdown = document.getElementById('ntDropdown');
+    const markReadBtn = document.getElementById('ntMarkAllRead');
 
-//     // Initialize
-//     ntRenderList();
+    // Initialize
+    ntRenderList();
 
-//     // Toggle Dropdown
-//     bellBtn.addEventListener('click', (e) => {
-//         e.stopPropagation(); // Prevent immediate closing
-//         const isVisible = dropdown.style.display === 'block';
-//         dropdown.style.display = isVisible ? 'none' : 'block';
-//     });
+    // Toggle Dropdown
+    bellBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent immediate closing
+        const isVisible = dropdown.style.display === 'block';
+        dropdown.style.display = isVisible ? 'none' : 'block';
+    });
 
-//     // Mark All as Read
-//     markReadBtn.addEventListener('click', () => {
-//         notifications.forEach(n => n.read = true);
-//         ntRenderList();
-//     });
+    // Mark All as Read
+    markReadBtn.addEventListener('click', () => {
+        notifications.forEach(n => n.read = true);
+        ntRenderList();
+    });
 
-//     // Close Dropdown when clicking outside
-//     window.addEventListener('click', (e) => {
-//         if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
-//             dropdown.style.display = 'none';
-//         }
-//     });
-// });
+    // Close Dropdown when clicking outside
+    window.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+});
 
-// // Render Function
-// function ntRenderList() {
-//     const listContainer = document.getElementById('ntList');
-//     const badge = document.getElementById('ntBadge');
+// Render Function
+function ntRenderList() {
+    const listContainer = document.getElementById('ntList');
+    const badge = document.getElementById('ntBadge');
 
-//     // Clear current list
-//     listContainer.innerHTML = '';
+    // Clear current list
+    listContainer.innerHTML = '';
 
-//     // Count unread
-//     const unreadCount = notifications.filter(n => !n.read).length;
+    // Count unread
+    const unreadCount = notifications.filter(n => !n.read).length;
 
-//     // Update Badge
-//     if (unreadCount > 0) {
-//         badge.style.display = 'flex';
-//         badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-//     } else {
-//         badge.style.display = 'none';
-//     }
+    // Update Badge
+    if (unreadCount > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+    } else {
+        badge.style.display = 'none';
+    }
 
-//     // Check if empty
-//     if (notifications.length === 0) {
-//         listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
-//         return;
-//     }
+    // Check if empty
+    if (notifications.length === 0) {
+        listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
+        return;
+    }
 
-//     // Build List
-//     notifications.forEach(item => {
-//         const itemDiv = document.createElement('div');
-//         // Add class 'nt-unread' if not read
-//         itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
+    // Build List
+    notifications.forEach(item => {
+        const itemDiv = document.createElement('div');
+        // Add class 'nt-unread' if not read
+        itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
 
-//         itemDiv.innerHTML = `
-//             <div class="nt-avatar">${item.icon}</div>
-//             <div class="nt-content">
-//                 <p class="nt-text">${item.text}</p>
-//                 <span class="nt-time">${item.time}</span>
-//             </div>
-//         `;
+        itemDiv.innerHTML = `
+            <div class="nt-avatar">${item.icon}</div>
+            <div class="nt-content">
+                <p class="nt-text">${item.text}</p>
+                <span class="nt-time">${item.time}</span>
+            </div>
+        `;
 
-//         // Click individual item to mark as read
-//         itemDiv.addEventListener('click', () => {
-//             item.read = true;
-//             ntRenderList();
-//         });
+        // Click individual item to mark as read
+        itemDiv.addEventListener('click', () => {
+            item.read = true;
+            ntRenderList();
+        });
 
-//         listContainer.appendChild(itemDiv);
-//     });
-// } function switchTab(tabName, btnElement) {
+        listContainer.appendChild(itemDiv);
+    });
+} function switchTab(tabName, btnElement) {
 
-//     const titleMap = {
-//         leave: "Leaves",
-//         attendance: "Attendance",
-//         assets: "Assets"
-//     };
+    const titleMap = {
+        leave: "Leaves",
+        attendance: "Attendance",
+        assets: "Assets"
+    };
 
-//     const titleEl = document.getElementById("pageTitle");
+    const titleEl = document.getElementById("pageTitle");
 
-//     if (titleEl) {
-//         titleEl.style.opacity = 0;
+    if (titleEl) {
+        titleEl.style.opacity = 0;
 
-//         setTimeout(() => {
-//             titleEl.textContent = titleMap[tabName];
+        setTimeout(() => {
+            titleEl.textContent = titleMap[tabName];
 
-//             const breadcrumb = document.getElementById("breadcrumbActive");
-//             if (breadcrumb) {
-//                 breadcrumb.textContent = titleMap[tabName];
-//             }
+            const breadcrumb = document.getElementById("breadcrumbActive");
+            if (breadcrumb) {
+                breadcrumb.textContent = titleMap[tabName];
+            }
 
-//             titleEl.style.opacity = 1;
-//         }, 150);
-//     }
+            titleEl.style.opacity = 1;
+        }, 150);
+    }
 
-//     document.querySelectorAll(".tab-btn")
-//         .forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-btn")
+        .forEach(btn => btn.classList.remove("active"));
 
-//     btnElement.classList.add("active");
+    btnElement.classList.add("active");
 
-//     document.querySelectorAll(".table-responsive")
-//         .forEach(section => section.classList.add("hidden"));
+    document.querySelectorAll(".table-responsive")
+        .forEach(section => section.classList.add("hidden"));
 
-//     const target = document.getElementById(tabName + "-section");
+    const target = document.getElementById(tabName + "-section");
 
-//     if (target) {
-//         target.classList.remove("hidden");
-//         target.classList.add("fade-in");
+    if (target) {
+        target.classList.remove("hidden");
+        target.classList.add("fade-in");
 
-//         setTimeout(() => {
-//             target.classList.remove("fade-in");
-//         }, 300);
-//     }
-//     document.getElementById("searchInput").value = "";
-// calendarBtn.innerHTML = `<i class="ph ph-calendar"></i> This Month`;
-// calendarBtn.classList.remove("calendar-active");
-// }
-// function processAction(rowId, actionType) {
+        setTimeout(() => {
+            target.classList.remove("fade-in");
+        }, 300);
+    }
+    document.getElementById("searchInput").value = "";
+calendarBtn.innerHTML = `<i class="ph ph-calendar"></i> This Month`;
+calendarBtn.classList.remove("calendar-active");
+}
+function processAction(rowId, actionType) {
 
-//     const row = document.getElementById(rowId);
+    const row = document.getElementById(rowId);
 
-//     if (!row) return;
+    if (!row) return;
 
-//     if (actionType === "Rejected") {
-//         row.style.backgroundColor = "#fef2f2";
-//     } else {
-//         row.style.backgroundColor = "#f0fdf4";
-//     }
+    if (actionType === "Rejected") {
+        row.style.backgroundColor = "#fef2f2";
+    } else {
+        row.style.backgroundColor = "#f0fdf4";
+    }
 
-//     setTimeout(() => {
+    setTimeout(() => {
 
-//         row.style.transition = "all 0.4s ease";
-//         row.style.transform = "translateX(20px)";
-//         row.style.opacity = "0";
+        row.style.transition = "all 0.4s ease";
+        row.style.transform = "translateX(20px)";
+        row.style.opacity = "0";
 
-//         setTimeout(() => {
+        setTimeout(() => {
 
-//             row.remove();
+            row.remove();
 
-//             const toast = document.getElementById("toast");
-//             const toastMsg = document.getElementById("toastMsg");
+            const toast = document.getElementById("toast");
+            const toastMsg = document.getElementById("toastMsg");
 
-//             if (toastMsg) {
-//                 toastMsg.textContent =
-//                     actionType === "Rejected"
-//                         ? "Request Rejected"
-//                         : "Request Approved Successfully";
-//             }
+            if (toastMsg) {
+                toastMsg.textContent =
+                    actionType === "Rejected"
+                        ? "Request Rejected"
+                        : "Request Approved Successfully";
+            }
 
-//             if (toast) {
-//                 toast.classList.add("show");
+            if (toast) {
+                toast.classList.add("show");
 
-//                 setTimeout(() => {
-//                     toast.classList.remove("show");
-//                 }, 3000);
-//             }
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                }, 3000);
+            }
 
-//         }, 400);
+        }, 400);
 
-//     }, 200);
-// }
+    }, 200);
+}
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -866,3 +866,55 @@ document.addEventListener("DOMContentLoaded", function () {
             tableBody.innerHTML = `<tr><td colspan="4">Failed to load leaves</td></tr>`;
         });
 });
+
+
+//logout section
+/* --- Toggle Profile Dropdown --- */
+function hdr_toggleProfilePopup() {
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    dropdown.classList.toggle("show");
+}
+
+/* --- Show Logout Modal --- */
+function hdr_showLogoutModal() {
+    // 1. Hide the dropdown menu first (optional UI polish)
+    const dropdown = document.getElementById("hdrProfileDropdown");
+    if (dropdown) dropdown.classList.remove("show");
+
+    // 2. Show the modal
+    const modal = document.getElementById("hdrLogoutModal");
+    if (modal) modal.classList.add("show-modal");
+}
+
+/* --- Hide Logout Modal --- */
+function hdr_hideLogoutModal() {
+    const modal = document.getElementById("hdrLogoutModal");
+    if (modal) modal.classList.remove("show-modal");
+}
+
+/* --- Perform Actual Logout --- */
+function hdr_confirmLogout() {
+    // 1. Clear session/local storage
+    sessionStorage.clear();
+    localStorage.clear();
+
+    // 2. Redirect to Login Page
+    window.location.href = "../adminlogin/adminlogin.html";
+}
+
+/* --- Close Dropdown when clicking outside --- */
+window.onclick = function(event) {
+    // If click is NOT on the profile wrapper
+    if (!event.target.closest(".hdr-profile-wrapper")) {
+        const dropdown = document.getElementById("hdrProfileDropdown");
+        if (dropdown && dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    }
+
+    // Optional: Close modal if clicking on the overlay background
+    const modal = document.getElementById("hdrLogoutModal");
+    if (event.target === modal) {
+        hdr_hideLogoutModal();
+    }
+}
