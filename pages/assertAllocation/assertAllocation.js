@@ -42,7 +42,6 @@ function hraRenderTable(data) {
             <td>${asset.date}</td>
             <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
             <td>
-                <button class="hra-action-icon hra-return-btn" data-id="${asset.id}" title="Return Asset" style="color: #ff9500;"><i class="fa-solid fa-arrow-turn-down"></i></button>
                 <button class="hra-action-icon hra-edit-btn" data-id="${asset.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
                 <button class="hra-action-icon hra-delete-btn" data-id="${asset.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
             </td>
@@ -63,12 +62,9 @@ function hraGetIcon(type) {
 
 function hraGetFilteredAssets() {
     const term = hraSearchInput.value.toLowerCase().trim();
-    // Only show non-returned assets in allocation table
-    const activeAssets = hraAssets.filter(asset => asset.status !== 'returned');
-    
-    if (!term) return activeAssets;
+    if (!term) return hraAssets;
 
-    return activeAssets.filter(asset =>
+    return hraAssets.filter(asset =>
         asset.employee.toLowerCase().includes(term) ||
         asset.id.toLowerCase().includes(term) ||
         asset.model.toLowerCase().includes(term)
@@ -166,13 +162,7 @@ hraTableBody.addEventListener('click', (e) => {
         return;
     }
 
-    // Return Asset
-    if (button.classList.contains('hra-return-btn')) {
-        const asset = hraAssets.find(a => a.id === assetId);
-        if (!asset) return;
-        hraOpenReturnModal(asset);
-        return;
-    }
+
 });
 
 // Form Submission
@@ -228,40 +218,6 @@ const hraReturnModal = document.getElementById('hraReturnModal');
 const hraReturnForm = document.getElementById('hraReturnForm');
 const hraReturnSearchInput = document.getElementById('hraReturnSearchInput');
 const hraReturnCloseModal = document.getElementById('hraReturnCloseModal');
-
-// Function to open return modal
-function hraOpenReturnModal(asset) {
-    currentReturningAsset = asset;
-    hraReturnModal.style.display = 'flex';
-    // Pre-fill employee name
-    document.getElementById('hraReturnEmpName').value = asset.employee;
-    document.getElementById('hraReturnAssetType').value = asset.type;
-    document.getElementById('hraReturnCondition').value = '';
-    document.getElementById('hraReturnReason').value = '';
-}
-
-// Function to handle asset return (mark as returned in allocation table + add to return table)
-function hraReturnAsset(assetId) {
-    const asset = hraAssets.find(a => a.id === assetId);
-    if (!asset) return;
-
-    const returnData = {
-        id: Date.now(), // Unique ID for return record
-        name: asset.employee,
-        assetType: asset.type,
-        assetId: asset.id,
-        condition: '', // Will be filled by form
-        reason: '', // Will be filled by form
-        returnDate: new Date().toISOString().split('T')[0]
-    };
-
-    hraReturnAssets.push(returnData);
-    asset.status = 'returned';
-    
-    hraRenderTable(hraGetFilteredAssets());
-    hraRenderReturnTable(hraReturnAssets);
-    showSuccessPopup();
-}
 
 // Function to render Return Assets Table
 function hraRenderReturnTable(data) {
