@@ -303,6 +303,104 @@
             <p>Asset allocated successfully.</p>
           </div>
         </div>
+
+        <!-- Return Assets Section -->
+        <section class="hra-main-content hra-section-spacing">
+          <header class="hra-header">
+            <div class="hra-header-left">
+              <i
+                class="fa-solid fa-bars hra-mobile-toggle"
+                id="hraMenuToggle"
+              ></i>
+              <div class="hra-page-title">
+                <h2>Return Assets</h2>
+                <p>Manage asset returns from employees</p>
+              </div>
+            </div>
+          </header>
+
+          <!-- Actions Bar -->
+          <div class="hra-actions-bar">
+            <div class="hra-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="hraReturnSearchInput"
+                placeholder="Search by name or asset ID..."
+              />
+            </div>
+          </div>
+
+          <!-- Data Table -->
+          <div class="hra-table-wrapper">
+            <table class="hra-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Asset Type</th>
+                  <th>Condition</th>
+                  <th>Reason</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hraReturnTableBody">
+                <!-- Javascript will inject rows here -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Return Asset Form Modal -->
+        <div class="hra-modal-overlay" id="hraReturnModal">
+          <div class="hra-modal-content">
+            <div class="hra-modal-header">
+              <h3 id="hraReturnModalTitle">Return Asset</h3>
+              <span class="hra-close-btn" id="hraReturnCloseModal">&times;</span>
+            </div>
+            <form id="hraReturnForm">
+                <div class="hra-form-group">
+                <label>Employee Name</label>
+                <input
+                  type="text"
+                  id="hraReturnEmpName"
+                  placeholder="Enter employee name"
+                  readonly
+                />
+              </div>
+              <div class="hra-form-group">
+                <label>Asset Type</label>
+                <input
+                  type="text"
+                  id="hraReturnAssetType"
+                  placeholder="Asset Type"
+                  readonly
+                />
+              </div>
+              <div class="hra-form-group">
+                <label>Condition</label>
+                <select id="hraReturnCondition" required>
+                  <option value="">Select Condition</option>
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                  <option value="Damaged">Damaged</option>
+                </select>
+              </div>
+              <div class="hra-form-group">
+                <label>Reason for Return</label>
+                <textarea
+                  id="hraReturnReason"
+                  placeholder="Enter reason for asset return"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" id="hraReturnModalSubmitBtn" class="hra-btn-primary hra-full-width">
+                Confirm Return
+              </button>
+            </form>
+          </div>
+        </div>
+
       </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
