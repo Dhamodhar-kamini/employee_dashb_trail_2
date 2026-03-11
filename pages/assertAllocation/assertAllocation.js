@@ -1,10 +1,4 @@
-let hraAssets = [
-    { id: 'AST-001', empId: 'EMP-001', employee: 'Sarah Jenkins', email: 'sarah.jenkins@example.com', type: 'Laptop', model: 'Dell XPS 15', date: '2023-10-15', status: 'assigned' },
-    { id: 'AST-002', empId: 'EMP-002', employee: 'Mike Ross', email: 'mike.ross@example.com', type: 'Monitor', model: 'Dell UltraSharp 27', date: '2023-11-01', status: 'assigned' },
-    { id: 'AST-003', empId: 'EMP-003', employee: 'Rachel Zane', email: 'rachel.zane@example.com', type: 'Phone', model: 'iPhone 13 Work', date: '2023-09-20', status: 'maintenance' },
-    { id: 'AST-004', empId: 'EMP-004', employee: 'Louis Litt', email: 'louis.litt@example.com', type: 'Laptop', model: 'MacBook Pro 16', date: '2023-08-10', status: 'returned' },
-    { id: 'AST-005', empId: 'EMP-005', employee: 'Harvey Specter', email: 'harvey.specter@example.com', type: 'Laptop', model: 'MacBook Air M2', date: '2023-10-05', status: 'assigned' }
-];
+let hraAssets = [];
 
 // --- 2. Element Selectors ---
 const hraTableBody = document.getElementById('hraAssetTableBody');
@@ -24,7 +18,7 @@ let currentEditingAssetId = null;
 // --- 3. Core Functions ---
 
 function hraRenderTable(data) {
-    hraTableBody.innerHTML = ''; 
+    hraTableBody.innerHTML = '';
 
     if (data.length === 0) {
         hraTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No assets found.</td></tr>';
@@ -34,23 +28,38 @@ function hraRenderTable(data) {
     data.forEach(asset => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="font-weight:bold;">${asset.id}</td>
-            <td>${asset.employee}</td>
-            <td><i class="fa-solid ${hraGetIcon(asset.type)}"></i> ${asset.type}</td>
-            <td>${asset.model}</td>
-            <td>${asset.date}</td>
-            <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
-            <td>
-                <button class="hra-action-icon hra-edit-btn" data-id="${asset.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                <button class="hra-action-icon hra-delete-btn" data-id="${asset.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        `;
+<td style="font-weight:bold;">${asset.asset_id}</td>
+<td>${asset.emp_id}</td>
+<td>${asset.employee}</td>
+<td><i class="fa-solid ${hraGetIcon(asset.asset_type)}"></i> ${asset.asset_type}</td>
+<td>${asset.model_details}</td>
+<td>${asset.assigned_date}</td>
+
+<td>
+<span class="hra-status-badge hra-status-${asset.status}">
+${asset.status}
+</span>
+</td>
+
+<td>
+<button class="hra-action-icon hra-edit-btn" data-id="${asset.asset_id}">
+<i class="fa-solid fa-pen"></i>
+</button>
+
+<button class="hra-action-icon hra-delete-btn" data-id="${asset.asset_id}" style="color:#ef4444;">
+<i class="fa-solid fa-trash"></i>
+</button>
+</td>
+`;
         hraTableBody.appendChild(tr);
     });
 }
 
 function hraGetIcon(type) {
-    switch(type.toLowerCase()) {
+
+    if (!type) return "fa-box";
+
+    switch (type.toLowerCase()) {
         case 'laptop': return 'fa-laptop';
         case 'monitor': return 'fa-desktop';
         case 'phone': return 'fa-mobile-screen';
@@ -65,8 +74,8 @@ function hraGetFilteredAssets() {
 
     return hraAssets.filter(asset =>
         asset.employee.toLowerCase().includes(term) ||
-        asset.id.toLowerCase().includes(term) ||
-        asset.model.toLowerCase().includes(term)
+        asset.asset_id.toLowerCase().includes(term) ||
+        asset.model_details.toLowerCase().includes(term)
     );
 }
 
@@ -81,17 +90,17 @@ function hraOpenModalForCreate() {
 }
 
 function hraOpenModalForEdit(asset) {
-    currentEditingAssetId = asset.id;
+    currentEditingAssetId = asset.asset_id;
     hraModalTitle.textContent = 'Edit Asset Details';
     hraModalSubmitBtn.textContent = 'Save Changes';
 
     document.getElementById('hraEmpId').value = asset.empId || '';
     document.getElementById('hraEmpName').value = asset.employee;
     document.getElementById('hraEmpEmail').value = asset.email || '';
-    document.getElementById('hraAssetType').value = asset.type;
-    document.getElementById('hraModelDetails').value = asset.model;
-    document.getElementById('hraAssetId').value = asset.id;
-    document.getElementById('hraAssignDate').value = asset.date;
+    document.getElementById('hraAssetType').value = asset.asset.type;
+    document.getElementById('hraModelDetails').value = asset.model_details;
+    document.getElementById('hraAssetId').value = asset.asset.id;
+    document.getElementById('hraAssignDate').value = asset.assigned_date;
 
     hraModal.style.display = 'flex';
 }
@@ -116,9 +125,7 @@ function showSuccessPopup() {
 // --- 4. Event Listeners ---
 
 // Initial Load
-document.addEventListener('DOMContentLoaded', () => {
-    hraRenderTable(hraAssets);
-});
+document.addEventListener('DOMContentLoaded',()=>{ loadAssets(),loadReturnAssets()});
 
 // Open Modal
 hraAddBtn.addEventListener('click', () => {
@@ -147,7 +154,7 @@ hraTableBody.addEventListener('click', (e) => {
 
     // Edit
     if (button.classList.contains('hra-edit-btn')) {
-        const asset = hraAssets.find(a => a.id === assetId);
+        const asset = hraAssets.find(a => a.asset_id === assetId);
         if (!asset) return;
         hraOpenModalForEdit(asset);
         return;
@@ -155,7 +162,7 @@ hraTableBody.addEventListener('click', (e) => {
 
     // Delete
     if (button.classList.contains('hra-delete-btn')) {
-        hraAssets = hraAssets.filter(a => a.id !== assetId);
+        hraAssets = hraAssets.filter(a => a.asset_id !== assetId);
         hraRenderTable(hraGetFilteredAssets());
         showSuccessPopup();
         return;
@@ -164,37 +171,63 @@ hraTableBody.addEventListener('click', (e) => {
 
 });
 
-// Form Submission
-hraAssetForm.addEventListener('submit', (e) => {
+hraAssetForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const updatedAsset = {
-        id: document.getElementById('hraAssetId').value,
-        empId: document.getElementById('hraEmpId').value,
+    const assetData = {
+        asset_id: document.getElementById('hraAssetId').value,
+        emp_id: document.getElementById('hraEmpId').value,
         employee: document.getElementById('hraEmpName').value,
         email: document.getElementById('hraEmpEmail').value,
-        type: document.getElementById('hraAssetType').value,
-        model: document.getElementById('hraModelDetails').value,
-        date: document.getElementById('hraAssignDate').value,
-        status: 'assigned'
+        asset_type: document.getElementById('hraAssetType').value,
+        model_details: document.getElementById('hraModelDetails').value,
+        assigned_date: document.getElementById('hraAssignDate').value,
+        status: "assigned"
     };
 
-    if (currentEditingAssetId) {
-        const idx = hraAssets.findIndex(a => a.id === currentEditingAssetId);
-        if (idx !== -1) {
-            hraAssets[idx] = updatedAsset;
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/api/assets/save/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(assetData)
+        });
+
+        const result = await response.json();
+        console.log("Saved:", result);
+
+        if (response.ok) {
+
+            loadAssets(); // reload table from backend
+
+            hraCloseModal();
+
+            showSuccessPopup();
         }
-    } else {
-        hraAssets.unshift(updatedAsset);
+
+    } catch (error) {
+        console.error("Error saving asset:", error);
     }
-
-    hraRenderTable(hraGetFilteredAssets());
-
-    hraCloseModal();
-
-    showSuccessPopup();
 });
 
+async function loadAssets() {
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/api/assets/");
+        const data = await response.json();
+
+        hraAssets = data;
+
+        hraRenderTable(hraAssets);
+
+    } catch (error) {
+
+        console.error("Error loading assets:", error);
+    }
+}
 // Search Filter
 hraSearchInput.addEventListener('input', () => {
     hraRenderTable(hraGetFilteredAssets());
@@ -230,13 +263,10 @@ function hraRenderReturnTable(data) {
     data.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${item.name}</td>
-            <td><i class="fa-solid ${hraGetIcon(item.assetType)}"></i> ${item.assetType}</td>
-            <td><span class="hra-status-badge hra-status-${item.condition.toLowerCase()}">${item.condition || 'N/A'}</span></td>
-            <td>${item.reason || 'No reason provided'}</td>
-            <td>
-                <button class="hra-action-icon hra-return-delete-btn" data-id="${item.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
-            </td>
+            <td>${item.employee_name}</td>
+<td><i class="fa-solid ${hraGetIcon(item.asset_type)}"></i> ${item.asset_type}</td>
+<td><span class="hra-status-badge hra-status-${item.condition.toLowerCase()}">${item.condition}</span></td>
+<td>${item.description}</td>
         `;
         hraReturnTableBody.appendChild(tr);
     });
@@ -367,7 +397,7 @@ let notifications = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // Select Elements
     const bellBtn = document.getElementById('ntBellBtn');
     const dropdown = document.getElementById('ntDropdown');
@@ -401,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function ntRenderList() {
     const listContainer = document.getElementById('ntList');
     const badge = document.getElementById('ntBadge');
-    
+
     // Clear current list
     listContainer.innerHTML = '';
 
@@ -427,7 +457,7 @@ function ntRenderList() {
         const itemDiv = document.createElement('div');
         // Add class 'nt-unread' if not read
         itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
-        
+
         itemDiv.innerHTML = `
             <div class="nt-avatar">${item.icon}</div>
             <div class="nt-content">
@@ -444,4 +474,22 @@ function ntRenderList() {
 
         listContainer.appendChild(itemDiv);
     });
+}
+
+async function loadReturnAssets(){
+
+    try{
+
+        const response = await fetch("http://127.0.0.1:8000/api/return-assets/");
+        const data = await response.json();
+
+        hraReturnAssets = data;
+
+        hraRenderReturnTable(hraReturnAssets);
+
+    }catch(error){
+
+        console.error("Error loading return assets:", error);
+    }
+
 }
