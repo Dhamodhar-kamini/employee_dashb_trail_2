@@ -2,6 +2,7 @@
 employee_details_table = document.getElementById('employeeTBody')
 function loademployees()
 {
+    
   fetch("http://13.60.240.189:8000/api/employees/")
   .then(res => res.json())
         .then(data => 
