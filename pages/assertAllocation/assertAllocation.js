@@ -136,6 +136,7 @@ function hraOpenModalForCreate() {
     if (hraModalSubmitBtn) hraModalSubmitBtn.textContent = 'Confirm Allocation';
     if (hraAssetForm) {
         hraAssetForm.reset();
+         document.getElementById('hraAssetId').disabled = false; 
         document.getElementById('hraEmpId').value = '';
         document.getElementById('hraEmpEmail').value = '';
     }
@@ -153,6 +154,7 @@ function hraOpenModalForEdit(asset) {
     document.getElementById('hraAssetType').value = asset.asset_type;
     document.getElementById('hraModelDetails').value = asset.model_details;
     document.getElementById('hraAssetId').value = asset.asset_id;
+    document.getElementById('hraAssetId').disabled = true; 
     document.getElementById('hraAssignDate').value = asset.assigned_date;
 
     if (hraModal) hraModal.style.display = 'flex';
@@ -173,24 +175,26 @@ function hraCloseModal() {
 async function loadReturnAssets() {
     try {
         const response = await fetch("http://127.0.0.1:8000/api/return-assets/");
+
         if (response.ok) {
             const data = await response.json();
-            // Ensure status defaults to pending
+
             hraReturnAssets = data.map(item => ({
                 ...item,
-                status: item.status || 'pending'
+                status: item.status || "pending"
             }));
+
+            hraRenderReturnTable(hraReturnAssets);
+
         } else {
-            throw new Error("API Failed");
+            console.error("Failed to fetch return assets");
         }
+
     } catch (error) {
-        console.warn("API Error, loading dummy data:", error);
-        // --- DUMMY DATA FOR DEMO ---
-        hraReturnAssets = [
-            { id: 101, name: 'Alice Johnson', assetType: 'Laptop', condition: 'Good', reason: 'Resignation', status: 'pending' },
-            { id: 102, name: 'Bob Smith', assetType: 'Monitor', condition: 'Damaged', reason: 'Screen Broken', status: 'pending' }
-        ];
+        console.error("Error loading return assets:", error);
+        hraReturnAssets = [];
     }
+
     hraRenderReturnTable(hraReturnAssets);
 }
 
@@ -352,43 +356,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Asset Form Submit (Save/Update)
     if (hraAssetForm) {
-        hraAssetForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const assetData = {
-                asset_id: document.getElementById('hraAssetId').value,
-                emp_id: document.getElementById('hraEmpId').value,
-                employee: document.getElementById('hraEmpName').value,
-                email: document.getElementById('hraEmpEmail').value,
-                asset_type: document.getElementById('hraAssetType').value,
-                model_details: document.getElementById('hraModelDetails').value,
-                assigned_date: document.getElementById('hraAssignDate').value,
-                status: "assigned"
-            };
+    hraAssetForm.addEventListener('submit', async (e) => {
 
-            try {
-                // Backend Save Call
-                const response = await fetch("http://127.0.0.1:8000/api/assets/save/", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(assetData)
-                });
+        e.preventDefault();
 
-                if (response.ok) {
-                    loadAssets(); // Reload data
-                    hraCloseModal();
-                    showSuccessPopup();
-                } else {
-                    console.error("Failed to save asset");
-                }
-            } catch (error) {
-                console.error("Error saving asset:", error);
+        const assetData = {
+            asset_id: document.getElementById('hraAssetId').value,
+            emp_id: document.getElementById('hraEmpId').value,
+            employee: document.getElementById('hraEmpName').value,
+            email: document.getElementById('hraEmpEmail').value,
+            asset_type: document.getElementById('hraAssetType').value,
+            model_details: document.getElementById('hraModelDetails').value,
+            assigned_date: document.getElementById('hraAssignDate').value,
+            status: "assigned"
+        };
+
+        try {
+
+            let url = "http://127.0.0.1:8000/api/assets/save/";
+            let method = "POST";
+
+            // If editing → update instead of create
+            if(currentEditingAssetId){
+                url = `http://127.0.0.1:8000/api/assets/${currentEditingAssetId}/`;
+                method = "PATCH";
             }
-        });
-    }
 
+            const response = await fetch(url,{
+                method: method,
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify(assetData)
+            });
+
+            if(response.ok){
+                loadAssets();
+                hraCloseModal();
+                showSuccessPopup();
+            }
+
+        } catch(error){
+            console.error(error);
+        }
+
+    });
+}
     // Asset Table Actions (Edit/Delete)
     if (hraTableBody) {
-        hraTableBody.addEventListener('click', (e) => {
+        hraTableBody.addEventListener('click', async(e) => {
             const button = e.target.closest('button');
             if (!button) return;
             const assetId = button.getAttribute('data-id');
@@ -399,12 +413,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (button.classList.contains('hra-delete-btn')) {
-                if(confirm("Are you sure you want to delete this asset?")) {
-                    hraAssets = hraAssets.filter(a => a.asset_id !== assetId);
-                    hraRenderTable(hraGetFilteredAssets());
-                    showSuccessPopup();
-                }
-            }
+
+    if(confirm("Are you sure you want to delete this asset?")) {
+
+        const response = await fetch(`http://127.0.0.1:8000/api/assets/${assetId}/`,{
+            method:"DELETE"
+        });
+
+        if(response.ok){
+            loadAssets(); // reload data from backend
+            showSuccessPopup();
+        }else{
+            console.error("Delete failed");
+        }
+    }
+}
         });
     }
 
@@ -460,28 +483,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (assetIndex === -1) return;
 
-            // 1. Mark Received (Green Tick)
-            if (button.classList.contains('hra-return-confirm-btn')) {
-                hraReturnAssets[assetIndex].status = 'received';
-                hraRenderReturnTable(hraGetFilteredReturnAssets());
-                showSuccessPopup();
-            }
+ // 1️⃣ Mark Received (Green Tick)
+if (button.classList.contains('hra-return-confirm-btn')) {
 
-            // 2. Mark Not Received (Red Cross)
-            if (button.classList.contains('hra-return-reject-btn')) {
-                hraReturnAssets[assetIndex].status = 'not_received';
-                hraRenderReturnTable(hraGetFilteredReturnAssets());
-                showSuccessPopup();
-            }
+    const response = await fetch(`http://127.0.0.1:8000/api/return-status/${returnId}/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            status: "received"
+        })
+    });
+
+    if (response.ok) {
+        loadReturnAssets();
+        showSuccessPopup();
+    }
+}
+
+// 2️⃣ Mark Not Received (Red Cross)
+if (button.classList.contains('hra-return-reject-btn')) {
+
+    const response = await fetch(`http://127.0.0.1:8000/api/return-status/${returnId}/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            status: "not_received"
+        })
+    });
+
+    if (response.ok) {
+        loadReturnAssets();
+        showSuccessPopup();
+    }
+}
 
             // 3. Delete Return Record
             if (button.classList.contains('hra-return-delete-btn')) {
-                if(confirm("Delete this return record?")) {
-                    hraReturnAssets.splice(assetIndex, 1);
-                    hraRenderReturnTable(hraGetFilteredReturnAssets());
-                    showSuccessPopup();
-                }
-            }
+
+    if(confirm("Delete this return record?")) {
+
+        const response = await fetch(`http://127.0.0.1:8000/api/return-assets/${returnId}/`,{
+            method:"DELETE"
+        });
+
+        if(response.ok){
+            loadReturnAssets();   // reload from backend
+            showSuccessPopup();
+        }
+    }
+}
         });
     }
 
