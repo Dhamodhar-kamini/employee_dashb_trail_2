@@ -1,4 +1,3 @@
-// --- 1. Dummy Data ---
 let hraAssets = [
     { id: 'AST-001', empId: 'EMP-001', employee: 'Sarah Jenkins', email: 'sarah.jenkins@example.com', type: 'Laptop', model: 'Dell XPS 15', date: '2023-10-15', status: 'assigned' },
     { id: 'AST-002', empId: 'EMP-002', employee: 'Mike Ross', email: 'mike.ross@example.com', type: 'Monitor', model: 'Dell UltraSharp 27', date: '2023-11-01', status: 'assigned' },
@@ -446,39 +445,3 @@ function ntRenderList() {
         listContainer.appendChild(itemDiv);
     });
 }
-    // Update Badge
-    if (unreadCount > 0) {
-        badge.style.display = 'flex';
-        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-    } else {
-        badge.style.display = 'none';
-    }
-
-    // Check if empty
-    if (notifications.length === 0) {
-        listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
-        return;
-    }
-
-    // Build List
-    notifications.forEach(item => {
-        const itemDiv = document.createElement('div');
-        // Add class 'nt-unread' if not read
-        itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
-        
-        itemDiv.innerHTML = `
-            <div class="nt-avatar">${item.icon}</div>
-            <div class="nt-content">
-                <p class="nt-text">${item.text}</p>
-                <span class="nt-time">${item.time}</span>
-            </div>
-        `;
-
-        // Click individual item to mark as read
-        itemDiv.addEventListener('click', () => {
-            item.read = true;
-            ntRenderList();
-        });
-
-        listContainer.appendChild(itemDiv);
-    });
