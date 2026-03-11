@@ -1,5 +1,11 @@
 // --- 1. Dummy Data ---
-let hraAssets = [];
+let hraAssets = [
+    { id: 'AST-001', empId: 'EMP-001', employee: 'Sarah Jenkins', email: 'sarah.jenkins@example.com', type: 'Laptop', model: 'Dell XPS 15', date: '2023-10-15', status: 'assigned' },
+    { id: 'AST-002', empId: 'EMP-002', employee: 'Mike Ross', email: 'mike.ross@example.com', type: 'Monitor', model: 'Dell UltraSharp 27', date: '2023-11-01', status: 'assigned' },
+    { id: 'AST-003', empId: 'EMP-003', employee: 'Rachel Zane', email: 'rachel.zane@example.com', type: 'Phone', model: 'iPhone 13 Work', date: '2023-09-20', status: 'maintenance' },
+    { id: 'AST-004', empId: 'EMP-004', employee: 'Louis Litt', email: 'louis.litt@example.com', type: 'Laptop', model: 'MacBook Pro 16', date: '2023-08-10', status: 'returned' },
+    { id: 'AST-005', empId: 'EMP-005', employee: 'Harvey Specter', email: 'harvey.specter@example.com', type: 'Laptop', model: 'MacBook Air M2', date: '2023-10-05', status: 'assigned' }
+];
 
 // --- 2. Element Selectors ---
 const hraTableBody = document.getElementById('hraAssetTableBody');
@@ -22,38 +28,24 @@ function hraRenderTable(data) {
     hraTableBody.innerHTML = ''; 
 
     if (data.length === 0) {
-        hraTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No assets found.</td></tr>';
+        hraTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No assets found.</td></tr>';
         return;
     }
 
     data.forEach(asset => {
         const tr = document.createElement('tr');
-
         tr.innerHTML = `
-<td style="font-weight:bold;">${asset.emp_id}</td>
-<td>${asset.employee}</td>
-<td>${asset.email}</td>
-<td>${asset.asset_type}</td>
-<td>${asset.model_details}</td>
-<td>${asset.assigned_date}</td>
-
-<td>
-<span class="hra-status-badge hra-status-${asset.status}">
-${asset.status}
-</span>
-</td>
-
-<td>
-<button class="hra-action-icon hra-edit-btn" data-id="${asset.id}">
-<i class="fa-solid fa-pen"></i>
-</button>
-
-<button class="hra-action-icon hra-delete-btn" data-id="${asset.id}">
-<i class="fa-solid fa-trash"></i>
-</button>
-</td>
-`;
-
+            <td style="font-weight:bold;">${asset.id}</td>
+            <td>${asset.employee}</td>
+            <td><i class="fa-solid ${hraGetIcon(asset.type)}"></i> ${asset.type}</td>
+            <td>${asset.model}</td>
+            <td>${asset.date}</td>
+            <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
+            <td>
+                <button class="hra-action-icon hra-edit-btn" data-id="${asset.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                <button class="hra-action-icon hra-delete-btn" data-id="${asset.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        `;
         hraTableBody.appendChild(tr);
     });
 }
@@ -73,17 +65,17 @@ function hraGetFilteredAssets() {
     if (!term) return hraAssets;
 
     return hraAssets.filter(asset =>
-    asset.employee.toLowerCase().includes(term) ||
-    asset.emp_id.toLowerCase().includes(term)||
-    asset.model_details.toLowerCase().includes(term)
-);
+        asset.employee.toLowerCase().includes(term) ||
+        asset.id.toLowerCase().includes(term) ||
+        asset.model.toLowerCase().includes(term)
+    );
 }
 
 function hraOpenModalForCreate() {
     currentEditingAssetId = null;
     hraModalTitle.textContent = 'Allocate New Asset';
     hraModalSubmitBtn.textContent = 'Confirm Allocation';
-    
+    hraAssetForm.reset();
     document.getElementById('hraEmpId').value = '';
     document.getElementById('hraEmpEmail').value = '';
     hraModal.style.display = 'flex';
@@ -124,6 +116,10 @@ function showSuccessPopup() {
 
 // --- 4. Event Listeners ---
 
+// Initial Load
+document.addEventListener('DOMContentLoaded', () => {
+    hraRenderTable(hraAssets);
+});
 
 // Open Modal
 hraAddBtn.addEventListener('click', () => {
@@ -170,68 +166,35 @@ hraTableBody.addEventListener('click', (e) => {
 });
 
 // Form Submission
-hraAssetForm.addEventListener('submit', async (e) => {
+hraAssetForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-
     const updatedAsset = {
-        emp_id: document.getElementById('hraEmpId').value,
+        id: document.getElementById('hraAssetId').value,
+        empId: document.getElementById('hraEmpId').value,
         employee: document.getElementById('hraEmpName').value,
         email: document.getElementById('hraEmpEmail').value,
-        asset_type: document.getElementById('hraAssetType').value,
-        model_details: document.getElementById('hraModelDetails').value,
-        assigned_date: document.getElementById('hraAssignDate').value,
+        type: document.getElementById('hraAssetType').value,
+        model: document.getElementById('hraModelDetails').value,
+        date: document.getElementById('hraAssignDate').value,
         status: 'assigned'
+    };
 
-    }
-
-    // const assetData = {
-    //     asset_id: document.getElementById('hraAssetId').value,
-    //     employee: document.getElementById('hraEmpName').value,
-
-    //     asset_type: document.getElementById('hraAssetType').value,
-    //     model_details: document.getElementById('hraModelDetails').value,
-    //     assigned_date: document.getElementById('hraAssignDate').value,
-    //     status: "assigned"
-
-    // };
-
-    try {
-
-        const response = await fetch("http://127.0.0.1:8000/api/assets/save/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedAsset)
-        });
-        const result = await response.json();
-        console.log("Saved:", result);
-
-        if (response.ok) {
-
-            console.log("Saved:", result);
-
-            loadAssets(); // reload from backend
-
-            hraCloseModal();
-            showSuccessPopup();
+    if (currentEditingAssetId) {
+        const idx = hraAssets.findIndex(a => a.id === currentEditingAssetId);
+        if (idx !== -1) {
+            hraAssets[idx] = updatedAsset;
         }
-
-    } catch (error) {
-        console.error("Error saving asset:", error);
+    } else {
+        hraAssets.unshift(updatedAsset);
     }
+
+    hraRenderTable(hraGetFilteredAssets());
+
+    hraCloseModal();
+
+    showSuccessPopup();
 });
-async function loadAssets(){
-
-    const response = await fetch("http://127.0.0.1:8000/api/assets/");
-    const data = await response.json();
-
-    hraAssets = data;
-    hraRenderTable(hraAssets);
-}
-
-document.addEventListener("DOMContentLoaded", loadAssets);
 
 // Search Filter
 hraSearchInput.addEventListener('input', () => {
@@ -483,3 +446,39 @@ function ntRenderList() {
         listContainer.appendChild(itemDiv);
     });
 }
+    // Update Badge
+    if (unreadCount > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+    } else {
+        badge.style.display = 'none';
+    }
+
+    // Check if empty
+    if (notifications.length === 0) {
+        listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
+        return;
+    }
+
+    // Build List
+    notifications.forEach(item => {
+        const itemDiv = document.createElement('div');
+        // Add class 'nt-unread' if not read
+        itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
+        
+        itemDiv.innerHTML = `
+            <div class="nt-avatar">${item.icon}</div>
+            <div class="nt-content">
+                <p class="nt-text">${item.text}</p>
+                <span class="nt-time">${item.time}</span>
+            </div>
+        `;
+
+        // Click individual item to mark as read
+        itemDiv.addEventListener('click', () => {
+            item.read = true;
+            ntRenderList();
+        });
+
+        listContainer.appendChild(itemDiv);
+    });
