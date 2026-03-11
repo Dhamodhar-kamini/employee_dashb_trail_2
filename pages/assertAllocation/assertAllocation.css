@@ -21,6 +21,13 @@ body {
   margin: 0;
 }
 
+/* Section Spacing */
+.hra-section-spacing {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
+}
+
 /* --- MAIN LAYOUT GRIDS --- */
 
 /* 1. Top Stats: Force 4 equal columns */
@@ -451,6 +458,9 @@ body {
 .hra-status-assigned { background-color: #d1fae5; color: #065f46; }
 .hra-status-returned { background-color: #fee2e2; color: #991b1b; }
 .hra-status-maintenance { background-color: #fef3c7; color: #92400e; }
+.hra-status-good { background-color: #d1fae5; color: #065f46; }
+.hra-status-fair { background-color: #fef3c7; color: #92400e; }
+.hra-status-damaged { background-color: #fee2e2; color: #991b1b; }
 
 .hra-action-icon {
     background: none;

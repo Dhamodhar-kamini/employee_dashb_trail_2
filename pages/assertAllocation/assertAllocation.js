@@ -42,6 +42,7 @@ function hraRenderTable(data) {
             <td>${asset.date}</td>
             <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
             <td>
+                <button class="hra-action-icon hra-return-btn" data-id="${asset.id}" title="Return Asset" style="color: #ff9500;"><i class="fa-solid fa-arrow-turn-down"></i></button>
                 <button class="hra-action-icon hra-edit-btn" data-id="${asset.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
                 <button class="hra-action-icon hra-delete-btn" data-id="${asset.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
             </td>
@@ -62,9 +63,12 @@ function hraGetIcon(type) {
 
 function hraGetFilteredAssets() {
     const term = hraSearchInput.value.toLowerCase().trim();
-    if (!term) return hraAssets;
+    // Only show non-returned assets in allocation table
+    const activeAssets = hraAssets.filter(asset => asset.status !== 'returned');
+    
+    if (!term) return activeAssets;
 
-    return hraAssets.filter(asset =>
+    return activeAssets.filter(asset =>
         asset.employee.toLowerCase().includes(term) ||
         asset.id.toLowerCase().includes(term) ||
         asset.model.toLowerCase().includes(term)
@@ -87,21 +91,6 @@ function hraOpenModalForEdit(asset) {
     hraModalSubmitBtn.textContent = 'Save Changes';
 
     document.getElementById('hraEmpId').value = asset.empId || '';
-    document.getElementById('hraEmpName').value = asset.employee;
-    document.getElementById('hraEmpEmail').value = asset.email || '';
-    document.getElementById('hraAssetType').value = asset.type;
-    document.getElementById('hraModelDetails').value = asset.model;
-    document.getElementById('hraAssetId').value = asset.id;
-    document.getElementById('hraAssignDate').value = asset.date;
-
-    hraModal.style.display = 'flex';
-}
-
-function hraOpenModalForEdit(asset) {
-    currentEditingAssetId = asset.id;
-    hraModalTitle.textContent = 'Edit Asset Details';
-    hraModalSubmitBtn.textContent = 'Save Changes';
-
     document.getElementById('hraEmpName').value = asset.employee;
     document.getElementById('hraEmpEmail').value = asset.email || '';
     document.getElementById('hraAssetType').value = asset.type;
@@ -153,7 +142,7 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Table Action Buttons (Edit/Delete)
+// Table Action Buttons (Edit/Delete/Return)
 hraTableBody.addEventListener('click', (e) => {
     const button = e.target.closest('button');
     if (!button) return;
@@ -174,6 +163,14 @@ hraTableBody.addEventListener('click', (e) => {
         hraAssets = hraAssets.filter(a => a.id !== assetId);
         hraRenderTable(hraGetFilteredAssets());
         showSuccessPopup();
+        return;
+    }
+
+    // Return Asset
+    if (button.classList.contains('hra-return-btn')) {
+        const asset = hraAssets.find(a => a.id === assetId);
+        if (!asset) return;
+        hraOpenReturnModal(asset);
         return;
     }
 });
@@ -217,6 +214,169 @@ hraSearchInput.addEventListener('input', () => {
 // Mobile Sidebar Toggle
 hraMenuToggle.addEventListener('click', () => {
     hraSidebar.classList.toggle('hra-active');
+});
+
+// --- RETURN ASSETS FUNCTIONALITY ---
+
+// Return Assets Data Storage
+let hraReturnAssets = [];
+let currentReturningAsset = null; // Track which asset is being returned
+
+// Return Assets Element Selectors
+const hraReturnTableBody = document.getElementById('hraReturnTableBody');
+const hraReturnModal = document.getElementById('hraReturnModal');
+const hraReturnForm = document.getElementById('hraReturnForm');
+const hraReturnSearchInput = document.getElementById('hraReturnSearchInput');
+const hraReturnCloseModal = document.getElementById('hraReturnCloseModal');
+
+// Function to open return modal
+function hraOpenReturnModal(asset) {
+    currentReturningAsset = asset;
+    hraReturnModal.style.display = 'flex';
+    // Pre-fill employee name
+    document.getElementById('hraReturnEmpName').value = asset.employee;
+    document.getElementById('hraReturnAssetType').value = asset.type;
+    document.getElementById('hraReturnCondition').value = '';
+    document.getElementById('hraReturnReason').value = '';
+}
+
+// Function to handle asset return (mark as returned in allocation table + add to return table)
+function hraReturnAsset(assetId) {
+    const asset = hraAssets.find(a => a.id === assetId);
+    if (!asset) return;
+
+    const returnData = {
+        id: Date.now(), // Unique ID for return record
+        name: asset.employee,
+        assetType: asset.type,
+        assetId: asset.id,
+        condition: '', // Will be filled by form
+        reason: '', // Will be filled by form
+        returnDate: new Date().toISOString().split('T')[0]
+    };
+
+    hraReturnAssets.push(returnData);
+    asset.status = 'returned';
+    
+    hraRenderTable(hraGetFilteredAssets());
+    hraRenderReturnTable(hraReturnAssets);
+    showSuccessPopup();
+}
+
+// Function to render Return Assets Table
+function hraRenderReturnTable(data) {
+    hraReturnTableBody.innerHTML = '';
+
+    if (data.length === 0) {
+        hraReturnTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">No returned assets yet.</td></tr>';
+        return;
+    }
+
+    data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.name}</td>
+            <td><i class="fa-solid ${hraGetIcon(item.assetType)}"></i> ${item.assetType}</td>
+            <td><span class="hra-status-badge hra-status-${item.condition.toLowerCase()}">${item.condition || 'N/A'}</span></td>
+            <td>${item.reason || 'No reason provided'}</td>
+            <td>
+                <button class="hra-action-icon hra-return-delete-btn" data-id="${item.id}" title="Delete" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        `;
+        hraReturnTableBody.appendChild(tr);
+    });
+}
+
+// Function to filter returned assets by search
+function hraGetFilteredReturnAssets() {
+    const term = hraReturnSearchInput.value.toLowerCase().trim();
+    if (!term) return hraReturnAssets;
+
+    return hraReturnAssets.filter(item =>
+        item.name.toLowerCase().includes(term) ||
+        item.assetId.toLowerCase().includes(term)
+    );
+}
+
+// Close Return Modal
+function hraCloseReturnModal() {
+    hraReturnModal.style.display = 'none';
+    hraReturnForm.reset();
+}
+
+// Return Return Modal Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Close Return Modal
+    hraReturnCloseModal.addEventListener('click', () => {
+        hraCloseReturnModal();
+    });
+
+    // Close Return Modal Outside Click
+    window.addEventListener('click', (e) => {
+        if (e.target == hraReturnModal) {
+            hraCloseReturnModal();
+        }
+    });
+
+    // Return Form Submission
+    hraReturnForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const condition = document.getElementById('hraReturnCondition').value;
+        const reason = document.getElementById('hraReturnReason').value;
+
+        if (!condition || !reason) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        if (!currentReturningAsset) return;
+
+        // Update asset status
+        currentReturningAsset.status = 'returned';
+
+        // Add to return assets
+        const returnData = {
+            id: Date.now(),
+            name: currentReturningAsset.employee,
+            assetType: currentReturningAsset.type,
+            assetId: currentReturningAsset.id,
+            condition: condition,
+            reason: reason,
+            returnDate: new Date().toISOString().split('T')[0]
+        };
+
+        hraReturnAssets.push(returnData);
+        hraRenderReturnTable(hraGetFilteredReturnAssets());
+        hraRenderTable(hraGetFilteredAssets());
+        hraCloseReturnModal();
+        currentReturningAsset = null;
+        showSuccessPopup();
+    });
+
+    // Return Table Delete Button
+    hraReturnTableBody.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+
+        const returnId = button.getAttribute('data-id');
+        if (!returnId) return;
+
+        if (button.classList.contains('hra-return-delete-btn')) {
+            hraReturnAssets = hraReturnAssets.filter(a => a.id != returnId);
+            hraRenderReturnTable(hraGetFilteredReturnAssets());
+            showSuccessPopup();
+            return;
+        }
+    });
+
+    // Return Search Filter
+    hraReturnSearchInput.addEventListener('input', () => {
+        hraRenderReturnTable(hraGetFilteredReturnAssets());
+    });
+
+    // Initial render of empty return table
+    hraRenderReturnTable(hraReturnAssets);
 });
 
 //notification section
