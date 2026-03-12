@@ -89,84 +89,74 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
+   // ==========================================
+    // 2. ASSETS APPROVAL SECTION (UPDATED)
     // ==========================================
-    // 2. ASSETS SECTION (Fixed URL and Logic)
-    // ==========================================
+    const assetTableBody = document.getElementById("assetsTableBody");
 
-    // ==========================================
-// FIXED ASSETS SECTION
-// ==========================================
+    async function loadAssetRequests() {
+        assetTableBody.innerHTML = "";
 
-async function loadAssetRequests() {
-    const tbody = document.getElementById("assetsTableBody");
-    
-    // IP Address Correction (Keep your server IP)
-    const API_URL = "http://13.60.26.193:8000/api/asset-requests/"; 
-
-    try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        const data = await response.json();
-        tbody.innerHTML = ""; 
-
-        if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No asset requests found</td></tr>`;
-            return;
-        }
-
-        data.forEach(req => {
-            let actionHtml = "";
+        try {
+            // Fetching from the NEW Admin Endpoint
+            const response = await fetch(`http://13.60.26.193/api/admin/asset-requests/`);
             
-            // --- FIX 1: NORMALIZE STATUS ---
-            // Convert whatever comes from DB ("Pending", "pending", "PENDING") to lowercase
-            const currentStatus = (req.status || "pending").toLowerCase(); 
+            if (!response.ok) throw new Error("Failed to fetch asset requests");
 
-            // --- FIX 2: HANDLE EMPLOYEE NAME ---
-            // Check employee_name first, then fallback to name, then fallback to "Unknown"
-            const employeeName = req.employee_name || req.name || "Unknown Employee";
+            const data = await response.json();
 
-            if (currentStatus === "pending") {
-                actionHtml = `
-                <div class="action-cell">
-                    <button class="btn-action-reject" onclick="updateAssetStatus(${req.id}, 'rejected')">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                    <button class="btn-action-approve" onclick="updateAssetStatus(${req.id}, 'approved')">
-                        <i class="fa-solid fa-check"></i> Approve
-                    </button>
-                </div>`;
-            } else if (currentStatus === "approved") {
-                actionHtml = `<span class="status-badge status-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>`;
-            } else {
-                actionHtml = `<span class="status-badge status-rejected"><i class="fa-solid fa-circle-xmark"></i> Rejected</span>`;
+            if (data.length === 0) {
+                assetTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No pending asset requests</td></tr>`;
+                return;
             }
 
-            const row = document.createElement("tr");
-            const dateStr = req.date || req.created_at || new Date().toISOString().split('T')[0];
+            data.forEach(req => {
+                let actionHtml = "";
+                const status = (req.status || "Pending").toLowerCase();
+                if (status !== 'pending') return;
 
-            row.innerHTML = `
-                <td><div class="emp-cell"><span>${employeeName}</span></div></td>
-                <td>${req.asset_category || req.asset}</td>
-                <td>${req.location}</td>
-                <td>${dateStr}</td>
-                <td><span class="reason-text">${req.description || req.reason}</span></td>
-                <td>${actionHtml}</td>
-            `;
-            tbody.appendChild(row);
-        });
+                // Logic: Show buttons only if Pending
+                if (status === "pending") {
+                    actionHtml = `
+                    <div class="action-cell">
+                        <button class="btn-action-reject" onclick="updateAssetStatus(${req.id}, 'Rejected')">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <button class="btn-action-approve" onclick="updateAssetStatus(${req.id}, 'Approved')">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                    </div>`;
+                } else if (status === "approved") {
+                    actionHtml = `<span style="color:green; font-weight:bold;"><i class="fa-solid fa-check"></i> Approved</span>`;
+                } else {
+                    actionHtml = `<span style="color:red; font-weight:bold;"><i class="fa-solid fa-xmark"></i> Rejected</span>`;
+                }
 
-    } catch (error) {
-        console.error("Error loading asset requests:", error);
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: red;">Failed to load assets.</td></tr>`;
+                const row = document.createElement("tr");
+                const dateStr = req.created_at ? req.created_at.split('T')[0] : new Date().toISOString().split('T')[0];
+
+                row.innerHTML = `
+                    <td>${req.employee_name}</td>
+                    <td>${req.asset_category}</td>
+                    <td>${req.location}</td>
+                    <td>${dateStr}</td>
+                    <td>${req.model_detail}</td>
+                    <td>${actionHtml}</td>
+                `;
+                assetTableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error("Error loading assets:", error);
+            assetTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error loading data</td></tr>`;
+        }
     }
-}
-    // Corrected Update Function
-    window.updateAssetStatus = function (id, status) {
-        // FIXED: Added the colon (:) before 8000
-        const UPDATE_URL = `http://13.60.26.193:8000/api/asset-request-status/${id}/`;
 
-        fetch(UPDATE_URL, {
+    // Function to Update Status (Approve/Reject)
+    window.updateAssetStatus = function(id, status) {
+        if(!confirm(`Mark this request as ${status}?`)) return;
+
+        fetch(`http://13.60.26.193/api/admin/asset-request-status/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: status })
@@ -176,34 +166,18 @@ async function loadAssetRequests() {
             return res.json();
         })
         .then(data => {
-            showToast(status === 'approved' ? "Asset Request Approved" : "Asset Request Rejected");
-            loadAssetRequests(); // Refresh table
+            alert(data.message);
+            loadAssetRequests(); // Refresh Table
         })
         .catch(err => {
-            console.error("Error updating asset:", err);
+            console.error(err);
+            alert("Error updating status");
         });
     };
 
-    // Helper Toast Function
-    function showToast(message) {
-        const toast = document.getElementById("toast");
-        const toastMsg = document.getElementById("toastMsg");
-        if(toastMsg) toastMsg.textContent = message;
-        if(toast) {
-            toast.classList.add("show");
-            setTimeout(() => toast.classList.remove("show"), 3000);
-        }
-    }
-
-    // ==========================================
-    // UI INTERACTION (Tabs, etc)
-    // ==========================================
-
-    // Initialize Pages
-    loadAssetRequests(); 
-    // Removed renderTable() calls because they are replaced by fetch
+    // Initial Load
+    loadAssetRequests();
 });
-
 // Tab Switch Logic
 function switchTab(tabName, btnElement) {
     const titleMap = {
