@@ -1596,6 +1596,13 @@ body {
 .blue {
   background: #007bff;
 }
+#attendanceTrigger {
+  background-color: orange;
+  color: white;
+  font-weight: 500;
+  padding: 5px 8px;
+  border-radius: 8px;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
