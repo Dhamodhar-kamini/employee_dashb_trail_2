@@ -89,101 +89,109 @@
       <main class="main-content">
         <!-- Top Bar -->
         <header class="top-bar">
-
-          
           <div class="search-bar">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search in HRMS" />
             <span>CTRL + /</span>
           </div>
 
-
-
           <div class="header-icons">
             <!-- Existing Icons -->
 
             <!-- Notification Container -->
-<div class="nt-container">
-    
-    <!-- Bell Icon & Badge -->
-    <div class="nt-bell-wrapper" id="ntBellBtn">
-        <i class="fas fa-bell nt-icon"></i>
-        <!-- Counter Badge (JS will update this) -->
-        <span class="nt-badge" id="ntBadge">0</span>
-    </div>
+            <div class="nt-container">
+              <!-- Bell Icon & Badge -->
+              <div class="nt-bell-wrapper" id="ntBellBtn">
+                <i class="fas fa-bell nt-icon"></i>
+                <!-- Counter Badge (JS will update this) -->
+                <span class="nt-badge" id="ntBadge">0</span>
+              </div>
 
-    <!-- Dropdown Popup -->
-    <div class="nt-dropdown" id="ntDropdown">
-        
-        <!-- Header -->
-        <div class="nt-header">
-            <span class="nt-title">Notifications</span>
-            <button class="nt-mark-read" id="ntMarkAllRead">Mark all read</button>
-        </div>
+              <!-- Dropdown Popup -->
+              <div class="nt-dropdown" id="ntDropdown">
+                <!-- Header -->
+                <div class="nt-header">
+                  <span class="nt-title">Notifications</span>
+                  <button class="nt-mark-read" id="ntMarkAllRead">
+                    Mark all read
+                  </button>
+                </div>
 
-        <!-- List of Items -->
-        <div class="nt-body" id="ntList">
-            <!-- JS will inject items here -->
-        </div>
+                <!-- List of Items -->
+                <div class="nt-body" id="ntList">
+                  <!-- JS will inject items here -->
+                </div>
 
-        <!-- Footer -->
-        <div class="nt-footer">
-            <a href="#">View all activity</a>
-        </div>
-    </div>
-
-</div>
+                <!-- Footer -->
+                <div class="nt-footer">
+                  <a href="#">View all activity</a>
+                </div>
+              </div>
+            </div>
 
             <!-- MODIFIED PROFILE SECTION -->
             <!-- Profile Wrapper (Existing) -->
-<div class="hdr-profile-wrapper">
-  <!-- Profile Image (Clickable) -->
-  <div class="user-profile" onclick="hdr_toggleProfilePopup()">
-    <!-- Update src to your actual image path -->
-    <img src="../assets/profiledp.jpeg" alt="User Avatar" />
-  </div>
+            <div class="hdr-profile-wrapper">
+              <!-- Profile Image (Clickable) -->
+              <div class="user-profile" onclick="hdr_toggleProfilePopup()">
+                <!-- Update src to your actual image path -->
+                <img src="../assets/profiledp.jpeg" alt="User Avatar" />
+              </div>
 
-  <!-- The Popup Menu -->
-  <div class="hdr-popup-menu" id="hdrProfileDropdown">
-    <!-- Optional Header info -->
-    <div class="hdr-popup-header">
-      <p><strong>Employee Profile</strong></p>
-      <span class="hdr-email-text">user@example.com</span>
-    </div>
+              <!-- The Popup Menu -->
+              <div class="hdr-popup-menu" id="hdrProfileDropdown">
+                <!-- Optional Header info -->
+                <div class="hdr-popup-header">
+                  <p><strong>Employee Profile</strong></p>
+                  <span class="hdr-email-text">user@example.com</span>
+                </div>
 
-    <!-- Logout Button (Triggers Popup) -->
-    <button class="hdr-logout-btn" onclick="hdr_showLogoutModal()">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-  </div>
-</div>
+                <!-- Logout Button (Triggers Popup) -->
+                <button class="hdr-logout-btn" onclick="hdr_showLogoutModal()">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
+            </div>
 
-<!-- ========================================= -->
-<!-- NEW: Logout Confirmation Modal Structure -->
-<!-- ========================================= -->
-<div id="hdrLogoutModal" class="hdr-modal-overlay">
-  <div class="hdr-modal-content">
-    <div class="hdr-modal-icon">
-      <i class="fas fa-sign-out-alt"></i>
-    </div>
-    <h3>Confirm Logout</h3>
-    <p>Are you sure you want to log out of your account?</p>
-    <div class="hdr-modal-actions">
-      <button class="hdr-btn-cancel" onclick="hdr_hideLogoutModal()">Cancel</button>
-      <button class="hdr-btn-confirm" onclick="hdr_confirmLogout()">Logout</button>
-    </div>
-  </div>
-</div>
+            <!-- ========================================= -->
+            <!-- NEW: Logout Confirmation Modal Structure -->
+            <!-- ========================================= -->
+            <div id="hdrLogoutModal" class="hdr-modal-overlay">
+              <div class="hdr-modal-content">
+                <div class="hdr-modal-icon">
+                  <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h3>Confirm Logout</h3>
+                <p>Are you sure you want to log out of your account?</p>
+                <div class="hdr-modal-actions">
+                  <button
+                    class="hdr-btn-cancel"
+                    onclick="hdr_hideLogoutModal()"
+                  >
+                    Cancel
+                  </button>
+                  <button class="hdr-btn-confirm" onclick="hdr_confirmLogout()">
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </header>
 
         <!-- Dashboard Header -->
-        <div class="dashboard-header" style="margin-top: 50px; margin-left: 25px;">
-          <h1 style="font-size: 30px; font-weight: 700;">Admin Dashboard</h1>
+        <div
+          class="dashboard-header"
+          style="margin-top: 50px; margin-left: 25px"
+        >
+          <h1 style="font-size: 30px; font-weight: 700">Admin Dashboard</h1>
           <div class="breadcrumbs">
             <i class="fas fa-home"></i>
             <i class="fa-solid fa-chevron-right"></i>
-            <span><a href="../admin_page/admin.html">Dashboard <i class="fa-solid fa-chevron-right"></i></a></span>
+            <span
+              ><a href="../admin_page/admin.html"
+                >Dashboard <i class="fa-solid fa-chevron-right"></i></a
+            ></span>
             <span><a href="../admin_page/admin.html">Admin Dashboard</a></span>
           </div>
           <div class="action-buttons">
@@ -334,7 +342,9 @@
                     <label>Manager</label>
                     <select id="managerInput">
                       <option value="">Please select manager</option>
-                      <option value="Narala Prasad Reddy">Narala Prasad Reddy</option>
+                      <option value="Narala Prasad Reddy">
+                        Narala Prasad Reddy
+                      </option>
                     </select>
                   </div>
 
@@ -449,28 +459,36 @@
           <!-- Employee Status (Span 1) -->
           <div class="card medium-card" id="employee-status">
             <div class="card-header">
-              <h3>Employee Status</h3>
+              <h3 style="font-size: 28px; font-weight: 700">Employee Status</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 20px">
               <div class="total-employee">
-                <p>Total Employee</p>
+                <p style="font-size: 20px; font-weight: 700">Total Employee</p>
                 <!-- Added ID here -->
-                <span class="count" id="totalEmpCount">0</span>
+                <span class="count" id="totalEmpCount" style="font-size: 40px;"
+                  >0</span
+                >
               </div>
-              <div class="status-bars">
+              <div class="status-bars" style="margin-top: 20px;">
                 <!-- Fulltime -->
-                
 
                 <!-- WFO -->
-                <div class="bar-row">
+                <div class="bar-row" style="text-align: left;">
                   <span class="dot color-red"></span>
                   <div
                     class="bar-fill"
                     id="bar-wfo"
                     style="width: 0%; background-color: var(--color-red)"
                   ></div>
-                  <span class="label" id="label-wfo">WFO (0%)</span>
-                  <span class="value" id="val-wfo">0</span>
+                  <span
+                    class="label"
+                    id="label-wfo"
+                    style="font-size: 20px; font-weight: 400"
+                    >WFO (0%)</span
+                  >
+                  <span class="value" id="val-wfo" style="font-size: 20px"
+                    >0</span
+                  >
                 </div>
 
                 <!-- WFH -->
@@ -481,20 +499,34 @@
                     id="bar-wfh"
                     style="width: 0%; background-color: var(--color-blue)"
                   ></div>
-                  <span class="label" id="label-wfh">WFH (0%)</span>
-                  <span class="value" id="val-wfh">0</span>
+                  <span
+                    class="label"
+                    id="label-wfh"
+                    style="font-size: 20px; font-weight: 400"
+                    >WFH (0%)</span
+                  >
+                  <span class="value" id="val-wfh" style="font-size: 20px"
+                    >0</span
+                  >
                 </div>
 
                 <!-- Internship -->
-                <div class="bar-row" style="margin-bottom: 20px;">
+                <div class="bar-row" style="margin-bottom: 40px;">
                   <!-- <span class="dot color-pink"></span> -->
                   <div
                     class="bar-fill"
                     id="bar-intern"
                     style="width: 0%; background-color: var(--color-pink)"
                   ></div>
-                  <span class="label" id="label-intern">Internship (0%)</span>
-                  <span class="value" id="val-intern">0</span>
+                  <span
+                    class="label"
+                    id="label-intern"
+                    style="font-size: 20px; font-weight: 400"
+                    >Internship (0%)</span
+                  >
+                  <span class="value" id="val-intern" style="font-size: 20px"
+                    >0</span
+                  >
                 </div>
               </div>
 
@@ -851,7 +883,14 @@
                 <p>Last Updated: Today</p>
               </div>
 
-              <button class="small-btn"><a href="../assets/hr policy.pdf" target="_blank" style="text-decoration: none; color: rgb(34, 32, 32);">View All</a></button>
+              <button class="small-btn">
+                <a
+                  href="../assets/hr policy.pdf"
+                  target="_blank"
+                  style="text-decoration: none; color: rgb(34, 32, 32)"
+                  >View All</a
+                >
+              </button>
             </div>
 
             <!-- HOLIDAY CARD -->

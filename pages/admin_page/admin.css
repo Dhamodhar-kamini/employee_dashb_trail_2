@@ -1457,7 +1457,11 @@ body {
 
 /* --- General Card Styling & Sub-Elements --- */
 #employee-status {
-  height: 70%; /* Taller card for employee status */
+  height: 90%; 
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .card {
   background: var(--card-bg);
@@ -1498,6 +1502,8 @@ body {
   font-weight: 500;
   border-radius: 10px;
 }
+
+
 
 .dot {
   width: 8px;
