@@ -404,7 +404,7 @@
 }
 
 /* Color accents for stat cards */
-.rd-stat-orange {
+/* .rd-stat-orange {
   border-left-color: #f97316;
 }
 .rd-stat-blue {
@@ -415,7 +415,7 @@
 }
 .rd-stat-dark {
   border-left-color: #d5671d;
-}
+} */
 
 /* position cards section */
 :root {
@@ -468,7 +468,7 @@
   opacity: 0.1;
   transform: rotate(15deg);
 }
-.rd-stat-orange {
+/* .rd-stat-orange {
   border-bottom: 4px solid var(--orange);
 }
 .rd-stat-orange .rd-icon-bg {
@@ -491,166 +491,143 @@
 }
 .rd-stat-dark .rd-icon-bg {
   color: var(--dark);
+} */
+
+/* --- GLOBAL --- */
+:root {
+    --primary: #ff6b00; /* Orange Brand Color */
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --bg-overlay: rgba(0, 0, 0, 0.5);
+    --border: #e5e7eb;
 }
 
-/* Modal Styles */
+/* --- MODAL OVERLAY --- */
 .rd-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 .rd-modal-overlay.active {
-  display: flex;
+    display: flex;
+    opacity: 1;
 }
+
+/* --- MODAL CARDS --- */
 .rd-modal-card {
-  background: var(--white);
-  width: 95%;
-  max-width: 700px;
-  border-radius: 20px;
-  overflow: hidden;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+    overflow: hidden;
 }
-.rd-modal-header {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
-.rd-modal-body {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-.rd-close-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
+.rd-modal-overlay.active .rd-modal-card {
+    transform: scale(1);
 }
 
-/* List & Form Styles */
+/* Sizes */
+.size-large { width: 700px; max-height: 85vh; display: flex; flex-direction: column; }
+.size-medium { width: 450px; }
+.size-small { width: 350px; text-align: center; padding: 25px; }
+
+/* --- HEADER --- */
+.rd-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+}
+.rd-header h3 { margin: 0; font-size: 18px; color: var(--text-dark); }
+.rd-close {
+    background: none; border: none; color: var(--text-light); font-size: 18px; cursor: pointer;
+}
+.rd-close:hover { color: var(--text-dark); }
+
+/* --- BODY & LIST --- */
+.rd-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+
 .rd-list-item {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+    padding: 14px; border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    transition: 0.2s;
 }
-.rd-item-details {
-  flex: 1;
+.rd-list-item:hover { border-color: var(--primary); background: #fffcf9; }
+
+.item-title { font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+.item-sub { font-size: 13px; color: var(--text-light); }
+
+/* Actions */
+.rd-actions { display: flex; gap: 8px; }
+.btn-icon {
+    width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border);
+    background: #fff; color: var(--text-light); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: 0.2s;
 }
-.rd-item-title {
-  font-weight: 700;
-  color: #1f2937;
+.btn-icon:hover { border-color: var(--primary); color: var(--primary); }
+.btn-icon.delete:hover { border-color: #ef4444; color: #ef4444; }
+
+.btn-add-main {
+    width: 100%; padding: 12px; margin-top: 15px;
+    background: #fff; border: 1px dashed var(--primary); color: var(--primary);
+    border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
 }
-.rd-item-sub {
-  font-size: 13px;
-  color: #6b7280;
+.btn-add-main:hover { background: #fff5eb; }
+
+/* --- FORM STYLES --- */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 6px; }
+.form-input {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+    outline: none; box-sizing: border-box; font-size: 14px;
 }
-.rd-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
+.form-input:focus { border-color: var(--primary); }
+
+.rd-footer { padding: 15px 24px; border-top: 1px solid var(--border); text-align: right; }
+.btn-primary { background: var(--primary); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+.btn-secondary { background: #fff; border: 1px solid var(--border); color: var(--text-dark); padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+
+/* --- DELETE POPUP --- */
+.del-icon { 
+    font-size: 40px; color: #ef4444; margin-bottom: 15px; background: #fef2f2;
+    width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;
 }
-.rd-badge-green {
-  background: #d1fae5;
-  color: #065f46;
+.del-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
+.del-text { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
+.del-actions { display: flex; gap: 10px; justify-content: center; }
+.btn-danger { background: #ef4444; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+
+/* --- TOAST NOTIFICATION --- */
+.rd-toast {
+    position: fixed; bottom: 20px; right: 20px; background: #fff;
+    padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    display: flex; align-items: center; gap: 12px; transform: translateY(100px); opacity: 0; transition: 0.3s;
+    border-left: 4px solid var(--primary);
 }
-.rd-badge-red {
-  background: #fee2e2;
-  color: #991b1b;
+.rd-toast.active { transform: translateY(0); opacity: 1; }
+.toast-icon { color: var(--primary); font-size: 20px; }
+/* Add this to your existing CSS */
+.rd-btn-small {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
 }
-.rd-badge-blue {
-  background: #dbeafe;
-  color: #1e40af;
+.rd-btn-small:hover {
+    background-color: #e65100; /* Darker Orange */
 }
 
-.rd-actions {
-  display: flex;
-  gap: 8px;
-}
-.rd-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-}
-.rd-btn-edit {
-  background: #e5e7eb;
-  color: #374151;
-}
-.rd-btn-delete {
-  background: #fee2e2;
-  color: #ef4444;
-}
-.rd-btn-primary {
-  background: #3b82f6;
-  color: white;
-}
-.rd-btn-add {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  background: #1f2937;
-  color: white;
-  font-size: 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* Form Overlay */
-.form-overlay {
-  display: none;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  margin-top: 15px;
-}
-.form-overlay.active {
-  display: block;
-}
-.form-group {
-  margin-bottom: 12px;
-}
-.form-group label {
-  display: block;
-  font-size: 12px;
-  color: #4b5563;
-  margin-bottom: 4px;
-}
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
 
 
 /* logout section */

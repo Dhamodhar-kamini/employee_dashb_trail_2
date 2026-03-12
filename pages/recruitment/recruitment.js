@@ -324,285 +324,265 @@ function ntRenderList() {
 
 
 //position cards
- // --- 1. Data Store (Complex Objects) ---
-const dashboardData = {
-  positions: {
-    color: '#f97316',
-    title: 'Open Positions',
-    // Simple strings for positions, objects for others
-    items: [
-      { title: 'Senior React Developer' },
-      { title: 'UI/UX Designer' },
-      { title: 'Backend Node.js Lead' }
-    ]
-  },
-  candidates: {
-    color: '#f97316',
-    title: 'Total Candidates',
-    items: [
-      { name: 'Arya', email: 'arya@example.com', job: 'React Developer', status: 'Interested' },
-      { name: 'Arjun', email: 'arjun@example.com', job: 'UI Designer', status: 'Screening' },
-      { name: 'Prasad', email: 'prasad@example.com', job: 'Backend Lead', status: 'Not Interested' }
-    ]
-  },
-  interviews: {
-    color: '#f97316',
-    title: 'Interviews Today',
-    items: [
-      { name: 'Arya', job: 'React Developer', email: 'arya@example.com', date: '2023-10-25', time: '10:00' },
-      { name: 'Priya', job: 'HR Manager', email: 'priya@example.com', date: '2023-10-25', time: '14:00' }
-    ]
-  },
-  offers: {
-    color: '#f97316',
-    title: 'Offers Released',
-    items: [
-      { name: 'Rachel Zane', job: 'Legal Counsel', interviewDate: '2023-10-20', offerSent: true },
-      { name: 'Louis Litt', job: 'Finance Head', interviewDate: '2023-10-22', offerSent: false }
-    ]
-  }
+ document.addEventListener("DOMContentLoaded", () => {
+    updateAllCounts();
+});
+
+// --- 1. ENRICHED DATA STORE ---
+const db = {
+    positions: { 
+        title: 'Open Positions', 
+        items: [
+            { title: 'Senior React Developer' },
+            { title: 'UI/UX Designer' },
+            { title: 'Backend Node.js Lead' }
+        ]
+    },
+    candidates: { 
+        title: 'Total Candidates', 
+        items: [
+            { name: 'Arya Stark', email: 'arya@winterfell.com', job: 'React Dev', status: 'Interested' },
+            { name: 'Jon Snow', email: 'jon@watch.com', job: 'UI Designer', status: 'Screening' },
+            { name: 'Tyrion L', email: 'tyrion@lannister.com', job: 'Backend Lead', status: 'Not Interested' }
+        ] 
+    },
+    interviews: { 
+        title: 'Interviews Today', 
+        items: [
+            { name: 'Sansa Stark', email: 'sansa@winterfell.com', job: 'HR Manager', status: 'Interested', date: '2023-10-25', time: '10:00' },
+            { name: 'Jaime L', email: 'jaime@gold.com', job: 'Security Lead', status: 'Screening', date: '2023-10-25', time: '14:00' }
+        ] 
+    },
+    offers: { 
+        title: 'Offers Released', 
+        items: [
+            { name: 'Rachel Zane', email: 'rachel@law.com', job: 'Legal Counsel', status: 'Sent' },
+            { name: 'Louis Litt', email: 'louis@law.com', job: 'Finance Head', status: 'Pending' }
+        ] 
+    }
 };
 
-let currentKey = null; // 'positions', 'candidates', 'interviews', or 'offers'
+let currentKey = null;
+let deleteIdx = null;
 
-// --- 2. Initialize Dashboard Counts ---
-function updateDashboardCounts() {
-  document.getElementById('count-positions').innerText = dashboardData.positions.items.length;
-  // Candidates: 81 (base) + dynamic count
-  document.getElementById('count-candidates').innerText = 81 + dashboardData.candidates.items.length;
-  document.getElementById('count-interviews').innerText = dashboardData.interviews.items.length;
-  document.getElementById('count-offers').innerText = dashboardData.offers.items.length;
-}
-
-// --- 3. Open Main Modal ---
+// --- 2. LIST MODAL LOGIC ---
 function openMainModal(key) {
-  currentKey = key;
-  const data = dashboardData[key];
-  
-  // Style Header
-  const header = document.getElementById('modalHeader');
-  header.style.backgroundColor = data.color;
-  document.getElementById('modalTitle').innerText = data.title;
-
-  hideForm(); // Ensure form is hidden initially
-  renderList(); // Show list of items
-  
-  document.getElementById('mainModal').classList.add('active');
+    currentKey = key;
+    document.getElementById('listTitle').innerText = db[key].title;
+    renderList();
+    document.getElementById('listModal').classList.add('active');
 }
 
-function closeMainModal() {
-  document.getElementById('mainModal').classList.remove('active');
-  currentKey = null;
+function closeListModal() {
+    document.getElementById('listModal').classList.remove('active');
+    currentKey = null;
 }
 
-// --- 4. Render Lists (Different Layouts per Card) ---
+function updateAllCounts() {
+    Object.keys(db).forEach(key => {
+        const el = document.getElementById('count-' + key);
+        if(el) el.innerText = db[key].items.length;
+    });
+}
+
+// --- 3. RENDER LIST ITEMS (With All Details) ---
 function renderList() {
-  const container = document.getElementById('listContainer');
-  container.innerHTML = '';
-  const items = dashboardData[currentKey].items;
+    const container = document.getElementById('itemsContainer');
+    container.innerHTML = '';
+    const items = db[currentKey].items;
 
-  if (items.length === 0) {
-    container.innerHTML = '<div style="text-align:center; color:#999;">No items found.</div>';
-    return;
-  }
-
-  items.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.className = 'rd-list-item';
-
-    let contentHTML = '';
-    let actionsHTML = `
-      <div class="rd-actions">
-        <button class="rd-btn rd-btn-edit" onclick="editItem(${index})"><i class="fa-solid fa-pen"></i> Edit</button>
-        <button class="rd-btn rd-btn-delete" onclick="deleteItem(${index})"><i class="fa-solid fa-trash"></i></button>
-      </div>
-    `;
-
-    // --- Template Logic Based on Key ---
-    if (currentKey === 'positions') {
-      contentHTML = `<div class="rd-item-details"><div class="rd-item-title">${item.title}</div></div>`;
-    } 
-    else if (currentKey === 'candidates') {
-      let badgeClass = item.status === 'Interested' ? 'rd-badge-green' : (item.status === 'Not Interested' ? 'rd-badge-red' : 'rd-badge-blue');
-      contentHTML = `
-        <div class="rd-item-details">
-          <div class="rd-item-title">${item.name} <span class="rd-badge ${badgeClass}">${item.status}</span></div>
-          <div class="rd-item-sub">${item.job} | ${item.email}</div>
-        </div>`;
-    } 
-    else if (currentKey === 'interviews') {
-      contentHTML = `
-        <div class="rd-item-details">
-          <div class="rd-item-title">${item.name} - ${item.time}</div>
-          <div class="rd-item-sub">Role: ${item.job} | Date: ${item.date}</div>
-          <div class="rd-item-sub">${item.email}</div>
-        </div>`;
-    } 
-    else if (currentKey === 'offers') {
-      let offerBtn = item.offerSent 
-        ? `<span class="rd-badge rd-badge-green"><i class="fa-solid fa-check"></i> Offer Sent</span>` 
-        : `<button class="rd-btn rd-btn-primary" onclick="sendOffer(${index})">Send Offer</button>`;
-        
-      contentHTML = `
-        <div class="rd-item-details">
-          <div class="rd-item-title">${item.name}</div>
-          <div class="rd-item-sub">Role: ${item.job} | Interviewed: ${item.interviewDate}</div>
-          <div style="margin-top:5px;">${offerBtn}</div>
-        </div>`;
+    if(items.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">No records found.</div>';
+        return;
     }
 
-    div.innerHTML = contentHTML + actionsHTML;
-    container.appendChild(div);
-  });
+    items.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'rd-list-item';
+        
+        let contentHTML = '';
+
+        // --- TEMPLATES ---
+        if (currentKey === 'positions') {
+            contentHTML = `
+                <div>
+                    <div class="item-title">${item.title}</div>
+                </div>`;
+        } 
+        else if (currentKey === 'candidates') {
+            let badgeColor = item.status === 'Interested' ? 'green' : (item.status === 'Not Interested' ? 'red' : 'blue');
+            contentHTML = `
+                <div>
+                    <div class="item-title">${item.name} <span class="rd-badge rd-badge-${badgeColor}">${item.status}</span></div>
+                    <div class="item-sub">${item.job} | ${item.email}</div>
+                </div>`;
+        }
+        else if (currentKey === 'interviews') {
+            contentHTML = `
+                <div>
+                    <div class="item-title">${item.name} <span style="font-weight:400; font-size:12px; color:#555;">(${item.status})</span></div>
+                    <div class="item-sub">Role: ${item.job} | ${item.email}</div>
+                    <div class="item-sub" style="color:#ff6b00; font-weight:500;">${item.date} at ${item.time}</div>
+                </div>`;
+        }
+        else if (currentKey === 'offers') {
+            let actionBtn = item.status === 'Sent' 
+                ? `<span class="rd-badge rd-badge-green"><i class="fa-solid fa-check"></i> Sent</span>`
+                : `<button class="rd-btn-small" onclick="sendOffer(${index})">Send Offer</button>`;
+
+            contentHTML = `
+                <div>
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-sub">${item.job} | ${item.email}</div>
+                    <div style="margin-top:6px;">${actionBtn}</div>
+                </div>`;
+        }
+
+        const actionsHTML = `
+            <div class="rd-actions">
+                <button class="btn-icon" onclick="openFormModal(${index})"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-icon delete" onclick="openDeleteModal(${index})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        `;
+
+        div.innerHTML = contentHTML + actionsHTML;
+        container.appendChild(div);
+    });
 }
 
-// --- 5. Form Handling (Add/Edit) ---
-function showAddForm() {
-  document.getElementById('formTitle').innerText = "Add New Item";
-  document.getElementById('editIndex').value = "-1"; // -1 indicates ADD mode
-  injectFormFields();
-  document.getElementById('dynamicForm').classList.add('active');
-  // Scroll to bottom
-  document.querySelector('.rd-modal-body').scrollTop = document.querySelector('.rd-modal-body').scrollHeight;
+// --- 4. FORM MODAL (Dynamic Inputs) ---
+function openFormModal(index = -1) {
+    const isEdit = index !== -1;
+    document.getElementById('formHeaderTitle').innerText = isEdit ? "Edit Record" : "Add New";
+    document.getElementById('editIndex').value = index;
+    
+    const container = document.getElementById('formInputs');
+    const data = isEdit ? db[currentKey].items[index] : {};
+    
+    let html = '';
+
+    if (currentKey === 'positions') {
+        html = `<div class="form-group"><label>Job Title</label><input class="form-input" id="inp_title" value="${data.title || ''}"></div>`;
+    } 
+    else if (currentKey === 'candidates') {
+        html = `
+            <div class="form-group"><label>Name</label><input class="form-input" id="inp_name" value="${data.name || ''}"></div>
+            <div class="form-group"><label>Email</label><input class="form-input" id="inp_email" value="${data.email || ''}"></div>
+            <div class="form-group"><label>Job Applied For</label><input class="form-input" id="inp_job" value="${data.job || ''}"></div>
+            <div class="form-group"><label>Status</label>
+                <select class="form-input" id="inp_status">
+                    <option value="Interested" ${data.status === 'Interested'?'selected':''}>Interested</option>
+                    <option value="Screening" ${data.status === 'Screening'?'selected':''}>Screening</option>
+                    <option value="Not Interested" ${data.status === 'Not Interested'?'selected':''}>Not Interested</option>
+                </select>
+            </div>`;
+    }
+    else if (currentKey === 'interviews') {
+        html = `
+            <div class="form-group"><label>Candidate Name</label><input class="form-input" id="inp_name" value="${data.name || ''}"></div>
+            <div class="form-group"><label>Email</label><input class="form-input" id="inp_email" value="${data.email || ''}"></div>
+            <div class="form-group"><label>Job Role</label><input class="form-input" id="inp_job" value="${data.job || ''}"></div>
+            <div class="form-group"><label>Interview Status</label>
+                <select class="form-input" id="inp_status">
+                    <option value="Interested" ${data.status === 'Interested'?'selected':''}>Interested</option>
+                    <option value="Not Interested" ${data.status === 'Not Interested'?'selected':''}>Not Interested</option>
+                </select>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="form-group"><label>Date</label><input type="date" class="form-input" id="inp_date" value="${data.date || ''}"></div>
+                <div class="form-group"><label>Time</label><input type="time" class="form-input" id="inp_time" value="${data.time || ''}"></div>
+            </div>`;
+    }
+    else if (currentKey === 'offers') {
+        html = `
+            <div class="form-group"><label>Name</label><input class="form-input" id="inp_name" value="${data.name || ''}"></div>
+            <div class="form-group"><label>Email</label><input class="form-input" id="inp_email" value="${data.email || ''}"></div>
+            <div class="form-group"><label>Job Role</label><input class="form-input" id="inp_job" value="${data.job || ''}"></div>
+            <div class="form-group"><label>Offer Status</label>
+                <select class="form-input" id="inp_status">
+                    <option value="Pending" ${data.status === 'Pending'?'selected':''}>Pending</option>
+                    <option value="Sent" ${data.status === 'Sent'?'selected':''}>Sent</option>
+                </select>
+            </div>`;
+    }
+
+    container.innerHTML = html;
+    document.getElementById('formModal').classList.add('active');
 }
 
-function editItem(index) {
-  document.getElementById('formTitle').innerText = "Edit Item";
-  document.getElementById('editIndex').value = index;
-  injectFormFields(dashboardData[currentKey].items[index]);
-  document.getElementById('dynamicForm').classList.add('active');
-  // Scroll to bottom
-  document.querySelector('.rd-modal-body').scrollTop = document.querySelector('.rd-modal-body').scrollHeight;
+function closeFormModal() {
+    document.getElementById('formModal').classList.remove('active');
 }
 
-function hideForm() {
-  document.getElementById('dynamicForm').classList.remove('active');
-}
+function saveItem() {
+    const idx = parseInt(document.getElementById('editIndex').value);
+    let newItem = {};
 
-// Inject Fields based on Card Type
-function injectFormFields(data = {}) {
-  const container = document.getElementById('formFields');
-  let fieldsHTML = '';
+    // Capture Values
+    if (currentKey === 'positions') {
+        newItem = { title: document.getElementById('inp_title').value };
+    } else {
+        newItem = {
+            name: document.getElementById('inp_name').value,
+            email: document.getElementById('inp_email').value,
+            job: document.getElementById('inp_job').value,
+            status: document.getElementById('inp_status').value
+        };
+        // Extra fields for interviews
+        if(currentKey === 'interviews') {
+            newItem.date = document.getElementById('inp_date').value;
+            newItem.time = document.getElementById('inp_time').value;
+        }
+    }
 
-  if (currentKey === 'positions') {
-    fieldsHTML = `
-      <div class="form-group"><label>Job Title</label><input type="text" id="inp_title" value="${data.title || ''}"></div>
-    `;
-  } 
-  else if (currentKey === 'candidates') {
-    fieldsHTML = `
-      <div class="form-group"><label>Candidate Name</label><input type="text" id="inp_name" value="${data.name || ''}"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="inp_email" value="${data.email || ''}"></div>
-      <div class="form-group"><label>Job Applied For</label><input type="text" id="inp_job" value="${data.job || ''}"></div>
-      <div class="form-group"><label>Status</label>
-        <select id="inp_status">
-          <option value="Interested" ${data.status === 'Interested' ? 'selected' : ''}>Interested</option>
-          <option value="Screening" ${data.status === 'Screening' ? 'selected' : ''}>Screening</option>
-          <option value="Not Interested" ${data.status === 'Not Interested' ? 'selected' : ''}>Not Interested</option>
-        </select>
-      </div>
-    `;
-  }
-  else if (currentKey === 'interviews') {
-    fieldsHTML = `
-      <div class="form-group"><label>Candidate Name</label><input type="text" id="inp_name" value="${data.name || ''}"></div>
-      <div class="form-group"><label>Job Role</label><input type="text" id="inp_job" value="${data.job || ''}"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="inp_email" value="${data.email || ''}"></div>
-      <div class="form-group"><label>Interview Date</label><input type="date" id="inp_date" value="${data.date || ''}"></div>
-      <div class="form-group"><label>Interview Time</label><input type="time" id="inp_time" value="${data.time || ''}"></div>
-    `;
-  }
-  else if (currentKey === 'offers') {
-    fieldsHTML = `
-      <div class="form-group"><label>Candidate Name</label><input type="text" id="inp_name" value="${data.name || ''}"></div>
-      <div class="form-group"><label>Job Role</label><input type="text" id="inp_job" value="${data.job || ''}"></div>
-      <div class="form-group"><label>Interview Completed Date</label><input type="date" id="inp_date" value="${data.interviewDate || ''}"></div>
-      <div class="form-group"><label>Offer Status</label>
-        <select id="inp_sent">
-          <option value="false" ${!data.offerSent ? 'selected' : ''}>Not Sent</option>
-          <option value="true" ${data.offerSent ? 'selected' : ''}>Sent</option>
-        </select>
-      </div>
-    `;
-  }
+    if (!Object.values(newItem).every(v => v !== '')) {
+        alert("Please fill all fields.");
+        return;
+    }
 
-  container.innerHTML = fieldsHTML;
-}
+    if (idx === -1) db[currentKey].items.push(newItem);
+    else db[currentKey].items[idx] = newItem;
 
-// --- 6. Save Data (Add or Update) ---
-function saveData() {
-  const index = parseInt(document.getElementById('editIndex').value);
-  const itemsArray = dashboardData[currentKey].items;
-  let newItem = {};
-
-  // Construct Object based on Key
-  if (currentKey === 'positions') {
-    newItem = { title: document.getElementById('inp_title').value };
-  } 
-  else if (currentKey === 'candidates') {
-    newItem = {
-      name: document.getElementById('inp_name').value,
-      email: document.getElementById('inp_email').value,
-      job: document.getElementById('inp_job').value,
-      status: document.getElementById('inp_status').value
-    };
-  }
-  else if (currentKey === 'interviews') {
-    newItem = {
-      name: document.getElementById('inp_name').value,
-      job: document.getElementById('inp_job').value,
-      email: document.getElementById('inp_email').value,
-      date: document.getElementById('inp_date').value,
-      time: document.getElementById('inp_time').value
-    };
-  }
-  else if (currentKey === 'offers') {
-    newItem = {
-      name: document.getElementById('inp_name').value,
-      job: document.getElementById('inp_job').value,
-      interviewDate: document.getElementById('inp_date').value,
-      offerSent: document.getElementById('inp_sent').value === 'true'
-    };
-  }
-
-  // Validate basic
-  if (!Object.values(newItem).every(val => val !== '')) {
-    alert("Please fill in all fields.");
-    return;
-  }
-
-  if (index === -1) {
-    // Add New
-    itemsArray.push(newItem);
-  } else {
-    // Update Existing
-    itemsArray[index] = newItem;
-  }
-
-  hideForm();
-  renderList();
-  updateDashboardCounts();
-}
-
-// --- 7. Delete Logic ---
-function deleteItem(index) {
-  if (confirm("Are you sure?")) {
-    dashboardData[currentKey].items.splice(index, 1);
+    closeFormModal();
     renderList();
-    updateDashboardCounts();
-  }
+    updateAllCounts();
+    showToast("Record Saved Successfully");
 }
 
-// --- 8. Specific Logic for Offers (Send Button) ---
+// --- 5. SEND OFFER LOGIC ---
 function sendOffer(index) {
-  if (confirm("Mark offer letter as sent?")) {
-    dashboardData.offers.items[index].offerSent = true;
+    db.offers.items[index].status = 'Sent';
     renderList();
-  }
+    showToast("Offer Letter Sent Successfully!");
 }
 
-// Initial Load
-updateDashboardCounts();
+// --- 6. DELETE LOGIC ---
+function openDeleteModal(index) {
+    deleteIdx = index;
+    document.getElementById('deleteModal').classList.add('active');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('active');
+}
+
+function confirmDelete() {
+    if (deleteIdx !== null) {
+        db[currentKey].items.splice(deleteIdx, 1);
+        renderList();
+        updateAllCounts();
+        showToast("Record Deleted");
+    }
+    closeDeleteModal();
+}
+
+// --- 7. TOAST NOTIFICATION ---
+function showToast(msg) {
+    const toast = document.getElementById('rdToast');
+    document.getElementById('toastMessage').innerText = msg;
+    toast.classList.add('active');
+    setTimeout(() => toast.classList.remove('active'), 3000);
+}
 
 
 //logout section

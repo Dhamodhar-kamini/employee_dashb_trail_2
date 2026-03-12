@@ -267,36 +267,56 @@
   </div>
 
   <!-- Main Data Modal -->
-  <div class="rd-modal-overlay" id="mainModal">
-    <div class="rd-modal-card">
-      <div class="rd-modal-header" id="modalHeader">
-        <h3 id="modalTitle">Details</h3>
-        <button class="rd-close-btn" onclick="closeMainModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="rd-modal-body">
-        
-        <!-- List Container -->
-        <div id="listContainer"></div>
-
-        <!-- Add New Button -->
-        <button class="rd-btn-add" onclick="showAddForm()">+ Add New Item</button>
-
-        <!-- Dynamic Form for Add/Edit -->
-        <div id="dynamicForm" class="form-overlay">
-          <h4 id="formTitle" style="margin-top:0;">Add New</h4>
-          <input type="hidden" id="editIndex"> <!-- Hidden field to store index if editing -->
-          
-          <div id="formFields"></div> <!-- Fields injected by JS -->
-          
-          <div style="margin-top:15px; display:flex; gap:10px;">
-            <button class="rd-btn rd-btn-primary" onclick="saveData()">Save</button>
-            <button class="rd-btn rd-btn-edit" onclick="hideForm()">Cancel</button>
-          </div>
+  <!-- 1. MAIN LIST MODAL -->
+<div class="rd-modal-overlay" id="listModal">
+    <div class="rd-modal-card size-large">
+        <div class="rd-header">
+            <h3 id="listTitle">Details</h3>
+            <button class="rd-close" onclick="closeListModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-      </div>
+        <div class="rd-body">
+            <div id="itemsContainer"></div> <!-- List items go here -->
+            <button class="btn-add-main" onclick="openFormModal()"><i class="fa-solid fa-plus"></i> Add New Record</button>
+        </div>
     </div>
-  </div>
+</div>
+
+<!-- 2. FORM MODAL (Add/Edit) -->
+<div class="rd-modal-overlay" id="formModal">
+    <div class="rd-modal-card size-medium">
+        <div class="rd-header">
+            <h3 id="formHeaderTitle">Add New</h3>
+            <button class="rd-close" onclick="closeFormModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="rd-body">
+            <input type="hidden" id="editIndex">
+            <div id="formInputs"></div> <!-- Inputs injected here -->
+        </div>
+        <div class="rd-footer">
+            <button class="btn-secondary" onclick="closeFormModal()">Cancel</button>
+            <button class="btn-primary" onclick="saveItem()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. DELETE CONFIRMATION MODAL -->
+<div class="rd-modal-overlay" id="deleteModal">
+    <div class="rd-modal-card size-small">
+        <div class="del-icon"><i class="fa-solid fa-trash-can"></i></div>
+        <div class="del-title">Delete Record?</div>
+        <div class="del-text">Are you sure you want to delete this item? This action cannot be undone.</div>
+        <div class="del-actions">
+            <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- 4. SUCCESS TOAST -->
+<div class="rd-toast" id="rdToast">
+    <i class="fa-solid fa-circle-check toast-icon"></i>
+    <span id="toastMessage">Operation Successful</span>
+</div>
 
     <!-- Unified Interview Widget Container -->
     <div class="im-widget-container">
