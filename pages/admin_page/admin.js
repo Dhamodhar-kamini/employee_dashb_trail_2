@@ -323,264 +323,264 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-//testing employee details status modal
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize with some dummy data if you want, or leave empty
-  const EMPLOYEES = [];
+    // 1. Initialize Employees Array
+    // We start empty, or you can pre-fill it.
+    // The structure needs a 'type' property that matches: "WFO", "WFH", or "Internship".
+    const EMPLOYEES = [];
 
-  // Table Elements
-  const employeeModal = document.getElementById("employeeModal");
-  const tableBody = document.getElementById("employeeTableBody");
-  const searchInput = document.getElementById("employeeSearch");
-  const closeEmployeeBtn = document.querySelector(".close-employee-btn");
-  const triggerEmployeeBtn = document.querySelector(".employee-trigger");
-  const addEmpFromTableBtn = document.getElementById("addEmpFromTableBtn");
+    // --- Selectors ---
+    const employeeModal = document.getElementById("employeeModal");
+    const tableBody = document.getElementById("employeeTableBody");
+    const searchInput = document.getElementById("employeeSearch");
+    const closeEmployeeBtn = document.querySelector(".close-employee-btn");
+    const triggerEmployeeBtn = document.querySelector(".employee-trigger");
+    const addEmpFromTableBtn = document.getElementById("addEmpFromTableBtn");
 
-  // Form Elements
-  const empModal = document.getElementById("empModal");
-  const empOpenBtn = document.getElementById("empOpenBtn"); 
-  const empCloseBtn = document.getElementById("empCloseBtn");
-  const empCancelBtn = document.getElementById("empCancelBtn");
-  const empForm = document.getElementById("empForm");
-  
-  // Success Elements
-  const successModal = document.getElementById("successModal");
-  const successOkBtn = document.getElementById("successOkBtn");
+    const empModal = document.getElementById("empModal");
+    const empOpenBtn = document.getElementById("empOpenBtn");
+    const empCloseBtn = document.getElementById("empCloseBtn");
+    const empCancelBtn = document.getElementById("empCancelBtn");
+    const empForm = document.getElementById("empForm");
 
-  // =========================================================
-  // 1. DASHBOARD STATS LOGIC (NEW CODE)
-  // =========================================================
-  function updateDashboardStats() {
-    const total = EMPLOYEES.length;
-    
-    // Initialize counters
-    let counts = {
-        // Fulltime: 0,
-        WFO: 0,
-        WFH: 0,
-        Internship: 0
-    };
+    const successModal = document.getElementById("successModal");
+    const successOkBtn = document.getElementById("successOkBtn");
 
-    // Count employees by type
-    EMPLOYEES.forEach(emp => {
-        if(counts[emp.type] !== undefined) {
-            counts[emp.type]++;
+    // =========================================================
+    // 2. DASHBOARD STATS LOGIC (Fixed)
+    // =========================================================
+    function updateDashboardStats() {
+        const total = EMPLOYEES.length;
+
+        // Initialize counters keys must match select option values exactly
+        let counts = {
+            "WFO": 0,
+            "WFH": 0,
+            "Internship": 0
+        };
+
+        // Count employees
+        EMPLOYEES.forEach(emp => {
+            // Ensure emp.type matches one of the keys
+            if (counts.hasOwnProperty(emp.type)) {
+                counts[emp.type]++;
+            }
+        });
+
+        // 1. Update Total Count
+        const totalEl = document.getElementById("totalEmpCount");
+        if (totalEl) totalEl.innerText = total;
+
+        // 2. Helper to update bars
+        const updateBar = (typeKey, barId, labelId, valId) => {
+            const count = counts[typeKey];
+            // Calculate percentage (guard against divide by zero)
+            const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+
+            // Update Width
+            const barEl = document.getElementById(barId);
+            if (barEl) barEl.style.width = percent + "%";
+
+            // Update Label Text
+            const labelEl = document.getElementById(labelId);
+            if (labelEl) labelEl.innerText = `${typeKey} (${percent}%)`;
+
+            // Update Count Value
+            const valEl = document.getElementById(valId);
+            if (valEl) valEl.innerText = count < 10 ? "0" + count : count;
+        };
+
+        // 3. Run updates
+        updateBar("WFO", "bar-wfo", "label-wfo", "val-wfo");
+        updateBar("WFH", "bar-wfh", "label-wfh", "val-wfh");
+        updateBar("Internship", "bar-intern", "label-intern", "val-intern");
+    }
+
+    // =========================================================
+    // 3. TABLE FUNCTIONS
+    // =========================================================
+    function renderTable(data) {
+        let html = "";
+        if (data.length === 0) {
+            html = '<tr><td colspan="5" style="text-align:center;">No employees found</td></tr>';
+        } else {
+            data.forEach((emp) => {
+                html += `
+                    <tr>
+                        <td>${emp.emp_id}</td>
+                        <td>${emp.name}</td>
+                        <td>${emp.email}</td>
+                        <td>${emp.position}</td>
+                        <td>${emp.salary}</td>
+                    </tr>`;
+            });
         }
-    });
+        if (tableBody) tableBody.innerHTML = html;
+    }
 
-    // Update Total on Dashboard
-    const totalEl = document.getElementById("totalEmpCount");
-    if(totalEl) totalEl.innerText = total;
+    if (triggerEmployeeBtn) {
+        triggerEmployeeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            renderTable(EMPLOYEES);
+            employeeModal.style.display = "block";
+        });
+    }
 
-    // Helper function to update specific bar
-    const updateBar = (typeKey, barId, labelId, valId) => {
-        const count = counts[typeKey];
-        const percent = total === 0 ? 0 : Math.round((count / total) * 100);
-        
-        // Update Width
-        const barEl = document.getElementById(barId);
-        if(barEl) barEl.style.width = percent + "%";
+    if (searchInput) {
+        searchInput.addEventListener("keyup", (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = EMPLOYEES.filter((emp) =>
+                emp.name.toLowerCase().includes(term) ||
+                emp.emp_id.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        });
+    }
 
-        // Update Label Text
-        const labelEl = document.getElementById(labelId);
-        if(labelEl) labelEl.innerText = `${typeKey} (${percent}%)`;
+    const closeTableModal = () => {
+        employeeModal.style.display = "none";
+        if (searchInput) searchInput.value = "";
+    };
+    if (closeEmployeeBtn) closeEmployeeBtn.onclick = closeTableModal;
 
-        // Update Count Value
-        const valEl = document.getElementById(valId);
-        if(valEl) valEl.innerText = count < 10 ? "0" + count : count;
+    // =========================================================
+    // 4. FORM LOGIC & SUBMISSION
+    // =========================================================
+    if (empOpenBtn) empOpenBtn.onclick = () => (empModal.style.display = "flex");
+    if (addEmpFromTableBtn) addEmpFromTableBtn.onclick = () => (empModal.style.display = "flex");
+
+    const closeAddModal = () => { empModal.style.display = "none"; };
+    
+    // Reset form helper
+    function resetForm() {
+        empForm.reset();
+        const inputs = empForm.querySelectorAll("input, select");
+        inputs.forEach((input) => input.classList.remove("input-error"));
+        const msgs = empForm.querySelectorAll(".error-msg");
+        msgs.forEach(msg => msg.style.display = 'none');
+    }
+
+    if (empCloseBtn) empCloseBtn.onclick = () => { closeAddModal(); resetForm(); };
+    if (empCancelBtn) empCancelBtn.onclick = () => { closeAddModal(); resetForm(); };
+
+    // Validation Helpers
+    const setError = (element, message) => {
+        const inputControl = element.parentElement;
+        const errorDisplay = inputControl.querySelector(".error-msg");
+        if (errorDisplay) {
+            errorDisplay.innerText = message;
+            errorDisplay.style.display = "block";
+        }
+        element.classList.add("input-error");
     };
 
-    // Run updates for all 4 types
-    // updateBar("Fulltime", "bar-fulltime", "label-fulltime", "val-fulltime");
-    updateBar("WFO", "bar-wfo", "label-wfo", "val-wfo");
-    updateBar("WFH", "bar-wfh", "label-wfh", "val-wfh");
-    updateBar("Internship", "bar-intern", "label-intern", "val-intern");
-  }
+    const setSuccess = (element) => {
+        const inputControl = element.parentElement;
+        const errorDisplay = inputControl.querySelector(".error-msg");
+        if (errorDisplay) {
+            errorDisplay.style.display = "none";
+        }
+        element.classList.remove("input-error");
+    };
 
-  // =========================================================
-  // 2. TABLE FUNCTIONS
-  // =========================================================
-  function renderTable(data) {
-    let html = "";
-    if (data.length === 0) {
-      html = '<tr><td colspan="6" style="text-align:center;">No employees found</td></tr>';
-    } else {
-      data.forEach((emp) => {
-        // Added Type Column
-        html += `
-            <tr>
-                <td>${emp.emp_id}</td>
-                <td>${emp.name}</td>
-                <td>${emp.email}</td>
-                <td>${emp.position}</td>
-                <td>${emp.type}</td> <!-- Show Type in table -->
-                <td>${emp.salary}</td>
-            </tr>
-        `;
-      });
-    }
-    if (tableBody) tableBody.innerHTML = html;
-  }
+    const validateInputs = () => {
+        let isValid = true;
+        const name = document.getElementById("nameInput");
+        const empId = document.getElementById("empIdInput");
+        const email = document.getElementById("emailInput");
+        const type = document.getElementById("typeInput"); // Ensure type is selected
 
-  // Open Table Logic
-  if (triggerEmployeeBtn) {
-    triggerEmployeeBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      renderTable(EMPLOYEES); 
-      employeeModal.style.display = "block";
-    });
-  }
+        if (name.value.trim() === "") { setError(name, "Name required"); isValid = false; } else { setSuccess(name); }
+        if (empId.value.trim() === "") { setError(empId, "ID required"); isValid = false; } else { setSuccess(empId); }
+        if (email.value.trim() === "") { setError(email, "Email required"); isValid = false; } else { setSuccess(email); }
+        if (type.value === "") { setError(type, "Type required"); isValid = false; } else { setSuccess(type); }
 
-  // Search Logic
-  if (searchInput) {
-    searchInput.addEventListener("keyup", (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = EMPLOYEES.filter((emp) =>
-        emp.name.toLowerCase().includes(term) ||
-        emp.emp_id.toLowerCase().includes(term)
-      );
-      renderTable(filtered);
-    });
-  }
+        return isValid;
+    };
 
-  // Close Table Logic
-  const closeTableModal = () => {
-      employeeModal.style.display = "none";
-      if(searchInput) searchInput.value = "";
-  }
-  if (closeEmployeeBtn) closeEmployeeBtn.onclick = closeTableModal;
+    // --- FORM SUBMIT HANDLER ---
+    empForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-  // =========================================================
-  // 3. FORM LOGIC
-  // =========================================================
-  if (empOpenBtn) empOpenBtn.onclick = () => (empModal.style.display = "flex");
+        if (validateInputs()) {
+            // 1. Gather Values
+            const nameVal = document.getElementById("nameInput").value;
+            const empIdVal = document.getElementById("empIdInput").value;
+            const emailVal = document.getElementById("emailInput").value;
+            const jobVal = document.getElementById("jobInput").value;
+            const salaryVal = document.getElementById("salaryInput").value;
+            const typeVal = document.getElementById("typeInput").value; // "WFO", "WFH", "Internship"
 
-  if (addEmpFromTableBtn) {
-      addEmpFromTableBtn.onclick = () => {
-          empModal.style.display = "flex";      
-      }
-  }
+            const empIdNum = parseInt(empIdVal);
+            const newEmpId = String(empIdNum).padStart(3, "0");
+            // const formattedSalary = salaryVal ? "₹" + parseInt(salaryVal).toLocaleString() : "₹0";
 
-  const closeAddModal = () => { empModal.style.display = "none"; };
-  if (empCloseBtn) empCloseBtn.onclick = () => { closeAddModal(); resetForm(); };
-  if (empCancelBtn) empCancelBtn.onclick = () => { closeAddModal(); resetForm(); };
+            // 2. Create Object (UI Model)
+            // Note: 'type' property is crucial for the stats logic
+            const uiEmployee = {
+                emp_id: newEmpId,
+                name: nameVal,
+                email: emailVal,
+                position: jobVal || "Not Specified",
+                type: typeVal, 
+                salary: salaryVal
+            };
 
-  // =========================================================
-  // 4. VALIDATION & SUBMIT
-  // =========================================================
-  const setError = (element, message) => {
-    const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector(".error-msg");
-    if (errorDisplay) {
-      errorDisplay.innerText = message;
-      errorDisplay.style.display = "block";
-    }
-    element.classList.add("input-error");
-  };
+            // 3. API Object (Backend Model)
+            const apiEmployee = {
+                name: nameVal,
+                employee_id: newEmpId,
+                email: emailVal,
+                password: document.getElementById("passwordInput").value,
+                role: jobVal || "Not Specified",
+                salary: salaryVal,
+                joining: document.getElementById("dateInput").value,
+                department: document.getElementById("deptInput").value, 
+                manager_employee: document.getElementById("managerInput").value,
+                location: document.getElementById("locationInput").value,
+                full_time: typeVal // Assuming backend uses 'full_time' to store type
+            };
 
-  const setSuccess = (element) => {
-    const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector(".error-msg");
-    if (errorDisplay) {
-      errorDisplay.style.display = "none";
-    }
-    element.classList.remove("input-error");
-  };
-
-  const validateInputs = () => {
-    let isValid = true;
-    const name = document.getElementById("nameInput");
-    const empId = document.getElementById("empIdInput");
-    const email = document.getElementById("emailInput");
-    
-    // Basic validation
-    if (name.value.trim() === "") { setError(name, "Name required"); isValid = false; } else { setSuccess(name); }
-    if (empId.value.trim() === "") { setError(empId, "ID required"); isValid = false; } else { setSuccess(empId); }
-    if (email.value.trim() === "") { setError(email, "Email required"); isValid = false; } else { setSuccess(email); }
-    
-    return isValid;
-  };
-
-  empForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    if (validateInputs()) {
-      const nameVal = document.getElementById("nameInput").value;
-      const empIdVal = document.getElementById("empIdInput").value;
-      const emailVal = document.getElementById("emailInput").value;
-      const jobVal = document.getElementById("jobInput").value;
-      const salaryVal = document.getElementById("salaryInput").value;
-      
-      // Get the new Type Value
-      const typeVal = document.getElementById("typeInput").value; 
-
-      const empIdNum = parseInt(empIdVal);
-      const newEmpId = String(empIdNum).padStart(3, "0");
-    //   const formattedSalary = salaryVal ? "₹" + parseInt(salaryVal).toLocaleString() : "₹0";
-
-      const newEmployee = {
-        name: nameVal,
-        employee_id: newEmpId,
-        email: emailVal,
-        password:document.getElementById("passwordInput").value,
-        role: jobVal || "Not Specified",
-        salary: document.getElementById("salaryInput").value,
-        joining:document.getElementById("dateInput").value,
-        department:document.getElementById("deptInput").value, 
-        manager_employee:document.getElementById("managerInput").value,
-        location:document.getElementById("locationInput").value,
-        full_time:document.getElementById("typeInput").value
-
-      };
-      fetch("http://127.0.0.1:8000/api/create/", {
+            // 4. Send to API
+            fetch("http://127.0.0.1:8000/api/create/", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(newEmployee)
+                body: JSON.stringify(apiEmployee)
             })
             .then(res => res.json())
             .then(response => {
-                // updateAttendance();
-                // alert("Employee added successfully!");
-                // form.reset(); 
-                // total_employees_count ++;
-                 // Clear form
-                console.log(response); // Check created employee in console
+                console.log("API Success:", response);
             })
-      // Update Data
-      EMPLOYEES.push(newEmployee);
-      
-      // Update UI
-      updateDashboardStats(); // <--- THIS UPDATES THE BARS
-      renderTable(EMPLOYEES);
-      
-      closeAddModal();
-      if (successModal) successModal.style.display = "flex"; 
+            .catch(err => console.error("API Error:", err));
+
+            // 5. Update Local State & UI IMMEDIATELY
+            EMPLOYEES.push(uiEmployee);
+            
+            updateDashboardStats(); // Updates bars and counts
+            renderTable(EMPLOYEES); // Updates table view
+            
+            // 6. Close Modal & Show Success
+            closeAddModal();
+            if (successModal) successModal.style.display = "flex"; 
+        }
+    });
+
+    if (successOkBtn) {
+        successOkBtn.onclick = () => {
+            successModal.style.display = "none";
+            resetForm();
+        };
     }
-  });
 
-  if (successOkBtn) {
-    successOkBtn.onclick = () => {
-      successModal.style.display = "none";
-      resetForm();
+    window.onclick = function (e) {
+        if (e.target === empModal) { closeAddModal(); resetForm(); }
+        if (e.target === employeeModal && empModal.style.display !== "flex") { closeTableModal(); }
+        if (e.target === successModal) { successModal.style.display = "none"; resetForm(); }
     };
-  }
 
-  window.onclick = function (e) {
-    if (e.target === empModal) { closeAddModal(); resetForm(); }
-    if (e.target === employeeModal && empModal.style.display !== "flex") { closeTableModal(); }
-    if (e.target === successModal) { successModal.style.display = "none"; resetForm(); }
-  };
-
-  function resetForm() {
-    empForm.reset();
-    const inputs = empForm.querySelectorAll("input, select");
-    inputs.forEach((input) => setSuccess(input));
-  }
-
-  // Initial call to set bars to 0
-  updateDashboardStats();
+    // Initialize stats on load (sets bars to 0%)
+    updateDashboardStats();
 });
-
 
 
 // header icons section
