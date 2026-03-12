@@ -5,8 +5,7 @@
 // --- Data Storage ---
 let hraAssets = [];
 let hraReturnAssets = [];
-let currentEditingAssetId = null;
-let currentReturningAsset = null;
+let currentEditingDatabaseId = null; 
 
 // --- Asset Allocation Selectors ---
 const hraTableBody = document.getElementById('hraAssetTableBody');
@@ -131,10 +130,10 @@ function hraRenderTable(data) {
             <td>${asset.assigned_date}</td>
             <td><span class="hra-status-badge hra-status-${asset.status}">${asset.status}</span></td>
             <td>
-                <button class="hra-action-icon hra-edit-btn" data-id="${asset.asset_id}">
+                <button class="hra-action-icon hra-edit-btn" data-pk="${asset.id}">
                     <i class="fa-solid fa-pen"></i>
                 </button>
-                <button class="hra-action-icon hra-delete-btn" data-id="${asset.asset_id}" style="color:#ef4444;">
+                <button class="hra-action-icon hra-delete-btn" data-pk="${asset.id}" style="color:#ef4444;">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </td>
@@ -151,26 +150,28 @@ function hraGetFilteredAssets() {
     return hraAssets.filter(asset =>
         (asset.employee && asset.employee.toLowerCase().includes(term)) ||
         (asset.asset_id && asset.asset_id.toLowerCase().includes(term)) ||
-        (asset.model_details && asset.model_details.toLowerCase().includes(term))
+        (asset.model_details && asset.model_details.toLowerCase().includes(term))||
+        (asset.emp_id && asset.emp_id.toLowerCase().includes(term))
     );
 }
 
 // Modal Operations
 function hraOpenModalForCreate() {
-    currentEditingAssetId = null;
+    currentEditingDatabaseId = null;
     if (hraModalTitle) hraModalTitle.textContent = 'Allocate New Asset';
     if (hraModalSubmitBtn) hraModalSubmitBtn.textContent = 'Confirm Allocation';
     if (hraAssetForm) {
         hraAssetForm.reset();
          document.getElementById('hraAssetId').disabled = false; 
-        document.getElementById('hraEmpId').value = '';
-        document.getElementById('hraEmpEmail').value = '';
+        // document.getElementById('hraEmpId').value = '';
+        // document.getElementById('hraEmpEmail').value = '';
     }
     if (hraModal) hraModal.style.display = 'flex';
 }
 
 function hraOpenModalForEdit(asset) {
-    currentEditingAssetId = asset.asset_id;
+    currentEditingDatabaseId = asset.id; 
+
     if (hraModalTitle) hraModalTitle.textContent = 'Edit Asset Details';
     if (hraModalSubmitBtn) hraModalSubmitBtn.textContent = 'Save Changes';
 
@@ -187,7 +188,7 @@ function hraOpenModalForEdit(asset) {
 }
 
 function hraCloseModal() {
-    currentEditingAssetId = null;
+    currentEditingDatabaseId = null;
     if (hraModal) hraModal.style.display = 'none';
     if (hraAssetForm) hraAssetForm.reset();
 }
@@ -403,10 +404,10 @@ document.addEventListener('DOMContentLoaded', () => {
             let method = "POST";
 
             // If editing → update instead of create
-            if(currentEditingAssetId){
-                url = `http://127.0.0.1:8000/api/assets/${currentEditingAssetId}/`;
-                method = "PATCH";
-            }
+            if(currentEditingDatabaseId){
+                    url = `http://127.0.0.1:8000/api/assets/${currentEditingDatabaseId}/`;
+                    method = "PATCH";
+                }
 
             const response = await fetch(url,{
                 method: method,
@@ -419,8 +420,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 hraCloseModal();
                 showSuccessPopup();
             }
+            else {
+                    alert("Failed to save asset. Check console.");
 
-        } catch(error){
+        }}
+         catch(error){
             console.error(error);
         }
 
@@ -431,10 +435,11 @@ document.addEventListener('DOMContentLoaded', () => {
         hraTableBody.addEventListener('click', async(e) => {
             const button = e.target.closest('button');
             if (!button) return;
-            const assetId = button.getAttribute('data-id');
+
+            const dbId = button.getAttribute('data-pk');
 
             if (button.classList.contains('hra-edit-btn')) {
-                const asset = hraAssets.find(a => a.asset_id === assetId);
+                const asset = hraAssets.find(a => a.id == dbId);
                 if (asset) hraOpenModalForEdit(asset);
             }
 
@@ -442,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(confirm("Are you sure you want to delete this asset?")) {
 
-        const response = await fetch(`http://127.0.0.1:8000/api/assets/${assetId}/`,{
+        const response = await fetch(`http://127.0.0.1:8000/api/assets/${dbId}/`,{
             method:"DELETE"
         });
 
@@ -524,9 +529,12 @@ if (button.classList.contains('hra-return-confirm-btn')) {
 
     if (response.ok) {
         loadReturnAssets();
+        loadAssets();
         showSuccessPopup();
     }
 }
+        
+    
 
 // 2️⃣ Mark Not Received (Red Cross)
 if (button.classList.contains('hra-return-reject-btn')) {
