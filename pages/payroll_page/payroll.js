@@ -1,143 +1,134 @@
-const monthPicker = document.getElementById("monthPicker");
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // --- 1. SETUP YEAR PICKER ---
+    const yearPicker = document.getElementById("yearPicker");
+    const currentYear = new Date().getFullYear();
+    
+    // Populate Dropdown (Current Year - 10 to Current Year + 5)
+    for (let y = currentYear - 10; y <= currentYear + 5; y++) {
+        const option = document.createElement("option");
+        option.value = y;
+        option.text = y;
+        if (y === currentYear) option.selected = true;
+        yearPicker.appendChild(option);
+    }
 
-const now = new Date();
+    // --- 2. HELPERS ---
+    function formatRupee(number) {
+        return new Intl.NumberFormat("en-IN", {
+            style: "currency",
+            currency: "INR",
+            maximumFractionDigits: 0,
+        }).format(number);
+    }
 
-const currentYear = now.getFullYear();
-const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
+    function formatCompact(number) {
+        return new Intl.NumberFormat("en-IN", {
+            notation: "compact",
+            compactDisplay: "short",
+            style: "currency",
+            currency: "INR",
+        }).format(number);
+    }
 
-monthPicker.value = `${currentYear}-${currentMonth}`;
-monthPicker.max = `${currentYear}-${currentMonth}`;
-monthPicker.min = `${currentYear - 50}-01`;
+    // Mock Data Generator (Simulate backend response based on year)
+    function getDataForYear(year) {
+        // Base salary increases every year slightly
+        const baseSalary = 800000 + (year - 2020) * 50000; 
+        
+        let monthlyData = [];
+        for (let i = 0; i < 12; i++) {
+            // Random fluctuation per month
+            let randomFactor = 0.8 + Math.random() * 0.4; 
+            monthlyData.push(Math.floor(baseSalary * randomFactor));
+        }
+        return monthlyData;
+    }
 
-function formatRupee(number) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(number);
-}
+    // --- 3. CHART INITIALIZATION ---
+    const ctx = document.getElementById("payrollChart").getContext("2d");
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function formatCompact(number) {
-  return new Intl.NumberFormat("en-IN", {
-    notation: "compact",
-    compactDisplay: "short",
-    style: "currency",
-    currency: "INR",
-  }).format(number);
-}
+    // Create Gradient
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, "#FF6B00"); // Orange Start
+    gradient.addColorStop(1, "#FFB74D"); // Orange End
 
-function getDataForYear(year) {
-  const baseSalary = 800000 + (year - 2000) * 50000;
+    // Initial Data
+    let initialData = getDataForYear(currentYear);
 
-  let monthlyData = [];
-
-  for (let i = 0; i < 12; i++) {
-    let randomFactor = 0.8 + Math.random() * 0.4;
-
-    monthlyData.push(Math.floor(baseSalary * randomFactor));
-  }
-
-  return monthlyData;
-}
-
-const ctx = document.getElementById("payrollChart").getContext("2d");
-
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
-let currentData = getDataForYear(currentYear);
-
-let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-
-gradient.addColorStop(0, "#c2410c");
-gradient.addColorStop(1, "#fb923c");
-
-const payrollChart = new Chart(ctx, {
-  type: "bar",
-
-  data: {
-    labels: months,
-    datasets: [
-      {
-        label: "Salary",
-        data: currentData,
-        backgroundColor: gradient,
-        borderRadius: 6,
-        maxBarThickness: 30,
-      },
-    ],
-  },
-
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    plugins: {
-      legend: { display: false },
-
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            return formatRupee(context.raw);
-          },
+    const payrollChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: "Total Salary",
+                    data: initialData,
+                    backgroundColor: gradient,
+                    borderRadius: 6,
+                    maxBarThickness: 30,
+                },
+            ],
         },
-      },
-    },
-
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function (value) {
-            return formatCompact(value);
-          },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return formatRupee(context.raw);
+                        },
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return formatCompact(value);
+                        },
+                        color: "#9ca3af"
+                    },
+                    grid: { color: "#f3f4f6" }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: "#6b7280" }
+                },
+            },
         },
-      },
+    });
 
-      x: {
-        grid: { display: false },
-      },
-    },
-  },
+    // --- 4. UPDATE LOGIC ---
+    function updateDashboard(year) {
+        const newData = getDataForYear(year);
+
+        // Update Chart
+        payrollChart.data.datasets[0].data = newData;
+        payrollChart.update();
+
+        // Update Stats
+        const total = newData.reduce((a, b) => a + b, 0);
+        const average = total / 12;
+
+        document.getElementById("totalPayout").textContent = formatRupee(total);
+        document.getElementById("avgPayout").textContent = formatRupee(average);
+    }
+
+    // Initial Stats Load
+    updateDashboard(currentYear);
+
+    // --- 5. EVENT LISTENER ---
+    yearPicker.addEventListener("change", (e) => {
+        updateDashboard(parseInt(e.target.value));
+    });
+
 });
 
-function updateDashboard(dateString) {
-  const year = parseInt(dateString.split("-")[0]);
-
-  const newData = getDataForYear(year);
-
-  payrollChart.data.datasets[0].data = newData;
-
-  payrollChart.update();
-
-  const total = newData.reduce((a, b) => a + b, 0);
-
-  const average = total / 12;
-
-  document.getElementById("totalPayout").textContent = formatRupee(total);
-
-  document.getElementById("avgPayout").textContent = formatRupee(average);
-}
-
-updateDashboard(`${currentYear}-${currentMonth}`);
-
-monthPicker.addEventListener("change", (e) => {
-  if (e.target.value) {
-    updateDashboard(e.target.value);
-  }
-});
 
 //notification section
 let notifications = [
