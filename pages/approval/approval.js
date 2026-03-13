@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Define Global Action Functions for Leaves
     window.approveLeave = function(id) {
-        fetch(`http://13.60.26.193:8000/api/employee/update/${id}/`, {
+        fetch(`http://13.60.70.185:8000/api/employee/update/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: "approved" })
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.rejectLeave = function(id) {
-        fetch(`http://13.60.26.193:8000/api/employee/update/${id}/`, {
+        fetch(`http://13.60.70.185:8000/api/employee/update/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: "rejected" })
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch Leaves
-    fetch(`http://13.60.26.193:8000/api/leave-approvals/`) // Added :8000 assuming port is needed based on other calls
+    fetch(`http://13.60.70.185:8000/api/leave-approvals/`) // Added :8000 assuming port is needed based on other calls
     .then(res => res.json())
     .then(response => {
         const data = response.data || response; // Handle if response is array or object
@@ -101,7 +101,7 @@ async function loadAssetRequests() {
     const tbody = document.getElementById("assetsTableBody");
     
     // IP Address Correction (Keep your server IP)
-    const API_URL = "http://13.60.26.193:8000/api/asset-requests/"; 
+    const API_URL = "http://13.60.70.185:8000/api/asset-requests/"; 
 
     try {
         const response = await fetch(API_URL);
@@ -164,7 +164,7 @@ async function loadAssetRequests() {
     // Corrected Update Function
     window.updateAssetStatus = function (id, status) {
         // FIXED: Added the colon (:) before 8000
-        const UPDATE_URL = `http://13.60.26.193:8000/api/asset-request-status/${id}/`;
+        const UPDATE_URL = `http://13.60.70.185:8000/api/asset-request-status/${id}/`;
 
         fetch(UPDATE_URL, {
             method: "PATCH",

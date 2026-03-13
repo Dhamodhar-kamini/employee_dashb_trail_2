@@ -3,7 +3,7 @@
 // function loademployees()
 // {
     
-//   fetch("http://13.60.240.189:8000/api/employees/")
+//   fetch("http://13.60.70.185:8000/api/employees/")
 //   .then(res => res.json())
 //         .then(data => 
 //           {
@@ -542,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             // 4. Send to API
-            fetch("http://127.0.0.1:8000/api/create/", {
+            fetch("http://13.60.70.185:8000/api/create/", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(apiEmployee)
