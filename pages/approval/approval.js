@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Define Global Action Functions for Leaves
     window.approveLeave = function(id) {
-        fetch(`http://13.60.26.193:8000/api/employee/update/${id}/`, {
+        fetch(`http://127.0.0.1:8000/api/employee/update/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: "approved" })
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.rejectLeave = function(id) {
-        fetch(`http://13.60.26.193:8000/api/employee/update/${id}/`, {
+        fetch(`http://127.0.0.1:8000/api/employee/update/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: "rejected" })
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch Leaves
-    fetch(`http://13.60.26.193:8000/api/leave-approvals/`) // Added :8000 assuming port is needed based on other calls
+    fetch(`http://127.0.0.1:8000/api/leave-approvals/`) // Added :8000 assuming port is needed based on other calls
     .then(res => res.json())
     .then(response => {
         const data = response.data || response; // Handle if response is array or object
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Fetching from the NEW Admin Endpoint
-            const response = await fetch(`http://13.60.26.193/api/admin/asset-requests/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/admin/asset-requests/`);
             
             if (!response.ok) throw new Error("Failed to fetch asset requests");
 
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateAssetStatus = function(id, status) {
         if(!confirm(`Mark this request as ${status}?`)) return;
 
-        fetch(`http://13.60.26.193/api/admin/asset-request-status/${id}/`, {
+        fetch(`http://127.0.0.1:8000/api/admin/asset-request-status/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: status })
@@ -178,6 +178,86 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Load
     loadAssetRequests();
 });
+    // ==========================================
+    // 3. ATTENDANCE APPROVAL SECTION
+    // ==========================================
+    const attendanceTableBody = document.getElementById("attendanceTableBody");
+
+    async function loadAttendanceRequests() {
+        attendanceTableBody.innerHTML = "";
+
+        try {
+            // Fetch from the NEW API
+            const response = await fetch(`http://127.0.0.1:8000/api/admin/attendance-requests/`);
+            
+            if (!response.ok) throw new Error("Failed to fetch");
+
+            const data = await response.json();
+
+            if (data.length === 0) {
+                attendanceTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No pending attendance requests</td></tr>`;
+                return;
+            }
+
+            data.forEach(req => {
+                const actionHtml = `
+                    <div class="action-cell">
+                        <button class="btn-action-reject" onclick="updateAttendanceStatus(${req.id}, 'Rejected')">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <button class="btn-action-approve" onclick="updateAttendanceStatus(${req.id}, 'Approved')">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                    </div>`;
+
+                const row = document.createElement("tr");
+                
+                // Format times for display (e.g., 09:30:00)
+                const inTime = req.clock_in ? req.clock_in : '-';
+                const outTime = req.clock_out ? req.clock_out : '-';
+
+                row.innerHTML = `
+                    <td>${req.employee_name}</td>
+                    <td>Correction</td>
+                    <td>${req.date}</td>
+                    <td>In: ${inTime} <br> Out: ${outTime}</td>
+                    <td>${req.reason}</td>
+                    <td>${actionHtml}</td>
+                `;
+                attendanceTableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error("Error loading attendance:", error);
+            attendanceTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error loading data</td></tr>`;
+        }
+    }
+
+    // Function to Approve/Reject
+    window.updateAttendanceStatus = function(id, status) {
+        if(!confirm(`Mark this request as ${status}?`)) return;
+
+        fetch(`http://127.0.0.1:8000/api/admin/attendance-status/${id}/`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: status })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to update");
+            return res.json();
+        })
+        .then(data => {
+            alert(data.message);
+            loadAttendanceRequests(); // Refresh table
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error updating status");
+        });
+    };
+
+    // Initial Load
+    loadAttendanceRequests();
 // Tab Switch Logic
 function switchTab(tabName, btnElement) {
     const titleMap = {

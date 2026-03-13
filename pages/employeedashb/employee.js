@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
     {
         if (!tableBody) return;
         tableBody.innerHTML = "";
-        fetch("http://13.60.26.193:8000/api/employees/")
+        fetch("http://127.0.0.1:8000/api/employees/")
         .then(res => res.json())
         .then(data => 
           {

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const emp_id = localStorage.getItem("employee_id");
   console.log(emp_id)
   
-    fetch(`http://13.60.26.193:8000/api/employee/dashboard/${emp_id}/`)
+    fetch(`http://127.0.0.1:8000/api/employee/dashboard/${emp_id}/`)
         .then(res => res.json())
         .then(data => {
           currentEmpData = data; 
@@ -390,7 +390,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // });
 // }
 const leave_table = document.getElementById('leavebody')
-fetch(`http://13.60.26.193:8000/api/employee/apply-leave/${emp_id}/`)
+fetch(`http://127.0.0.1:8000/api/employee/apply-leave/${emp_id}/`)
         .then(res => res.json())
         .then(data => {
             leave_table.innerHTML = "";
@@ -416,7 +416,7 @@ fetch(`http://13.60.26.193:8000/api/employee/apply-leave/${emp_id}/`)
 
 function fetchDocuments() {
 
-fetch(`http://13.60.26.193:8000/api/employee-documents/${emp_id}/`)
+fetch(`http://127.0.0.1:8000/api/employee-documents/${emp_id}/`)
 .then(res => res.json())
 .then(data => {
 
@@ -434,7 +434,7 @@ return;
 
 data.forEach(doc => {
 
-const fileUrl = `http://13.60.26.193${doc.file}`;
+const fileUrl = `http://127.0.0.1:8000${doc.file}`;
 
 const card = `
 <div class="doc-card">
