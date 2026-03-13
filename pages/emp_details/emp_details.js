@@ -8,7 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const emp_id = localStorage.getItem("employee_id");
   console.log(emp_id)
   
+<<<<<<< HEAD
     fetch(`http://13.60.70.185:8000/api/employee/dashboard/${emp_id}/`)
+=======
+    fetch(`http://127.0.0.1:8000/api/employee/dashboard/${emp_id}/`)
+>>>>>>> f88e47feced0bd801d2af606fd18dbc673fa764e
         .then(res => res.json())
         .then(data => {
           currentEmpData = data; 
@@ -390,7 +394,11 @@ document.addEventListener("DOMContentLoaded", function () {
 // });
 // }
 const leave_table = document.getElementById('leavebody')
+<<<<<<< HEAD
 fetch(`http://13.60.70.185:8000/api/employee/apply-leave/${emp_id}/`)
+=======
+fetch(`http://127.0.0.1:8000/api/employee/apply-leave/${emp_id}/`)
+>>>>>>> f88e47feced0bd801d2af606fd18dbc673fa764e
         .then(res => res.json())
         .then(data => {
             leave_table.innerHTML = "";
@@ -416,7 +424,11 @@ fetch(`http://13.60.70.185:8000/api/employee/apply-leave/${emp_id}/`)
 
 function fetchDocuments() {
 
+<<<<<<< HEAD
 fetch(`http://13.60.70.185:8000/api/employee-documents/${emp_id}/`)
+=======
+fetch(`http://127.0.0.1:8000/api/employee-documents/${emp_id}/`)
+>>>>>>> f88e47feced0bd801d2af606fd18dbc673fa764e
 .then(res => res.json())
 .then(data => {
 
@@ -434,7 +446,11 @@ return;
 
 data.forEach(doc => {
 
+<<<<<<< HEAD
 const fileUrl = `http://13.60.70.185${doc.file}`;
+=======
+const fileUrl = `http://127.0.0.1:8000${doc.file}`;
+>>>>>>> f88e47feced0bd801d2af606fd18dbc673fa764e
 
 const card = `
 <div class="doc-card">
