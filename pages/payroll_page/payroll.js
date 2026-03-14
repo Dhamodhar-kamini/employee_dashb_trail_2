@@ -115,13 +115,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const total = newData.reduce((a, b) => a + b, 0);
         const average = total / 12;
 
-        document.getElementById("totalPayout").textContent = formatRupee(total);
-        document.getElementById("avgPayout").textContent = formatRupee(average);
+        // document.getElementById("totalPayout").textContent = formatRupee(total);
+        // document.getElementById("avgPayout").textContent = formatRupee(average);
     }
 
     // Initial Stats Load
     updateDashboard(currentYear);
-
+    
+    fetch(`http://127.0.0.1:8000/api/salary`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("totalPayout").innerText = data.total_annual_salary;
+            document.getElementById("avgPayout").innerText = data.total_monthly_salary;
+            
+        });
+document.getElementById('totalPayout').innerText=
     // --- 5. EVENT LISTENER ---
     yearPicker.addEventListener("change", (e) => {
         updateDashboard(parseInt(e.target.value));

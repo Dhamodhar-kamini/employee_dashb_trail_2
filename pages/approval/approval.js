@@ -7,7 +7,6 @@ const API_BASE_URL = "http://13.51.167.95:8000";
 // ==========================================
 // 2. UI & NAVIGATION LOGIC
 // ==========================================
-
 // Tab Switch Logic (Attached to window so HTML onclick works)
 window.switchTab = function(tabName, btnElement) {
     const titleMap = {
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Load Data Initially
+// Load Data Initially
     loadLeaves();
     loadAssetRequests();
     loadAttendanceRequests();
@@ -210,7 +209,7 @@ async function loadAssetRequests() {
 window.updateAssetStatus = function(id, status) {
     if(!confirm(`Mark asset request as ${status}?`)) return;
 
-    fetch(`${API_BASE_URL}/api/admin/asset-request-status/${id}/`, {
+    fetch(`http://127.0.0.1:8000/api/admin/asset-request-status/${id}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: status })

@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const PF_RATE = 0.12;
 
+
     // --- 1. Automatic Date Initialization ---
     function initDates() {
         const today = new Date();
@@ -163,6 +164,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if(preview.words) preview.words.textContent = net > 0 ? convertNumberToWords(Math.round(net)) + " Only" : "Zero Only";
     }
 
+
+    
+
+    function loadEmployees() {
+
+    fetch("http://13.51.167.95:8000/api/employees/")
+    .then(res => res.json())
+    .then(data => {
+
+        const select = document.getElementById("empSelect");
+
+        select.innerHTML = '<option value="">Select Employee</option>';
+
+        data.forEach(emp => {
+
+            const option = document.createElement("option");
+            option.value = emp.id;
+            option.textContent = emp.name;
+
+            select.appendChild(option);
+
+        });
+
+    })
+}
+
+loadEmployees();
     // --- Helpers ---
     function formatINR(amount) {
         return "₹" + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
