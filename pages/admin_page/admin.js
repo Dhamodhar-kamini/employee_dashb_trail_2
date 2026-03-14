@@ -903,18 +903,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //birthday wihes
 document.addEventListener("DOMContentLoaded", function () {
-    
-    // --- 1. DATA ---
+
+    // --- 1. DATA (Added Phone Numbers) ---
+    // IMPORTANT: Add country code without '+' (e.g., 919876543210)
     const birthdays = [
-        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg" },
-        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg" },
-        { name: "Siddarth", role: "Product Manager", date: "26 Oct", rawDate: "2023-10-26", img: "../assets/profiledp.jpeg" },
-        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", rawDate: "2023-10-28", img: "../assets/profiledp.jpeg" },
-        { name: "Arjun", role: "HR Manager", date: "02 Nov", rawDate: "2023-11-02", img: "../assets/profiledp.jpeg" }
+        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", phone: "8790997602", img: "../assets/profiledp.jpeg" },
+        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", phone: "7075653250", img: "../assets/profiledp.jpeg" },
+        { name: "Balaji", role: "Product Manager", date: "26 Oct", phone: "8309930827", img: "../assets/profiledp.jpeg" },
+        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", phone: "7036084043", img: "../assets/profiledp.jpeg" },
+        { name: "Arjun", role: "HR Manager", date: "02 Nov", phone: "915432109876", img: "../assets/profiledp.jpeg" }
     ];
 
     let currentIndex = 0;
     let autoSlideInterval;
+    let currentTargetPhone = ""; // Store phone number of the person being wished
 
     // --- 2. CAROUSEL ELEMENTS ---
     const imgEl = document.getElementById("bdayImg");
@@ -926,20 +928,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // --- 3. CAROUSEL LOGIC ---
     function updateCarousel(index) {
-        if(!container) return;
+        if (!container) return;
+        
+        // Fade Animation Reset
         container.classList.remove("fade-in");
-        void container.offsetWidth; 
+        void container.offsetWidth; // Trigger reflow
+        
         const person = birthdays[index];
-        if(imgEl) imgEl.src = person.img;
-        if(nameEl) nameEl.innerText = person.name;
-        if(roleEl) roleEl.innerText = person.role;
-        if(dateEl) dateEl.innerText = person.date;
+        if (imgEl) imgEl.src = person.img;
+        if (nameEl) nameEl.innerText = person.name;
+        if (roleEl) roleEl.innerText = person.role;
+        if (dateEl) dateEl.innerText = person.date;
+        
         container.classList.add("fade-in");
     }
 
     // --- 4. AUTO SLIDE LOGIC ---
     function startAutoSlide() {
-        clearInterval(autoSlideInterval);
+        if (autoSlideInterval) clearInterval(autoSlideInterval);
         autoSlideInterval = setInterval(() => {
             currentIndex = (currentIndex + 1) % birthdays.length;
             updateCarousel(currentIndex);
@@ -950,7 +956,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearInterval(autoSlideInterval);
     }
 
-    if(bdayCard) {
+    if (bdayCard) {
         bdayCard.addEventListener("mouseenter", stopAutoSlide);
         bdayCard.addEventListener("mouseleave", startAutoSlide);
     }
@@ -959,92 +965,115 @@ document.addEventListener("DOMContentLoaded", function () {
     const nextBtn = document.getElementById("nextBdayBtn");
     const prevBtn = document.getElementById("prevBdayBtn");
 
-    if(nextBtn) nextBtn.addEventListener("click", () => {
+    if (nextBtn) nextBtn.addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % birthdays.length;
         updateCarousel(currentIndex);
-        stopAutoSlide(); 
-        if(!bdayCard.matches(':hover')) startAutoSlide();
+        stopAutoSlide();
     });
 
-    if(prevBtn) prevBtn.addEventListener("click", () => {
+    if (prevBtn) prevBtn.addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + birthdays.length) % birthdays.length;
         updateCarousel(currentIndex);
         stopAutoSlide();
-        if(!bdayCard.matches(':hover')) startAutoSlide();
     });
 
-    // --- 6. WISH MODAL & SUCCESS MODAL LOGIC ---
+    // --- 6. WISH MODAL LOGIC ---
     const wishModal = document.getElementById("wishModal");
-    const wishTargetName = document.getElementById("wishTargetName");
-    const wishMessage = document.getElementById("wishMessage");
-    const successWishModal = document.getElementById("successWishModal"); // Success Modal
-    const successName = document.getElementById("successName"); // Name in success modal
+    const wishTargetNameEl = document.getElementById("wishTargetName");
+    const wishMessageEl = document.getElementById("wishMessage");
+    
+    // Success Modal Elements
+    const successWishModal = document.getElementById("successWishModal");
+    const successNameEl = document.getElementById("successName");
 
-    window.openWishModal = function(identifier) {
+    // Open Wish Modal
+    window.openWishModal = function (identifier) {
         stopAutoSlide();
-        let name = "";
+        let person;
+
         if (identifier === 'current') {
-            name = birthdays[currentIndex].name;
+            person = birthdays[currentIndex];
         } else {
-            name = identifier;
+            // Find person by name (identifier passed from View All list)
+            person = birthdays.find(p => p.name === identifier);
         }
 
-        if(wishTargetName) wishTargetName.innerText = name;
-        if(wishMessage) wishMessage.value = ""; 
-        if(wishModal) wishModal.classList.add("active");
+        if (person) {
+            if (wishTargetNameEl) wishTargetNameEl.innerText = person.name;
+            currentTargetPhone = person.phone; // Store phone for WhatsApp
+            
+            // Default Message
+            if (wishMessageEl) wishMessageEl.value = `Happy Birthday ${person.name}! 🎂 Hope you have a fantastic year ahead!`;
+            
+            if (wishModal) wishModal.classList.add("active");
+        }
     };
 
-    window.closeWishModal = function() {
-        if(wishModal) wishModal.classList.remove("active");
-        if(bdayCard && !bdayCard.matches(':hover')) {
+    window.closeWishModal = function () {
+        if (wishModal) wishModal.classList.remove("active");
+        if (bdayCard && !bdayCard.matches(':hover')) {
             startAutoSlide();
         }
     };
 
-    // --- UPDATED SUBMIT FUNCTION WITH SUCCESS POPUP ---
-    window.submitWish = function() {
+    // --- 7. SUBMIT WISH (WHATSAPP INTEGRATION) ---
+    window.submitWish = function () {
         const btn = document.querySelector(".btn-send-wish");
         const originalText = btn.innerHTML;
-        
-        // 1. Loading State
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
-        
-        setTimeout(() => {
-            // 2. Get the name we just wished
-            const currentName = wishTargetName.innerText;
+        const message = wishMessageEl.value;
+        const name = wishTargetNameEl.innerText;
 
-            // 3. Close the input modal
+        // Validation
+        if (!currentTargetPhone) {
+            alert("Phone number not found for this employee.");
+            return;
+        }
+
+        // 1. Loading State
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Opening WhatsApp...';
+
+        setTimeout(() => {
+            // 2. Construct WhatsApp URL
+            // Encodes the message to be URL-safe
+            const whatsappUrl = `https://wa.me/${currentTargetPhone}?text=${encodeURIComponent(message)}`;
+
+            // 3. Open WhatsApp in New Tab
+            window.open(whatsappUrl, '_blank');
+
+            // 4. Close Input Modal
             closeWishModal();
 
-            // 4. Reset Button
+            // 5. Reset Button
             btn.innerHTML = originalText;
+
+            // 6. Show Success Modal (Feedback to Admin)
+            openSuccessWishModal(name);
             
-            // 5. Open Success Modal
-            openSuccessWishModal(currentName);
-        }, 800);
+        }, 1000);
     };
 
     // --- SUCCESS MODAL FUNCTIONS ---
-    window.openSuccessWishModal = function(name) {
-        if(successName) successName.innerText = name;
-        if(successWishModal) successWishModal.classList.add("active");
+    window.openSuccessWishModal = function (name) {
+        if (successNameEl) successNameEl.innerText = name;
+        if (successWishModal) successWishModal.classList.add("active");
     };
 
-    window.closeSuccessWishModal = function() {
-        if(successWishModal) successWishModal.classList.remove("active");
+    window.closeSuccessWishModal = function () {
+        if (successWishModal) successWishModal.classList.remove("active");
     };
 
-    // --- 7. VIEW ALL MODAL LOGIC ---
+    // --- 8. VIEW ALL MODAL LOGIC ---
     const allBdayModal = document.getElementById("allBirthdaysModal");
     const listContainer = document.getElementById("bdayListContainer");
 
-    window.openAllBirthdaysModal = function() {
+    window.openAllBirthdaysModal = function () {
         stopAutoSlide();
-        if(listContainer) {
+        if (listContainer) {
             listContainer.innerHTML = "";
             birthdays.forEach(person => {
                 const item = document.createElement("div");
                 item.className = "bday-item";
+                // Note: passing person.name to openWishModal
                 item.innerHTML = `
                     <div class="bday-left">
                         <img src="${person.img}" alt="${person.name}">
@@ -1060,18 +1089,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 listContainer.appendChild(item);
             });
         }
-        if(allBdayModal) allBdayModal.classList.add("active");
+        if (allBdayModal) allBdayModal.classList.add("active");
     };
 
-    window.closeAllBirthdaysModal = function() {
-        if(allBdayModal) allBdayModal.classList.remove("active");
-        if(bdayCard && !bdayCard.matches(':hover')) {
+    window.closeAllBirthdaysModal = function () {
+        if (allBdayModal) allBdayModal.classList.remove("active");
+        if (bdayCard && !bdayCard.matches(':hover')) {
             startAutoSlide();
         }
     };
 
-    // --- 8. CLOSE ON CLICK OUTSIDE (Updated for Success Modal) ---
-    window.onclick = function(event) {
+    // --- 9. CLOSE ON CLICK OUTSIDE ---
+    window.onclick = function (event) {
         if (event.target === wishModal) closeWishModal();
         if (event.target === allBdayModal) closeAllBirthdaysModal();
         if (event.target === successWishModal) closeSuccessWishModal();
