@@ -157,7 +157,7 @@ async function loadAssetRequests() {
     assetTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Loading...</td></tr>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/asset-requests/`);
+        const response = await fetch(`${API_BASE_URL}/api/admin/asset-requests/`);
         if (!response.ok) throw new Error("Failed to fetch");
 
         const data = await response.json();
@@ -210,7 +210,7 @@ async function loadAssetRequests() {
 window.updateAssetStatus = function(id, status) {
     if(!confirm(`Mark asset request as ${status}?`)) return;
 
-    fetch(`${API_BASE_URL}/api/asset-request-status/${id}/`, {
+    fetch(`${API_BASE_URL}/api/admin/asset-request-status/${id}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: status })
@@ -239,7 +239,7 @@ async function loadAttendanceRequests() {
     if (!attendanceTableBody) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/attendance-requests/`); // Updated endpoint to match pattern
+        const response = await fetch(`${API_BASE_URL}/api/admin/attendance-requests/`); // Updated endpoint to match pattern
         if (!response.ok) throw new Error("Failed to fetch");
 
         const data = await response.json();
@@ -288,7 +288,7 @@ async function loadAttendanceRequests() {
 window.updateAttendanceStatus = function(id, status) {
     if(!confirm(`Mark attendance request as ${status}?`)) return;
 
-    fetch(`${API_BASE_URL}/api/attendance-status/${id}/`, {
+    fetch(`${API_BASE_URL}/api/admin/attendance-status/${id}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: status })
