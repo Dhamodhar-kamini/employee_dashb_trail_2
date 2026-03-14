@@ -542,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             // 4. Send to API
-            fetch("http://13.60.70.185:8000/api/create/", {
+            fetch("http://13.51.167.95:8000/api/create/", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(apiEmployee)
