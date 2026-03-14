@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 1. Update Total Count
         const totalEl = document.getElementById("totalEmpCount");
-        if (totalEl) totalEl.innerText = total;
+        // if (totalEl) totalEl.innerText = total;
 
         // 2. Helper to update bars
         const updateBar = (typeKey, barId, labelId, valId) => {
@@ -622,79 +622,109 @@ const dd_departmentData = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Selectors using Unique Class/IDs
+
     const dd_svgChart = document.querySelector('.dd-donut-svg');
     const dd_legendList = document.getElementById('ddLegendList');
     const dd_totalDisplay = document.getElementById('ddTotalDisplay');
 
-    // 2. CALCULATE TOTAL
-    const total = dd_departmentData.reduce((sum, item) => sum + item.count, 0);
-    
-    // Animate Total Number
-    let currentCount = 0;
-    const interval = setInterval(() => {
-        const increment = Math.ceil(total / 50);
-        currentCount += increment;
-        
-        if(currentCount >= total) {
-            currentCount = total;
-            clearInterval(interval);
-        }
-        dd_totalDisplay.innerText = currentCount;
-    }, 20);
+    fetch("http://13.51.167.95:8000/api/employees/")
+    .then(res => res.json())
+    .then(data => {
 
-    // 3. RENDER CHART & LEGEND
-    let cumulativePercent = 0;
+        // 1️⃣ TOTAL EMPLOYEES
+        const total = data.length;
+        dd_totalDisplay.innerText = total;
+        document.getElementById('totalEmpCount').innerText = data.length;
+        document.getElementById("total_employees").innerText=data.length;
 
-    dd_departmentData.forEach(dept => {
-        // --- A. Render Legend Item ---
-        const percentage = ((dept.count / total) * 100).toFixed(1);
-        
-        const li = document.createElement('li');
-        li.className = 'dd-legend-item';
-        li.innerHTML = `
-            <div class="dd-item-left">
-                <span class="dd-color-dot ${dept.class}"></span>
-                <div>
-                    <span class="dd-dept-name">${dept.name}</span>
-                    <span class="dd-dept-percent">${percentage}%</span>
-                </div>
-            </div>
-            <span class="dd-dept-count">${dept.count}</span>
-        `;
-        dd_legendList.appendChild(li);
+        // 2️⃣ GROUP BY DEPARTMENT
+        const departmentMap = {};
 
-        // --- B. Render SVG Segment ---
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        const radius = 40;
-        const circumference = 2 * Math.PI * radius;
-        const segmentLength = (dept.count / total) * circumference;
-        
-        circle.setAttribute("cx", "50");
-        circle.setAttribute("cy", "50");
-        circle.setAttribute("r", radius);
-        circle.setAttribute("class", "dd-donut-segment"); // Unique class
-        circle.setAttribute("stroke", dept.color);
-        
-        // Calculate offset
-        const offset = -1 * (cumulativePercent / 100) * circumference;
+        data.forEach(emp => {
+            const dept = emp.department || "Others";
 
-        // Set initial state for animation
-        circle.style.strokeDasharray = `0 ${circumference}`;
-        circle.style.strokeDashoffset = offset;
-        
-        dd_svgChart.appendChild(circle);
+            if(!departmentMap[dept]){
+                departmentMap[dept] = 0;
+            }
 
-        // Trigger Animation
-        setTimeout(() => {
-            circle.style.strokeDasharray = `${segmentLength} ${circumference}`;
-        }, 100);
+            departmentMap[dept] += 1;
+        });
 
-        cumulativePercent += (dept.count / total) * 100;
+        // 3️⃣ CONVERT TO ARRAY FORMAT
+        const colors = ["#4CAF50","#2196F3","#FF9800","#E91E63","#9C27B0","#009688"];
+
+        const dd_departmentData = Object.keys(departmentMap).map((dept,index)=>({
+            name: dept,
+            count: departmentMap[dept],
+            color: colors[index % colors.length],
+            class: `dept-${index}`
+        }));
+
+        renderChart(dd_departmentData, total);
+
+    })
+    .catch(err=>{
+        console.error("Error fetching employees:", err);
     });
+
+
+    function renderChart(dd_departmentData, total){
+
+        let cumulativePercent = 0;
+
+        dd_departmentData.forEach(dept => {
+
+            const percentage = ((dept.count / total) * 100).toFixed(1);
+
+            // Legend
+            const li = document.createElement('li');
+            li.className = 'dd-legend-item';
+
+            li.innerHTML = `
+                <div class="dd-item-left">
+                    <span class="dd-color-dot" style="background:${dept.color}"></span>
+                    <div>
+                        <span class="dd-dept-name">${dept.name}</span>
+                        <span class="dd-dept-percent">${percentage}%</span>
+                    </div>
+                </div>
+                <span class="dd-dept-count">${dept.count}</span>
+            `;
+
+            dd_legendList.appendChild(li);
+
+            // SVG DONUT
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+            const radius = 40;
+            const circumference = 2 * Math.PI * radius;
+            const segmentLength = (dept.count / total) * circumference;
+
+            circle.setAttribute("cx","50");
+            circle.setAttribute("cy","50");
+            circle.setAttribute("r",radius);
+            circle.setAttribute("stroke",dept.color);
+            circle.setAttribute("fill","transparent");
+            circle.setAttribute("stroke-width","10");
+
+            const offset = -1 * (cumulativePercent / 100) * circumference;
+
+            circle.style.strokeDasharray = `0 ${circumference}`;
+            circle.style.strokeDashoffset = offset;
+
+            dd_svgChart.appendChild(circle);
+
+            setTimeout(()=>{
+                circle.style.strokeDasharray = `${segmentLength} ${circumference}`;
+            },100);
+
+            cumulativePercent += (dept.count / total) * 100;
+
+        });
+
+    }
+
 });
-
-
 //attendance graph and details
 document.addEventListener('DOMContentLoaded', () => {
 
