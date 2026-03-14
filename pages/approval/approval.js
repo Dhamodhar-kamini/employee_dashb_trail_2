@@ -2,7 +2,7 @@
 // 1. CONFIGURATION & GLOBAL VARIABLES
 // ==========================================
 
-const API_BASE_URL = "http://13.60.70.185:8000";
+const API_BASE_URL = "http://13.51.167.95:8000";
 
 // ==========================================
 // 2. UI & NAVIGATION LOGIC
