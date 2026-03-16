@@ -1,3 +1,8 @@
+// ==========================================
+// API CONFIGURATION
+// ==========================================
+const API_BASE_URL = "http://13.51.167.95:8000";
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DOM Elements ---
@@ -24,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         empName: document.getElementById('empSelect')
     };
 
-    // Preview Elements (Ensure IDs match your HTML, if present)
+    // Preview Elements
     const preview = {
         monthYear: document.getElementById('prevMonthYear'),
         name: document.getElementById('prevName'),
@@ -41,18 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
   
     const PF_RATE = 0.12;
 
-
     // --- 1. Automatic Date Initialization ---
     function initDates() {
         const today = new Date();
         const sysDate = document.getElementById('systemDate');
         if(sysDate) sysDate.textContent = today.toDateString(); 
 
-        // Default to Current Month and Year
         const targetMonth = today.getMonth(); 
         const targetYear = today.getFullYear();
 
-        // Populate Year Dropdown
         if (inputs.year) {
             inputs.year.innerHTML = '';
             for (let y = targetYear - 1; y <= targetYear + 1; y++) {
@@ -64,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Populate Month Dropdown
         if (inputs.month) {
             inputs.month.innerHTML = '';
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -78,14 +79,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. Calculation Logic ---
+    // --- 2. Fetch Employees for Dropdown ---
+    function loadEmployees() {
+        fetch(`${API_BASE_URL}/api/employees/`)
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("empSelect");
+            select.innerHTML = '<option value="">Select Employee</option>';
+
+            data.forEach(emp => {
+                const option = document.createElement("option");
+                option.value = emp.id;
+                option.textContent = `${emp.name} (${emp.employee_id})`;
+                select.appendChild(option);
+            });
+        })
+        .catch(err => console.error("Error loading employees:", err));
+    }
+
+    // --- 3. Calculation Logic ---
     function calculateSalary() {
         if (!inputs.year || !inputs.month) return;
 
         const selYear = parseInt(inputs.year.value);
         const selMonth = parseInt(inputs.month.value);
 
-        // Payroll Cycle Logic
         let prevMonthIndex = selMonth - 1;
         let prevYear = selYear;
 
@@ -104,62 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-fetch("http://13.51.167.95:8000/api/employees/")
-.then(res => res.json())
-.then(data => {
-    const empSelect = document.getElementById("empSelect");
-console.log(data)
-    data.forEach(emp => {
-        
-        const option = document.createElement("option");
-        option.value = emp.id;  // important
-        option.textContent = `${emp.name} (${emp.employee_id})`;
-        empSelect.appendChild(option);
-    });
-});
-
-
-document.getElementById("generateBtn").addEventListener("click", function(e){
-    e.preventDefault();
-
-    const employeeId = document.getElementById("empSelect").value;
-    console.log(employeeId)
-     const bas = Number(document.getElementById("basicSalary").value) || 0;
-    const lop_A = Number(document.getElementById("lopAmount").value) || 0;
-    const pf_a = Number(document.getElementById("pfAmount").value) || 0;
-    const pt = Number(document.getElementById("taxAmount").value) || 0;
-
-    // Calculate gross and net salary
-    const gr = bas - lop_A;         // gross salary after LOP
-    const n = gr - pf_a - pt; 
-    const payload = {
-        month: document.getElementById("monthSelect").value,
-        basic_salary: document.getElementById("basicSalary").value,
-        lop_days: document.getElementById("lopDays").value,
-        lop_amount: document.getElementById("lopAmount").value,
-        pf_amount: document.getElementById("pfAmount").value,
-        professional_tax: document.getElementById("taxAmount").value,
-        gross_salary:gr,
-        net_salary:n
-        
-    };
-    console.log(payload)
-
-    fetch(`http://13.51.167.95:8000/api/create-payslip/${employeeId}/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => console.error(error));
-});
- const employeeId = document.getElementById("empSelect").value;
- console.log(employeeId)
         // Days in Month Calculation
         const startDate = new Date(prevYear, prevMonthIndex, 26);
         const endDate = new Date(selYear, selMonth, 25);
@@ -220,33 +182,6 @@ document.getElementById("generateBtn").addEventListener("click", function(e){
         if(preview.words) preview.words.textContent = net > 0 ? convertNumberToWords(Math.round(net)) + " Only" : "Zero Only";
     }
 
-
-    
-
-    function loadEmployees() {
-
-    fetch("http://13.51.167.95:8000/api/employees/")
-    .then(res => res.json())
-    .then(data => {
-
-        const select = document.getElementById("empSelect");
-
-        select.innerHTML = '<option value="">Select Employee</option>';
-
-        data.forEach(emp => {
-
-            const option = document.createElement("option");
-            option.value = emp.id;
-            option.textContent = emp.name;
-
-            select.appendChild(option);
-
-        });
-
-    })
-}
-
-loadEmployees();
     // --- Helpers ---
     function formatINR(amount) {
         return "₹" + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -254,7 +189,7 @@ loadEmployees();
 
     function convertNumberToWords(amount) {
         if (amount === 0) return "Zero";
-        return "Amount in Words"; 
+        return "Amount in Words"; // You can implement a real converter here later
     }
 
     // --- Listeners ---
@@ -291,7 +226,6 @@ loadEmployees();
         });
     }
 
-    // --- BUTTON ACTIONS (Reset) ---
     if(resetBtn) {
         resetBtn.addEventListener('click', () => {
             initDates();
@@ -304,23 +238,66 @@ loadEmployees();
     }
 
     // ==========================================
-    // 3. POPUP LOGIC (INTEGRATED HERE)
+    // 4. API CALL & POPUP LOGIC
     // ==========================================
-
     if(generateBtn) {
         generateBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Stop form submission/reload
+            e.preventDefault(); 
 
-            // Get Employee Name
-            const empName = inputs.empName.options[inputs.empName.selectedIndex].text;
+            const employeeId = inputs.empName.value;
+            
+            if (!employeeId) {
+                alert("Please select an employee first!");
+                return;
+            }
+
+            // Get Employee Name for the popup
+            const empName = inputs.empName.options[inputs.empName.selectedIndex].text.split('(')[0].trim();
+            
+            // Get Month Name (e.g., "March") instead of number
+            const monthText = inputs.month.options[inputs.month.selectedIndex].text;
+
+            const bas = Number(inputs.basic.value) || 0;
+            const lop_A = Number(inputs.lopAmount.value) || 0;
+            const pf_a = Number(inputs.pf.value) || 0;
+            const pt = Number(inputs.tax.value) || 0;
+            const lop_d = Number(inputs.lopDays.value) || 0;
+
+            const gr = bas - lop_A;         
+            const n = gr - pf_a - pt; 
+
+            const payload = {
+                month: monthText,
+                basic_salary: bas,
+                lop_days: lop_d,
+                lop_amount: lop_A,
+                pf_amount: pf_a,
+                professional_tax: pt,
+                gross_salary: gr,
+                net_salary: n
+            };
 
             // Show Loading State
             const originalText = generateBtn.innerHTML;
             generateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending...`;
             generateBtn.disabled = true;
 
-            // Simulate API Delay (1.5s)
-            setTimeout(() => {
+            // Send to Backend
+            fetch(`${API_BASE_URL}/api/create-payslip/${employeeId}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(async res => {
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || "Failed to generate payslip");
+                }
+                return res.json();
+            })
+            .then(data => {
                 // Reset Button
                 generateBtn.innerHTML = originalText;
                 generateBtn.disabled = false;
@@ -328,8 +305,13 @@ loadEmployees();
                 // Show Success Popup
                 if (sentEmpName) sentEmpName.innerText = empName;
                 if (successPopup) successPopup.classList.add("active");
-
-            }, 1500);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(`Error: ${error.message}`);
+                generateBtn.innerHTML = originalText;
+                generateBtn.disabled = false;
+            });
         });
     }
 
@@ -354,5 +336,6 @@ loadEmployees();
 
     // --- INITIALIZATION ---
     initDates();
+    loadEmployees();
     calculateSalary();
 });

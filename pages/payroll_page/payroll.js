@@ -1,28 +1,24 @@
-
 // --- PRELOADER LOGIC ---
 window.addEventListener("load", function () {
     const preloader = document.getElementById("page-preloader");
     
-    // Minimum wait time of 800ms for a smooth experience, 
-    // even if the page loads instantly.
+    // Minimum wait time of 800ms for a smooth experience
     setTimeout(() => {
         if (preloader) {
             preloader.classList.add("loaded");
-            
-            // Optional: Remove it from DOM entirely after fade out ends
             setTimeout(() => {
                 preloader.style.display = "none";
-            }, 500); // Matches CSS transition time
+            }, 500);
         }
     }, 800);
 });
-
 
 document.addEventListener("DOMContentLoaded", function () {
     
     // --- 1. SETUP YEAR PICKER ---
     const yearPicker = document.getElementById("yearPicker");
     const currentYear = new Date().getFullYear();
+    const currentMonthIndex = new Date().getMonth(); // 0 = Jan, 1 = Feb, 2 = Mar, etc.
     
     // Populate Dropdown (Current Year - 10 to Current Year + 5)
     for (let y = currentYear - 10; y <= currentYear + 5; y++) {
@@ -53,12 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Mock Data Generator (Simulate backend response based on year)
     function getDataForYear(year) {
-        // Base salary increases every year slightly
         const baseSalary = 800000 + (year - 2020) * 50000; 
-        
         let monthlyData = [];
         for (let i = 0; i < 12; i++) {
-            // Random fluctuation per month
             let randomFactor = 0.8 + Math.random() * 0.4; 
             monthlyData.push(Math.floor(baseSalary * randomFactor));
         }
@@ -67,24 +60,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // --- 3. CHART INITIALIZATION ---
     const ctx = document.getElementById("payrollChart").getContext("2d");
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     // Create Gradient
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, "#FF6B00"); // Orange Start
     gradient.addColorStop(1, "#FFB74D"); // Orange End
 
-    // Initial Data
-    let initialData = getDataForYear(currentYear);
-
     const payrollChart = new Chart(ctx, {
         type: "bar",
         data: {
-            labels: months,
+            labels: [], // Injected dynamically
             datasets: [
                 {
                     label: "Total Salary",
-                    data: initialData,
+                    data: [], // Injected dynamically
                     backgroundColor: gradient,
                     borderRadius: 6,
                     maxBarThickness: 30,
@@ -123,49 +113,60 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     });
 
-    // --- 4. UPDATE LOGIC ---
+    // --- 4. UPDATE LOGIC (DYNAMIC CUTOFF) ---
     function updateDashboard(year) {
-        const newData = getDataForYear(year);
+        let newData = getDataForYear(year);
+        let displayMonths = [...allMonths];
+
+        if (year === currentYear) {
+            // Cut off at the current month for the current year
+            newData = newData.slice(0, currentMonthIndex + 1);
+            displayMonths = displayMonths.slice(0, currentMonthIndex + 1);
+        } else if (year > currentYear) {
+            // Future years have no data
+            newData = [];
+            displayMonths = [];
+        }
 
         // Update Chart
+        payrollChart.data.labels = displayMonths;
         payrollChart.data.datasets[0].data = newData;
         payrollChart.update();
-
-        // Update Stats
-        const total = newData.reduce((a, b) => a + b, 0);
-        const average = total / 12;
-
-        // document.getElementById("totalPayout").textContent = formatRupee(total);
-        // document.getElementById("avgPayout").textContent = formatRupee(average);
     }
 
     // Initial Stats Load
     updateDashboard(currentYear);
     
+    // --- 5. API FETCH ---
     fetch(`http://13.51.167.95:8000/api/salary`)
         .then(res => res.json())
         .then(data => {
-          console.log('data:',data)
-            document.getElementById("totalPayout").innerText = data.total_annual_salary;
-            document.getElementById("avgPayout").innerText = data.total_monthly_salary;
-            
-        });
-document.getElementById('totalPayout').innerText=
-    // --- 5. EVENT LISTENER ---
+            console.log('API Data:', data);
+            if (data.total_annual_salary) {
+                document.getElementById("totalPayout").innerText = formatRupee(data.total_annual_salary);
+            }
+            if (data.total_monthly_salary) {
+                document.getElementById("avgPayout").innerText = formatRupee(data.total_monthly_salary);
+            }
+        })
+        .catch(err => console.error("Error fetching salary API:", err));
+
+    // --- 6. EVENT LISTENER ---
     yearPicker.addEventListener("change", (e) => {
         updateDashboard(parseInt(e.target.value));
     });
 
 });
 
-
-//notification section
+// ==========================================
+// NOTIFICATION SECTION
+// ==========================================
 let notifications = [
   {
     id: 1,
     text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
     time: "2 mins ago",
-    icon: "👩‍💼", // Using emojis as placeholders for images
+    icon: "👩‍💼", 
     read: false,
   },
   {
@@ -192,28 +193,25 @@ let notifications = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Select Elements
   const bellBtn = document.getElementById("ntBellBtn");
   const dropdown = document.getElementById("ntDropdown");
   const markReadBtn = document.getElementById("ntMarkAllRead");
 
-  // Initialize
+  if (!bellBtn || !dropdown || !markReadBtn) return;
+
   ntRenderList();
 
-  // Toggle Dropdown
   bellBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent immediate closing
+    e.stopPropagation(); 
     const isVisible = dropdown.style.display === "block";
     dropdown.style.display = isVisible ? "none" : "block";
   });
 
-  // Mark All as Read
   markReadBtn.addEventListener("click", () => {
     notifications.forEach((n) => (n.read = true));
     ntRenderList();
   });
 
-  // Close Dropdown when clicking outside
   window.addEventListener("click", (e) => {
     if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
       dropdown.style.display = "none";
@@ -221,18 +219,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Render Function
 function ntRenderList() {
   const listContainer = document.getElementById("ntList");
   const badge = document.getElementById("ntBadge");
 
-  // Clear current list
-  listContainer.innerHTML = "";
+  if (!listContainer || !badge) return;
 
-  // Count unread
+  listContainer.innerHTML = "";
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  // Update Badge
   if (unreadCount > 0) {
     badge.style.display = "flex";
     badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
@@ -240,18 +235,14 @@ function ntRenderList() {
     badge.style.display = "none";
   }
 
-  // Check if empty
   if (notifications.length === 0) {
     listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
     return;
   }
 
-  // Build List
   notifications.forEach((item) => {
     const itemDiv = document.createElement("div");
-    // Add class 'nt-unread' if not read
     itemDiv.className = `nt-item ${!item.read ? "nt-unread" : ""}`;
-
     itemDiv.innerHTML = `
             <div class="nt-avatar">${item.icon}</div>
             <div class="nt-content">
@@ -259,56 +250,42 @@ function ntRenderList() {
                 <span class="nt-time">${item.time}</span>
             </div>
         `;
-
-    // Click individual item to mark as read
     itemDiv.addEventListener("click", () => {
       item.read = true;
       ntRenderList();
     });
-
     listContainer.appendChild(itemDiv);
   });
 }
 
-
-
-//logout section
-/* --- Toggle Profile Dropdown --- */
+// ==========================================
+// LOGOUT SECTION
+// ==========================================
 function hdr_toggleProfilePopup() {
   const dropdown = document.getElementById("hdrProfileDropdown");
-  dropdown.classList.toggle("show");
+  if (dropdown) dropdown.classList.toggle("show");
 }
 
-/* --- Show Logout Modal --- */
 function hdr_showLogoutModal() {
-  // 1. Hide the dropdown menu first (optional UI polish)
   const dropdown = document.getElementById("hdrProfileDropdown");
   if (dropdown) dropdown.classList.remove("show");
 
-  // 2. Show the modal
   const modal = document.getElementById("hdrLogoutModal");
   if (modal) modal.classList.add("show-modal");
 }
 
-/* --- Hide Logout Modal --- */
 function hdr_hideLogoutModal() {
   const modal = document.getElementById("hdrLogoutModal");
   if (modal) modal.classList.remove("show-modal");
 }
 
-/* --- Perform Actual Logout --- */
 function hdr_confirmLogout() {
-  // 1. Clear session/local storage
   sessionStorage.clear();
   localStorage.clear();
-
-  // 2. Redirect to Login Page
   window.location.href = "../adminlogin/adminlogin.html";
 }
 
-/* --- Close Dropdown when clicking outside --- */
 window.onclick = function (event) {
-  // If click is NOT on the profile wrapper
   if (!event.target.closest(".hdr-profile-wrapper")) {
     const dropdown = document.getElementById("hdrProfileDropdown");
     if (dropdown && dropdown.classList.contains("show")) {
@@ -316,7 +293,6 @@ window.onclick = function (event) {
     }
   }
 
-  // Optional: Close modal if clicking on the overlay background
   const modal = document.getElementById("hdrLogoutModal");
   if (event.target === modal) {
     hdr_hideLogoutModal();
