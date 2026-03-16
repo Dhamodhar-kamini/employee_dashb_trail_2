@@ -834,17 +834,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // ====================================================================
 
 //birthday wihes
+//birthday wishes
 document.addEventListener("DOMContentLoaded", function () {
     
+    // Updated data with phone numbers (Use real numbers in production)
     const birthdays = [
-        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg" },
-        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg" },
-        { name: "Siddarth", role: "Product Manager", date: "26 Oct", rawDate: "2023-10-26", img: "../assets/profiledp.jpeg" },
-        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", rawDate: "2023-10-28", img: "../assets/profiledp.jpeg" },
-        { name: "Arjun", role: "HR Manager", date: "02 Nov", rawDate: "2023-11-02", img: "../assets/profiledp.jpeg" }
+        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg", phone: "8790997602" },
+        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg", phone: "7075653250" },
+        { name: "Balaji", role: "Product Manager", date: "26 Oct", rawDate: "2023-10-26", img: "../assets/profiledp.jpeg", phone: "8309930827" },
+        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", rawDate: "2023-10-28", img: "../assets/profiledp.jpeg", phone: "7036084043" },
+        { name: "Arjun", role: "HR Manager", date: "02 Nov", rawDate: "2023-11-02", img: "../assets/profiledp.jpeg", phone: "919876543214" }
     ];
 
     let currentIndex = 0;
+    let currentTargetPhone = ""; // Variable to store phone number for redirection
     let autoSlideInterval;
 
     const imgEl = document.getElementById("bdayImg");
@@ -900,24 +903,32 @@ document.addEventListener("DOMContentLoaded", function () {
         if(!bdayCard.matches(':hover')) startAutoSlide();
     });
 
+    // --- Modal Elements ---
     const wishModal = document.getElementById("wishModal");
     const wishTargetName = document.getElementById("wishTargetName");
     const wishMessage = document.getElementById("wishMessage");
     const successWishModal = document.getElementById("successWishModal"); 
     const successName = document.getElementById("successName"); 
 
+    // --- Open Modal Logic ---
     window.openWishModal = function(identifier) {
         stopAutoSlide();
-        let name = "";
+        let person = null;
+
         if (identifier === 'current') {
-            name = birthdays[currentIndex].name;
+            person = birthdays[currentIndex];
         } else {
-            name = identifier;
+            // Find person by name from the list view
+            person = birthdays.find(p => p.name === identifier);
         }
 
-        if(wishTargetName) wishTargetName.innerText = name;
-        if(wishMessage) wishMessage.value = ""; 
-        if(wishModal) wishModal.classList.add("active");
+        if (person) {
+            if(wishTargetName) wishTargetName.innerText = person.name;
+            currentTargetPhone = person.phone; // Store the phone number
+            // Pre-fill a nice message
+            if(wishMessage) wishMessage.value = `Happy Birthday ${person.name}! Have a fantastic year ahead! 🎉`; 
+            if(wishModal) wishModal.classList.add("active");
+        }
     };
 
     window.closeWishModal = function() {
@@ -927,19 +938,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+    // --- Submit Logic (WhatsApp Redirect) ---
     window.submitWish = function() {
         const btn = document.querySelector(".btn-send-wish");
+        const message = wishMessage.value.trim();
+
         if(!btn) return;
+        if(!message) {
+            alert("Please write a message first!");
+            return;
+        }
+
         const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Opening WhatsApp...';
         
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
-        
+        // Simulate a small delay for better UX
         setTimeout(() => {
+            // Construct WhatsApp URL
+            const whatsappUrl = `https://wa.me/${currentTargetPhone}?text=${encodeURIComponent(message)}`;
+            
+            // Open WhatsApp in new tab
+            window.open(whatsappUrl, '_blank');
+
+            // Reset UI
+            btn.innerHTML = originalText;
             const currentName = wishTargetName.innerText;
             closeWishModal();
-            btn.innerHTML = originalText;
-            openSuccessWishModal(currentName);
-        }, 800);
+            openSuccessWishModal(currentName); // Show success modal after redirecting
+        }, 1000);
     };
 
     window.openSuccessWishModal = function(name) {
@@ -951,6 +977,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if(successWishModal) successWishModal.classList.remove("active");
     };
 
+    // --- View All Logic ---
     const allBdayModal = document.getElementById("allBirthdaysModal");
     const listContainer = document.getElementById("bdayListContainer");
 
@@ -986,12 +1013,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+    // Close on outside click
     window.onclick = function(event) {
         if (event.target === wishModal) closeWishModal();
         if (event.target === allBdayModal) closeAllBirthdaysModal();
         if (event.target === successWishModal) closeSuccessWishModal();
     };
 
+    // Initial Load
     if(birthdays.length > 0) {
         updateCarousel(currentIndex);
         startAutoSlide();
