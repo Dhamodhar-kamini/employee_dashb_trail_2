@@ -1,540 +1,498 @@
+// ==========================================
+// API CONFIGURATION
+// ==========================================
+const API_BASE_URL = "http://13.51.167.95:8000";
+
 document.addEventListener("DOMContentLoaded", function () {
   let currentEmpData = null;
-  let originalEmpId = null;
-
-  // ==================================================
-  // --- 1. INITIALIZATION & DATA NORMALIZATION ---
-  // ==================================================
   const emp_id = localStorage.getItem("employee_id");
-  console.log("Current Employee ID:", emp_id);
   
   if (!emp_id) {
     alert("No employee selected.");
-    window.history.back();
+    window.location.href = "../employeedashb/employee.html";
     return;
   }
 
-  // Fetch Main Dashboard Info
-  fetch(`http://13.51.167.95:8000/api/employee/dashboard/${emp_id}/`)
-    .then(res => res.json())
-    .then(data => {
-      currentEmpData = data; 
-      console.log('Main Employee Data:', data);
-      
-      document.getElementById('p_name').innerText = data.name || "N/A";
-      document.getElementById('p_role').innerText = data.role || "N/A";
-      document.getElementById('p_dept').innerText = data.department || "N/A";
-      document.getElementById('p_id').innerText = `EMP-${data.employee_id || emp_id}`;
-      document.getElementById('p_join').innerText = data.joining || "N/A";
-      document.getElementById('p_salary').innerText = data.salary ? `₹${data.salary}` : "N/A";
-      document.getElementById('p_email').innerText = data.email || "N/A";
-      
-      // Safely access nested array data
-      if (data.other_details && data.other_details.length > 0) {
-        document.getElementById('p_phone').innerText = data.other_details[0].mobile || "N/A";
-        document.getElementById('p_location').innerText = data.other_details[0].address || "N/A";
-      }
-    })
-    .catch(err => console.error("Error fetching main data:", err));
-
-  // Inject modals/popups (once)
+  // ==================================================
+  // 1. INJECT MODALS INTO THE PAGE FIRST
+  // ==================================================
   injectEditModal();
-  injectPayrollModal(); 
   injectSuccessPopup();
 
-  // Bind buttons
-  bindEditProfileButtons();
-  bindDownloadButtonIfPresent();
+  // ==================================================
+  // 2. FETCH MAIN DASHBOARD INFO
+  // ==================================================
+  // ==================================================
+  // 2. FETCH MAIN DASHBOARD INFO
+  // ==================================================
+  function loadOverviewData() {
+      fetch(`${API_BASE_URL}/api/employee/dashboard/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
+          currentEmpData = data; 
+          
+          // Helper to safely handle data whether it's an Array, Object, or Empty
+          const getSafeData = (dataField) => {
+              if (!dataField) return {};
+              return Array.isArray(dataField) ? (dataField[0] || {}) : dataField;
+          };
 
+          const stat = getSafeData(data.statutory_details);
+          const bank = getSafeData(data.bank_details);
+          const other = getSafeData(data.other_details);
+
+          // Header & Quick Stats
+          document.getElementById('p_name').innerText = data.name || "N/A";
+          document.getElementById('p_role').innerText = data.role || "N/A";
+          document.getElementById('p_dept').innerText = data.department || "N/A";
+          document.getElementById('p_dept_2').innerText = data.department || "N/A";
+          document.getElementById('p_role_2').innerText = data.role || "N/A";
+          document.getElementById('p_id').innerText = `EMP-${data.employee_id || emp_id}`;
+          document.getElementById('p_join').innerText = data.joining || "N/A";
+          document.getElementById('p_salary').innerText = data.salary ? `₹${data.salary}` : "N/A";
+          document.getElementById('p_email').innerText = data.email || "N/A";
+          
+          const initials = data.name ? data.name.substring(0, 2).toUpperCase() : "EM";
+          document.getElementById('p_initials').innerText = initials;
+
+          // Statutory Details (Safely injected)
+          document.getElementById('pan').innerText = stat.pan || "-NA-";
+          document.getElementById('uan').innerText = stat.pf_uan || "-NA-";
+          document.getElementById('pt').innerText = stat.profesional_tax || "-NA-";
+          document.getElementById('lwf').innerText = stat.lwf_status || "-NA-";
+          document.getElementById('esic').innerText = stat.esic_status || "-NA-";
+          document.getElementById('esic_ip').innerText = stat.esic_ip_number || "-NA-";
+
+          // Bank Details (Safely injected)
+          document.getElementById('bank_name').innerText = bank.bank_name || "-NA-";
+          document.getElementById('bank_acc').innerText = bank.acc_no || "-NA-";
+          document.getElementById('bank_ifsc').innerText = bank.ifsc_code || "-NA-";
+
+          // Personal Details (Safely injected)
+          document.getElementById('p_phone').innerText = other.mobile || "N/A";
+          document.getElementById('p_location').innerText = other.address || "N/A";
+          
+          const maritalEl = document.getElementById('p_marital');
+          if(maritalEl) {
+              const status = other.marital_status || "Unmarried";
+              maritalEl.innerText = status;
+              maritalEl.style.backgroundColor = status.toLowerCase() === 'unmarried' ? '#e6ffe6' : '#e6f2ff';
+              maritalEl.style.color = status.toLowerCase() === 'unmarried' ? '#008000' : '#0066cc';
+          }
+        })
+        .catch(err => console.error("Error fetching main data:", err));
+  }
 
   // ==================================================
-  // --- 2. FETCH LEAVES ---
+  // 3. FETCH LEAVES, ATTENDANCE, PAYROLL, DOCUMENTS
   // ==================================================
-  const leave_table = document.getElementById('leavebody');
-  fetch(`http://13.51.167.95:8000/api/employee/apply-leave/${emp_id}/`)
-    .then(res => res.json())
-    .then(data => {
-        if (leave_table) {
+  function fetchLeaves() {
+      const leave_table = document.getElementById('leavebody');
+      if (!leave_table) return;
+      fetch(`${API_BASE_URL}/api/employee/apply-leave/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
             leave_table.innerHTML = "";
             if (!data || data.length === 0) {
                 leave_table.innerHTML = `<tr><td colspan="5" style="text-align:center;">No leaves found</td></tr>`;
                 return;
             }
             data.forEach(p => {
-                // Determine color based on status
-                let statusColor = p.status === 'approved' ? 'color: #2ecc71;' : (p.status === 'rejected' ? 'color: #e74c3c;' : 'color: #f39c12;');
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${p.leave_type.toUpperCase()}</td>
-                    <td>${p.from_date}</td>
-                    <td>${p.to_date}</td>
-                    <td>${p.number_of_days}</td>
-                    <td style="font-weight:bold; ${statusColor}">${p.status.toUpperCase()}</td>
+                let statusColor = p.status === 'approved' ? '#2ecc71' : (p.status === 'rejected' ? '#e74c3c' : '#f39c12');
+                leave_table.innerHTML += `
+                    <tr>
+                        <td>${p.leave_type.toUpperCase()}</td>
+                        <td>${p.from_date}</td>
+                        <td>${p.to_date}</td>
+                        <td>${p.number_of_days}</td>
+                        <td style="font-weight:bold; color:${statusColor};">${p.status.toUpperCase()}</td>
+                    </tr>
                 `;
-                leave_table.appendChild(row);
             });
-        }
-    })
-    .catch(err => console.error("Error fetching leaves:", err));
+        })
+        .catch(err => console.error("Error fetching leaves:", err));
+  }
 
-
-  // ==================================================
-  // --- 3. FETCH DOCUMENTS ---
-  // ==================================================
   function fetchDocuments() {
-    fetch(`http://13.51.167.95:8000/api/employee-documents/${emp_id}/`)
-      .then(res => res.json())
-      .then(data => {
-        const docsGrid = document.getElementById("documentsGrid");
-        if (!docsGrid) return;
-        docsGrid.innerHTML = "";
-
-        if(!data || data.length === 0){
-          docsGrid.innerHTML = "<p>No documents uploaded</p>";
-          return;
-        }
-
-        data.forEach(doc => {
-          const fileUrl = `http://13.51.167.95:8000${doc.file}`; // Ensured port is attached to URL
-          const card = `
-          <div class="doc-card">
-            <div class="doc-header">
-              <i class="fa-regular fa-file-pdf doc-icon"></i>
-              <span class="file-size">DOC</span>
-            </div>
-            <div class="doc-info">
-              <h4>
-                <a href="${fileUrl}" target="_blank">${doc.description}</a>
-              </h4>
-              <p class="doc-type">${doc.doc_type}</p>
-              <p class="upload-date">Uploaded: ${new Date(doc.uploaded_at).toLocaleDateString()}</p>
-            </div>
-          </div>
-          `;
-          docsGrid.innerHTML += card;
-        });
-      })
-      .catch(err => console.error("Error:", err));
+      const docsGrid = document.getElementById("documentsGrid");
+      if (!docsGrid) return;
+      fetch(`${API_BASE_URL}/api/employee-documents/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
+            docsGrid.innerHTML = "";
+            if(!data || data.length === 0){
+              docsGrid.innerHTML = "<p style='padding:20px;'>No documents uploaded</p>";
+              return;
+            }
+            data.forEach(doc => {
+              const fileUrl = `${API_BASE_URL}${doc.file}`;
+              docsGrid.innerHTML += `
+              <div class="doc-card" style="border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; background: #fff;">
+                <div class="doc-header"><i class="fa-regular fa-file-pdf doc-icon" style="font-size: 24px; color: #4f46e5; margin-bottom: 10px;"></i></div>
+                <div class="doc-info">
+                  <h4 style="margin:5px 0;"><a href="${fileUrl}" target="_blank" style="color:#1e293b; text-decoration:none;">${doc.description}</a></h4>
+                  <p style="margin:0 0 10px 0; color:#64748b; font-size:13px;">${doc.doc_type}</p>
+                </div>
+              </div>`;
+            });
+        })
+        .catch(err => console.error("Error:", err));
   }
 
-
-  // ==================================================
-  // --- 4. FETCH ATTENDANCE (NEW) ---
-  // ==================================================
   function fetchAttendance() {
-    // Target the tbody inside the attendance tab directly
-    const attendanceBody = document.querySelector('#attendance tbody');
-    if (!attendanceBody) return;
+      const attendanceBody = document.querySelector('#attendance tbody');
+      if (!attendanceBody) return;
+      fetch(`${API_BASE_URL}/api/employee-attendence-history/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
+            attendanceBody.innerHTML = ""; 
+            if (!data || data.length === 0) {
+                attendanceBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No attendance records found</td></tr>`;
+                return;
+            }
+            data.forEach(record => {
+                const dateObj = new Date(record.date);
+                const formattedDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                let clockIn = "--"; let clockOut = "--"; let hoursWorked = "0";
+                let status = "absent"; let statusColor = "#e74c3c"; let statusBg = "#fceceb";
 
-    fetch(`http://13.51.167.95:8000/api/employee-attendence-history/${emp_id}/`)
-      .then(res => res.json())
-      .then(data => {
-          attendanceBody.innerHTML = ""; // Clear hardcoded data
-          
-          if (!data || data.length === 0) {
-              attendanceBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No attendance records found</td></tr>`;
-              return;
-          }
-
-          data.forEach(record => {
-              const dateObj = new Date(record.date);
-              const formattedDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-              let clockIn = "--"; let clockOut = "--"; let hoursWorked = "0";
-              let status = "absent"; let statusClass = "absent"; 
-
-              if (record.checkin) {
-                  const checkInDate = new Date(record.checkin);
-                  clockIn = checkInDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                  
-                  // Logic for late vs present
-                  if (checkInDate.toTimeString().split(' ')[0] > "10:10:00") {
-                      status = "late"; statusClass = "late";
-                  } else {
-                      status = "present"; statusClass = "present";
-                  }
-              }
-
-              if (record.checkout) {
-                  const checkOutDate = new Date(record.checkout);
-                  clockOut = checkOutDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                  if (record.checkin) {
-                      const diffMs = checkOutDate - new Date(record.checkin);
-                      hoursWorked = (diffMs / (1000 * 60 * 60)).toFixed(1);
-                  }
-              } else if (record.checkin) {
-                   hoursWorked = "Ongoing";
-              }
-
-              attendanceBody.innerHTML += `
-                  <tr>
-                      <td>${formattedDate}</td>
-                      <td>${clockIn}</td>
-                      <td>${clockOut}</td>
-                      <td>${hoursWorked}</td>
-                      <td><span class="status-pill ${statusClass}">${status}</span></td>
-                  </tr>
-              `;
-          });
-      })
-      .catch(err => console.error("Error fetching attendance:", err));
+                if (record.checkin) {
+                    const checkInDate = new Date(record.checkin);
+                    clockIn = checkInDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                    if (checkInDate.toTimeString().split(' ')[0] > "10:10:00") {
+                        status = "late"; statusColor = "#f39c12"; statusBg = "#fef5e6";
+                    } else {
+                        status = "present"; statusColor = "#2ecc71"; statusBg = "#e6f9ed";
+                    }
+                }
+                if (record.checkout) {
+                    const checkOutDate = new Date(record.checkout);
+                    clockOut = checkOutDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                    if (record.checkin) {
+                        const diffMs = checkOutDate - new Date(record.checkin);
+                        hoursWorked = (diffMs / (1000 * 60 * 60)).toFixed(1);
+                    }
+                }
+                attendanceBody.innerHTML += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${clockIn}</td>
+                        <td>${clockOut}</td>
+                        <td>${hoursWorked}</td>
+                        <td><span style="padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold; color:${statusColor}; background:${statusBg};">${status}</span></td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.error("Error fetching attendance:", err));
   }
 
-
-  // ==================================================
-  // --- 5. FETCH PAYROLL (NEW) ---
-  // ==================================================
   function fetchPayroll() {
-    const payrollTab = document.getElementById('payroll');
-    if (!payrollTab) return;
-
-    fetch(`http://13.51.167.95:8000/api/employee-payslips/${emp_id}/`)
-      .then(res => res.json())
-      .then(data => {
-          // Rewrite the payroll tab inner HTML, keeping the header and clearing hardcoded cards
-          payrollTab.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-              <h3 class="section-title" style="margin: 0">Salary History</h3>
-            </div>
-            <div id="dynamic-payroll-container"></div>
-          `;
-          
-          const container = document.getElementById('dynamic-payroll-container');
-
-          if (!data || data.length === 0) {
-              container.innerHTML = `<p style="text-align:center; padding:20px;">No payslip records found.</p>`;
-              return;
-          }
-
-          data.forEach(pay => {
-              container.innerHTML += `
-                <div class="salary-card" style="margin-bottom: 20px;">
-                  <div class="salary-header">
-                    <h4>${pay.month}</h4>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <span class="status-badge paid">Processed</span>
-                      <button onclick="window.admOpenPayrollModal()" style="border:none; background: #e5e7eb; color:#374151; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-pen"></i> Edit
-                      </button>
+      const payrollTab = document.getElementById('payroll');
+      if (!payrollTab) return;
+      fetch(`${API_BASE_URL}/api/employee-payslips/${emp_id}/`)
+        .then(res => res.json())
+        .then(data => {
+            payrollTab.innerHTML = `<h3 class="section-title" style="margin: 0">Salary History</h3><div id="dynamic-payroll-container"></div>`;
+            const container = document.getElementById('dynamic-payroll-container');
+            if (!data || data.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding:20px;">No payslip records found.</p>`;
+                return;
+            }
+            data.forEach(pay => {
+                container.innerHTML += `
+                  <div class="salary-card" style="margin-bottom: 20px; border:1px solid #ddd; padding:15px; border-radius:8px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                      <h4 style="margin:0;">${pay.month}</h4>
+                      <button style="border:none; background:#e5e7eb; padding:4px 10px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-download"></i></button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px;">
+                      <div><label style="font-size:12px; color:#888;">Basic</label><div style="font-weight:bold;">₹${pay.basic_salary}</div></div>
+                      <div><label style="font-size:12px; color:#888;">Gross</label><div style="font-weight:bold;">₹${pay.gross_salary}</div></div>
+                      <div><label style="font-size:12px; color:#888;">PF</label><div style="font-weight:bold; color:#e74c3c;">-₹${pay.pf_amount}</div></div>
+                      <div><label style="font-size:12px; color:#888;">Tax</label><div style="font-weight:bold; color:#e74c3c;">-₹${pay.professional_tax}</div></div>
+                      <div><label style="font-size:12px; color:#888;">LOP</label><div style="font-weight:bold; color:#e74c3c;">-₹${pay.lop_amount}</div></div>
+                      <div style="grid-column:span 3; text-align:right;"><label style="font-size:12px; color:#2ecc71;">Net Pay</label><div style="font-size:18px; font-weight:bold; color:#2ecc71;">₹${pay.net_salary}</div></div>
                     </div>
                   </div>
-                  <div class="salary-details">
-                    <div class="detail-item"><label>Basic</label><div class="amount">₹${pay.basic_salary || '0'}</div></div>
-                    <div class="detail-item"><label>HRA</label><div class="amount">₹${pay.hra || '0'}</div></div>
-                    <div class="detail-item"><label>DA</label><div class="amount">₹${pay.da || '0'}</div></div>
-                    <div class="detail-item"><label>Gross</label><div class="amount">₹${pay.gross_salary || '0'}</div></div>
-                    <div class="detail-item"><label>PF Deduction</label><div class="amount">₹${pay.pf_amount || '0'}</div></div>
-                    <div class="detail-item"><label>Prof. Tax</label><div class="amount">₹${pay.professional_tax || '0'}</div></div>
-                    <div class="detail-item"><label>LOP Days</label><div class="amount">${pay.lop_days || '0'}</div></div>
-                    <div class="detail-item highlight"><label>Net Pay</label><div class="amount">₹${pay.net_salary || '0'}</div></div>
-                  </div>
-                </div>
-              `;
-          });
-      })
-      .catch(err => console.error("Error fetching payroll:", err));
+                `;
+            });
+        })
+        .catch(err => console.error("Error fetching payroll:", err));
   }
 
-  // EXECUTE ALL API CALLS
+  // Execute all fetches
+  loadOverviewData();
+  fetchLeaves();
   fetchDocuments();
   fetchAttendance();
   fetchPayroll();
 
-
   // ==================================================
-  // --- 6. UTILITY FUNCTIONS (Defaults & Normalization) ---
+  // 4. TAB SWITCHING LOGIC
   // ==================================================
-  function normalizeEmployee(emp) {
-    const e = emp || {};
-    e.id = e.id || "EMP-000";
-    e.name = e.name || "Unknown";
+  window.switchTab = function (tabName) {
+    document.querySelectorAll(".tab-item").forEach((tab) => tab.classList.remove("active"));
+    event.currentTarget.classList.add("active");
     
-    if (!e.leaveBalance || typeof e.leaveBalance !== "object") e.leaveBalance = {};
-    if (!e.bankDetails || typeof e.bankDetails !== "object") e.bankDetails = {};
-    if (!e.statutoryDetails || typeof e.statutoryDetails !== "object") e.statutoryDetails = {};
-    if (!e.payroll || typeof e.payroll !== "object") e.payroll = {};
-    
-    e.isSalaryHeld = !!e.isSalaryHeld;
-    e.isLoginDisabled = !!e.isLoginDisabled;
-    e.status = e.status || "Active";
-    return e;
-  }
-
-  function toIntOrDefault(v, def) {
-    const n = Number.parseInt(v, 10);
-    return Number.isFinite(n) ? n : def;
-  }
-
-  // ==================================================
-  // --- 7. TAB SWITCHING LOGIC ---
-  // ==================================================
-  window.switchTab = function (tabName, evt) {
-    const e = evt || window.event;
-    const allTabs = document.querySelectorAll(".tab-item");
-    allTabs.forEach((tab) => tab.classList.remove("active"));
-    if (e && e.currentTarget) e.currentTarget.classList.add("active");
-    
-    const allContent = document.querySelectorAll(".tab-content");
-    allContent.forEach((content) => (content.style.display = "none"));
-    
+    document.querySelectorAll(".tab-content").forEach((content) => (content.style.display = "none"));
     const selectedContent = document.getElementById(tabName);
     if (selectedContent) selectedContent.style.display = "block";
   };
 
-  // ==================================================
-  // --- 8. ADMIN ACTIONS ---
-  // ==================================================
-  window.admOpenModal = function (modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) modal.classList.add("adm-show");
-  };
-
-  window.admCloseModal = function (modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) modal.classList.remove("adm-show");
-  };
-
-  window.admPerformAction = function (actionType) {
-    alert("Admin Action Triggered: " + actionType);
-    document.querySelectorAll('.adm-modal-overlay').forEach(el => el.classList.remove("adm-show"));
-  };
-
 
   // ==================================================
-  // --- 9. EDIT PROFILE MODAL ---
+  // 5. EDIT PROFILE MODAL (ALL FIELDS)
   // ==================================================
-  function bindEditProfileButtons() {
-    const editBtn = document.getElementById("editProfileBtn");
-    if (editBtn) {
-      editBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.admOpenEditModal();
-      });
-    }
-  }
+  
+  const editBtn = document.getElementById("editProfileBtn");
+  if (editBtn) {
+    editBtn.addEventListener("click", () => {
+      if (currentEmpData) {
+          console.log("Debug - Current Emp Data:", currentEmpData);
 
-  function looksLikeEditButton(btn) {
-    const txt = (btn.textContent || "").toLowerCase();
-    if (txt.includes("edit")) return true;
-    if (btn.querySelector(".fa-pen-to-square, .fa-pen, .fa-edit")) return true;
-    return false;
+          // Helper to handle both Arrays (old backend) and Objects (new backend) safely
+          const getSafeData = (dataField) => {
+              if (!dataField) return {};
+              return Array.isArray(dataField) ? (dataField[0] || {}) : dataField;
+          };
+
+          const other = getSafeData(currentEmpData.other_details);
+          const stat = getSafeData(currentEmpData.statutory_details);
+          const bank = getSafeData(currentEmpData.bank_details);
+
+          // Profile & Personal
+          document.getElementById('edit_id').value = `EMP-${currentEmpData.employee_id || currentEmpData.id || ''}`;
+          document.getElementById('edit_name').value = currentEmpData.name || '';
+          document.getElementById('edit_role').value = currentEmpData.role || '';
+          document.getElementById('edit_dept').value = currentEmpData.department || '';
+          document.getElementById('edit_email').value = currentEmpData.email || '';
+          document.getElementById('edit_joinDate').value = currentEmpData.joining || '';
+          document.getElementById('edit_salary').value = currentEmpData.salary || '';
+          
+          // Other Details 
+          document.getElementById('edit_phone').value = other.mobile || '';
+          document.getElementById('edit_location').value = other.address || '';
+          document.getElementById('edit_marital').value = other.marital_status || 'Single';
+          
+          // Statutory Details
+          document.getElementById('edit_stat_pan').value = stat.pan || '';
+          document.getElementById('edit_stat_uan').value = stat.pf_uan || '';
+          document.getElementById('edit_stat_pt').value = stat.profesional_tax || '';
+          document.getElementById('edit_stat_lwf').value = stat.lwf_status || '';
+          document.getElementById('edit_stat_esic_status').value = stat.esic_status || '';
+          document.getElementById('edit_stat_esic_ip').value = stat.esic_ip_number || '';
+
+          // Bank Details
+          document.getElementById('edit_bank_name').value = bank.bank_name || '';
+          document.getElementById('edit_bank_account').value = bank.acc_no || '';
+          document.getElementById('edit_bank_ifsc').value = bank.ifsc_code || '';
+      }
+      document.getElementById("admEditModal").style.display = "flex";
+    });
   }
 
   function injectEditModal() {
     if (document.getElementById("admEditModal")) return;
     const overlay = document.createElement("div");
     overlay.id = "admEditModal";
-    overlay.className = "adm-modal-overlay";
     overlay.style.cssText = `position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; padding: 18px; z-index: 9999;`;
-    const modal = document.createElement("div");
-    modal.className = "adm-modal";
-    modal.style.cssText = `width: min(920px, 100%); background: #fff; border-radius: 18px; padding: 18px; box-shadow: 0 18px 45px rgba(0,0,0,.28); max-height: 85vh; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; font-family: inherit;`;
-
-    modal.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-        <div><div style="font-size:18px;font-weight:900;">Edit Employee Profile</div></div>
-        <button type="button" id="admEditCloseX" style="border:none;background:#f3f4f6;border-radius:12px;padding:8px 10px;cursor:pointer;font-weight:900;">✕</button>
-      </div>
-      <div style="height:1px;background:#eef2f7;margin:14px 0;"></div>
-      <form id="admEditForm">
-        <div style="font-weight:900;color:#111827;margin:8px 0 10px 0;">Profile</div>
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
-          <div><label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Employee ID</label><input id="edit_id" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" /></div>
-          <div><label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Name *</label><input id="edit_name" type="text" required style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" /></div>
-          <div><label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Role</label><input id="edit_role" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" /></div>
-          <div><label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Department</label><input id="edit_dept" type="text" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" /></div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
-          <button type="button" id="admEditCancel" style="padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:800;">Cancel</button>
-          <button type="submit" id="admEditSave" style="padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(135deg,#111827,#334155);color:#fff;cursor:pointer;font-weight:900;">Save Changes</button>
-        </div>
-      </form>`;
-      
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
     
-    modal.querySelector("#admEditCloseX").addEventListener("click", () => window.admCloseEditModal());
-    modal.querySelector("#admEditCancel").addEventListener("click", () => window.admCloseEditModal());
-    modal.querySelector("#admEditForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      window.admSaveEditEmployee();
-    });
-
-    const origAdd = overlay.classList.add.bind(overlay.classList);
-    overlay.classList.add = function (...args) {
-      if (args.includes("adm-show")) overlay.style.display = "flex";
-      return origAdd(...args);
-    };
-    const origRemove = overlay.classList.remove.bind(overlay.classList);
-    overlay.classList.remove = function (...args) {
-      if (args.includes("adm-show")) overlay.style.display = "none";
-      return origRemove(...args);
-    };
-  }
-
-  window.admOpenEditModal = function () {
-    const overlay = document.getElementById("admEditModal");
-    if (!overlay) return;
-    overlay.classList.add("adm-show");
-  };
-
-  window.admCloseEditModal = function () {
-    const overlay = document.getElementById("admEditModal");
-    if (overlay) overlay.classList.remove("adm-show");
-  };
-
-  window.admSaveEditEmployee = function () {
-    window.admCloseEditModal();
-    showSuccessPopup("Profile update request sent!");
-  };
-
-  // ==================================================
-  // --- 10. PAYROLL MODAL (NEW) ---
-  // ==================================================
-  function injectPayrollModal() {
-    if (document.getElementById("admPayrollModal")) return;
-
-    const overlay = document.createElement("div");
-    overlay.id = "admPayrollModal";
-    overlay.className = "adm-modal-overlay";
-    overlay.style.cssText = `position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; padding: 18px; z-index: 9999;`;
-
-    const modal = document.createElement("div");
-    modal.className = "adm-modal";
-    modal.style.cssText = `width: min(500px, 100%); background: #fff; border-radius: 18px; padding: 18px; box-shadow: 0 18px 45px rgba(0,0,0,.28); overflow: auto; font-family: inherit;`;
-
-    modal.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-        <div style="font-size:18px;font-weight:900;">Edit Salary History</div>
-        <button type="button" id="admPayrollCloseX" style="border:none;background:#f3f4f6;border-radius:12px;padding:8px 10px;cursor:pointer;font-weight:900;">✕</button>
+    overlay.innerHTML = `
+    <div style="width: min(850px, 100%); background: #fff; border-radius: 12px; padding: 25px; max-height: 90vh; overflow-y: auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0; font-size:22px;">Edit Employee Profile</h2>
+        <button onclick="document.getElementById('admEditModal').style.display='none'" style="border:none; background:#f3f4f6; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">✕</button>
       </div>
-      <div style="height:1px;background:#eef2f7;margin:14px 0;"></div>
-      <form id="admPayrollForm">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-           <div style="grid-column: 1 / -1;"><label style="display:block;font-size:12px;color:#6b7280;margin-bottom:6px;">Basic Pay</label><input id="pay_in_basic" type="number" step="0.01" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:12px;" /></div>
-           <div style="grid-column: 1 / -1;"><label style="display:block;font-size:12px;color:#10b981;font-weight:700;margin-bottom:6px;">Net Pay</label><input id="pay_in_net" type="number" step="0.01" style="width:100%;padding:10px;border:1px solid #10b981;border-radius:12px;background:#ecfdf5;font-weight:700;" /></div>
+      <hr style="border:none; border-top:1px solid #eee; margin-bottom:20px;">
+      
+      <form id="admEditForm" onsubmit="event.preventDefault(); window.admSaveEditEmployee();">
+        
+        <h4 style="margin-bottom:10px; color:#4f46e5;">Profile & Personal Info</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;">
+          <div><label style="font-size:12px; color:#666;">Employee ID</label><input type="text" id="edit_id" disabled style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; background:#f9f9f9;"></div>
+          <div><label style="font-size:12px; color:#666;">Name *</label><input type="text" id="edit_name" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Role</label><input type="text" id="edit_role" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Department</label><input type="text" id="edit_dept" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Email</label><input type="email" id="edit_email" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Phone</label><input type="text" id="edit_phone" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Location / Address</label><input type="text" id="edit_location" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Marital Status</label>
+            <select id="edit_marital" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; background:#fff;">
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Unmarried">Unmarried</option>
+              <option value="Divorced">Divorced</option>
+            </select>
+          </div>
+          <div><label style="font-size:12px; color:#666;">Join Date</label><input type="date" id="edit_joinDate" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Salary</label><input type="number" id="edit_salary" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
         </div>
-        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
-          <button type="button" id="admPayrollCancel" style="padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:800;">Cancel</button>
-          <button type="submit" style="padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(135deg,#111827,#334155);color:#fff;cursor:pointer;font-weight:900;">Save Changes</button>
+
+        <hr style="border:none; border-top:1px solid #eee; margin-bottom:15px;">
+        <h4 style="margin-bottom:10px; color:#4f46e5;">Statutory Information</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:25px;">
+            <div><label style="font-size:12px; color:#666;">PAN</label><input type="text" id="edit_stat_pan" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; text-transform:uppercase;"></div>
+            <div><label style="font-size:12px; color:#666;">UAN</label><input type="text" id="edit_stat_uan" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+            <div><label style="font-size:12px; color:#666;">Prof. Tax</label><input type="text" id="edit_stat_pt" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+            <div><label style="font-size:12px; color:#666;">LWF Status</label><input type="text" id="edit_stat_lwf" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+            <div><label style="font-size:12px; color:#666;">ESIC Status</label><input type="text" id="edit_stat_esic_status" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+            <div><label style="font-size:12px; color:#666;">ESIC IP</label><input type="text" id="edit_stat_esic_ip" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #eee; margin-bottom:15px;">
+        <h4 style="margin-bottom:10px; color:#4f46e5;">Bank Details</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;">
+          <div><label style="font-size:12px; color:#666;">Bank Name</label><input type="text" id="edit_bank_name" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div><label style="font-size:12px; color:#666;">Account Number</label><input type="text" id="edit_bank_account" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+          <div style="grid-column: span 2;"><label style="font-size:12px; color:#666;">IFSC Code</label><input type="text" id="edit_bank_ifsc" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; text-transform:uppercase;"></div>
+        </div>
+
+        <div style="margin-top:30px; text-align:right;">
+          <button type="button" onclick="document.getElementById('admEditModal').style.display='none'" style="padding:10px 20px; border-radius:8px; border:1px solid #ddd; background:#fff; cursor:pointer; margin-right:10px; font-weight:bold;">Cancel</button>
+          <button id="saveBtn" type="submit" style="padding:10px 20px; border-radius:8px; border:none; background:#111827; color:#fff; cursor:pointer; font-weight:bold;">Save Changes</button>
         </div>
       </form>
-    `;
-
-    overlay.appendChild(modal);
+    </div>`;
     document.body.appendChild(overlay);
-
-    modal.querySelector("#admPayrollCloseX").addEventListener("click", () => window.admClosePayrollModal());
-    modal.querySelector("#admPayrollCancel").addEventListener("click", () => window.admClosePayrollModal());
-    modal.querySelector("#admPayrollForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      window.admSavePayroll();
-    });
-
-    const origAdd = overlay.classList.add.bind(overlay.classList);
-    overlay.classList.add = function (...args) {
-      if (args.includes("adm-show")) overlay.style.display = "flex";
-      return origAdd(...args);
-    };
-    const origRemove = overlay.classList.remove.bind(overlay.classList);
-    overlay.classList.remove = function (...args) {
-      if (args.includes("adm-show")) overlay.style.display = "none";
-      return origRemove(...args);
-    };
   }
 
-  window.admOpenPayrollModal = function () {
-    const overlay = document.getElementById("admPayrollModal");
-    if (!overlay) return;
-    overlay.classList.add("adm-show");
-  };
+  // ==================================================
+  // 6. API CALL TO SAVE EDITS (PATCH)
+  // ==================================================
+  window.admSaveEditEmployee = function () {
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.innerText = "Saving...";
+    saveBtn.disabled = true;
 
-  window.admClosePayrollModal = function () {
-    const overlay = document.getElementById("admPayrollModal");
-    if (overlay) overlay.classList.remove("adm-show");
-  };
+    // Gather all data from the modal
+    const payload = {
+        name: document.getElementById('edit_name').value,
+        role: document.getElementById('edit_role').value,
+        department: document.getElementById('edit_dept').value,
+        email: document.getElementById('edit_email').value,
+        mobile: document.getElementById('edit_phone').value,
+        address: document.getElementById('edit_location').value,
+        marital_status: document.getElementById('edit_marital').value,
+        joining: document.getElementById('edit_joinDate').value,
+        salary: document.getElementById('edit_salary').value,
+        
+        // Statutory
+        pan: document.getElementById('edit_stat_pan').value,
+        pf_uan: document.getElementById('edit_stat_uan').value,
+        profesional_tax: document.getElementById('edit_stat_pt').value,
+        lwf_status: document.getElementById('edit_stat_lwf').value,
+        esic_status: document.getElementById('edit_stat_esic_status').value,
+        esic_ip_number: document.getElementById('edit_stat_esic_ip').value,
+        
+        // Bank
+        bank_name: document.getElementById('edit_bank_name').value,
+        acc_no: document.getElementById('edit_bank_account').value,
+        ifsc_code: document.getElementById('edit_bank_ifsc').value
+    };
 
-  window.admSavePayroll = function () {
-    window.admClosePayrollModal();
-    showSuccessPopup("Salary history update request sent!");
+    // Send PATCH request to backend
+    fetch(`${API_BASE_URL}/api/update-employee/${emp_id}/`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed to update employee");
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById("admEditModal").style.display = "none";
+        showSuccessPopup("Profile updated successfully!");
+        
+        // Reload the overview data to reflect changes
+        setTimeout(() => {
+            window.location.reload(); 
+        }, 1500);
+    })
+    .catch(err => {
+        console.error("Error saving employee:", err);
+        alert("Failed to save changes. Please check server.");
+        saveBtn.innerText = "Save Changes";
+        saveBtn.disabled = false;
+    });
   };
 
   // ==================================================
-  // --- 11. SUCCESS POPUP ---
+  // 7. API CALL TO DELETE PERMANENTLY (DELETE)
+  // ==================================================
+  window.admOpenModal = function(modalId) {
+      document.getElementById(modalId).style.display = "flex";
+  };
+
+  window.admCloseModal = function(modalId) {
+      document.getElementById(modalId).style.display = "none";
+  };
+
+  window.admPerformAction = function (actionType) {
+      if (actionType === 'delete') {
+          const btn = document.querySelector(".adm-btn-confirm.adm-red");
+          if(btn) btn.innerText = "Deleting...";
+
+          fetch(`${API_BASE_URL}/api/employee-details/${emp_id}/`, {
+              method: 'DELETE'
+          })
+          .then(res => {
+              if (res.ok) {
+                  alert("Employee deleted permanently.");
+                  window.location.href = "../employeedashb/employee.html"; // Return to list
+              } else {
+                  throw new Error("Failed to delete");
+              }
+          })
+          .catch(err => {
+              console.error("Error deleting employee:", err);
+              alert("Failed to delete employee. Please ensure the DELETE endpoint is correct.");
+              if(btn) btn.innerText = "Delete Permanently";
+          });
+      }
+      
+      // Hide all modals after click
+      document.querySelectorAll('.adm-modal-overlay').forEach(el => el.style.display = "none");
+  };
+
+  // ==================================================
+  // 8. SUCCESS POPUP INJECTION
   // ==================================================
   function injectSuccessPopup() {
     if (document.getElementById("admSuccessPopup")) return;
     const el = document.createElement("div");
     el.id = "admSuccessPopup";
-    el.style.cssText = `position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(17,24,39,.35); z-index: 10000; padding: 16px;`;
+    el.style.cssText = `position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.45); z-index: 10000;`;
     el.innerHTML = `
-      <div style="width: min(420px, 100%); background: #ffffff; border-radius: 18px; box-shadow: 0 22px 60px rgba(0,0,0,.28); overflow: hidden; transform: translateY(8px); opacity: 0; transition: .18s ease;" id="admSuccessCard">
-        <div style="padding:16px 16px 12px 16px; background: linear-gradient(135deg,#10b981,#22c55e); color:#fff;">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-            <div style="font-weight:900; font-size:16px;">Success</div>
-            <button id="admSuccessClose" type="button" style="border:none;background:rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:6px 10px;cursor:pointer;font-weight:900;">✕</button>
-          </div>
-        </div>
-        <div style="padding:16px;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
-            <div style="width: 42px; height: 42px; border-radius: 14px; background: #dcfce7; color: #166534; display:flex; align-items:center; justify-content:center; font-size: 20px; font-weight: 900;">✓</div>
-            <div><div id="admSuccessMsg" style="font-weight:900; color:#111827; font-size:14px; line-height:1.35;">Updated successfully</div><div style="color:#6b7280; font-size:12px; margin-top:4px;">Changes have been saved.</div></div>
-          </div>
-          <div style="display:flex; justify-content:flex-end; margin-top:14px;">
-            <button id="admSuccessOk" type="button" style="border:none;background:#111827;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:900;">OK</button>
-          </div>
-        </div>
+      <div style="background: #fff; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <i class="fa-solid fa-circle-check" style="font-size: 45px; color: #2ecc71; margin-bottom: 15px;"></i>
+        <h3 style="margin: 0 0 10px 0; color:#333;" id="successMsgText">Success</h3>
       </div>`;
     document.body.appendChild(el);
-    el.querySelector("#admSuccessClose").addEventListener("click", hideSuccessPopup);
-    el.querySelector("#admSuccessOk").addEventListener("click", hideSuccessPopup);
-    el.addEventListener("click", function (e) {
-      if (e.target === el) hideSuccessPopup();
-    });
   }
 
-  let successTimer = null;
-  function showSuccessPopup(message) {
-    const overlay = document.getElementById("admSuccessPopup");
-    const card = document.getElementById("admSuccessCard");
-    const msg = document.getElementById("admSuccessMsg");
-    if (!overlay || !card || !msg) return;
-    msg.textContent = message || "Updated successfully";
-    overlay.style.display = "flex";
-    requestAnimationFrame(() => {
-      card.style.opacity = "1";
-      card.style.transform = "translateY(0px)";
-    });
-    if (successTimer) clearTimeout(successTimer);
-    successTimer = setTimeout(hideSuccessPopup, 1700);
-  }
-
-  function hideSuccessPopup() {
-    const overlay = document.getElementById("admSuccessPopup");
-    const card = document.getElementById("admSuccessCard");
-    if (!overlay || !card) return;
-    card.style.opacity = "0";
-    card.style.transform = "translateY(8px)";
-    setTimeout(() => {
-      overlay.style.display = "none";
-    }, 160);
+  window.showSuccessPopup = function(msg) {
+      document.getElementById("successMsgText").innerText = msg;
+      const popup = document.getElementById("admSuccessPopup");
+      popup.style.display = "flex";
+      setTimeout(() => { popup.style.display = "none"; }, 1500);
   }
 
   // ==================================================
-  // --- 12. DOWNLOAD LOGIC ---
+  // 9. DOWNLOAD LOGIC
   // ==================================================
-  const downloadModal = document.getElementById("downloadModal");
-  function bindDownloadButtonIfPresent() {
-    const downloadBtn = document.getElementById("downloadProfileBtn");
-    if (!downloadBtn) return;
-    downloadBtn.addEventListener("click", function () {
-      if (downloadModal) downloadModal.classList.add("active");
-    });
-  }
-
   window.closeDownloadModal = function () {
-    if (downloadModal) downloadModal.classList.remove("active");
+    const modal = document.getElementById("downloadModal");
+    if (modal) modal.classList.remove("active");
   };
+
+  document.getElementById("downloadProfileBtn")?.addEventListener("click", function () {
+      const modal = document.getElementById("downloadModal");
+      if (modal) modal.classList.add("active");
+  });
 
   window.downloadAsCSV = function () {
     alert("Downloading CSV...");
@@ -544,8 +502,6 @@ document.addEventListener("DOMContentLoaded", function () {
   window.downloadAsPDF = function () {
     window.closeDownloadModal();
     const element = document.querySelector(".main-container");
-    const controls = document.querySelectorAll(".top-nav, .header-actions, .tabs-container, .adm-actions-grid");
-    controls.forEach((el) => (el.style.display = "none"));
     const opt = {
       margin: 0.3,
       filename: `Employee_Profile.pdf`,
@@ -554,21 +510,9 @@ document.addEventListener("DOMContentLoaded", function () {
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
     if (typeof html2pdf !== "undefined") {
-      html2pdf().set(opt).from(element).save()
-        .then(() => controls.forEach((el) => (el.style.display = "")))
-        .catch(() => controls.forEach((el) => (el.style.display = "")));
+      html2pdf().set(opt).from(element).save();
     } else {
-      alert("PDF Library not loaded. Please include html2pdf.js");
-      controls.forEach((el) => (el.style.display = ""));
-    }
-  };
-
-  window.onclick = function (event) {
-    if (event.target && event.target.classList && event.target.classList.contains("adm-modal-overlay")) {
-      event.target.classList.remove("adm-show");
-    }
-    if (event.target === downloadModal) {
-      window.closeDownloadModal();
+      alert("PDF Library not loaded.");
     }
   };
 });

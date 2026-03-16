@@ -214,27 +214,27 @@
        
         <div class="data-box full-width">
           <label>PAN</label>
-          <div class="value">GUHD987Y</div>
+          <div class="value" id="pan">GUHD987Y</div>
         </div>
         <div class="data-box full-width">
           <label>PAN UAN</label>
-          <div class="value">50200012345678</div>
+          <div class="value" id="uan">50200012345678</div>
         </div>
         <div class="data-box full-width">
           <label>Professional Tax</label>
-          <div class="value">89988687</div>
+          <div class="value" id="pt">89988687</div>
         </div>
         <div class="data-box full-width">
           <label>LWF Status</label>
-          <div class="value">-NA-</div>
+          <div class="value" id="lwf">-NA-</div>
         </div>
         <div class="data-box full-width">
           <label>ESIC Status</label>
-          <div class="value">-NA-</div>
+          <div class="value" id="esic">-NA-</div>
         </div>
         <div class="data-box full-width">
           <label>ESIC IP Number</label>
-          <div class="value">-NA-</div>
+          <div class="value" id="esic_ip">-NA-</div>
         </div>
       </div>
 
@@ -242,15 +242,15 @@
         <h3 class="section-title">Bank Details</h3>
         <div class="data-box full-width">
           <label>Bank Name</label>
-          <div class="value">HDFC Bank</div>
+          <div class="value" id="bank_name">HDFC Bank</div>
         </div>
         <div class="data-box full-width">
           <label>Account Number</label>
-          <div class="value">50200012345678</div>
+          <div class="value" id="bank_acc">50200012345678</div>
         </div>
         <div class="data-box full-width">
           <label>IFSC Code</label>
-          <div class="value">HDFC0001234</div>
+          <div class="value" id="bank_ifsc">HDFC0001234</div>
         </div>
       </div>
 
@@ -272,33 +272,7 @@
       </h3>
 
       <div class="adm-actions-grid">
-        <!-- 1. Hold Salary -->
-        <button
-          class="adm-btn adm-btn-salary"
-          id="admBtnSalary"
-          onclick="admOpenModal('admSalaryModal')"
-        >
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-          <span id="admTxtSalary">Hold Salary</span>
-        </button>
-
-        <!-- 2. Disable Login -->
-        <button
-          class="adm-btn adm-btn-login"
-          id="admBtnLogin"
-          onclick="admOpenModal('admLoginModal')"
-        >
-          <i class="fa-solid fa-user-lock"></i>
-          <span id="admTxtLogin">Disable Login</span>
-        </button>
-
-        <!-- 3. Dismiss Employee -->
-        <button
-          class="adm-btn adm-btn-dismiss"
-          onclick="admOpenModal('admDismissModal')"
-        >
-          <i class="fa-solid fa-user-xmark"></i> Dismiss Employee
-        </button>
+        
 
         <!-- 4. Delete Employee -->
         <button
