@@ -1,37 +1,70 @@
+// ==========================================
+// NEW: Define API Base URL at the top
+// ==========================================
+const API_BASE_URL = "http://13.51.167.95:8000/"; // Use your server's address
 
-// employee_details_table = document.getElementById('employeeTBody')
-// function loademployees()
-// {
-    
-//   fetch("http://13.60.70.185:8000/api/employees/")
-//   .then(res => res.json())
-//         .then(data => 
-//           {
-//             console.log("Data fetched:", data);
-//             employee_details_table.innerHTML = "";
-//             data.forEach(p => 
-//               {
-//                 const row = document.createElement("tr");
-//                 row.innerHTML = `
-//                     <td>${p.employee_id}</td>
-//                     <td>${p.name}</td>
-//                     <td>₹${p.email}</td>
-//                     <td>₹${p.role}</td>
-//                     <td>₹${p.salary}</td>
-//                 `;
-//                 employee_details_table.appendChild(row);
-                
-//             }).catch(err => {
-//             console.error("Error fetching payslips:", err);
-//             employee_details.innerHTML = `<tr><td colspan="4">Error loading payslips</td></tr>`;
-//         });
-//           });
+
+// ==========================================
+// NEW: Function to load and update the pending approvals count
+// ==========================================
+async function loadPendingApprovalsCount() {
+    try {
+        // Define all the fetch promises
+        const leavePromise = fetch(`${API_BASE_URL}/api/leave-approvals/`);
+        const assetPromise = fetch(`${API_BASE_URL}/api/admin/asset-requests/`);
+        const attendancePromise = fetch(`${API_BASE_URL}/api/admin/attendance-requests/`);
+
+        // Wait for all fetches to complete
+        const responses = await Promise.all([leavePromise, assetPromise, attendancePromise]);
+
+        // Check if all responses are OK
+        for (const res of responses) {
+            if (!res.ok) {
+                throw new Error(`Failed to fetch: ${res.statusText}`);
+            }
+        }
+
+        // Parse all responses as JSON
+        const [leaveData, assetData, attendanceData] = await Promise.all(responses.map(res => res.json()));
+
+        // Calculate counts
+        // Note: leaveData is nested under a 'data' key according to your approval.js
+        const leaveCount = leaveData.data ? leaveData.data.length : 0; 
+        const assetCount = assetData ? assetData.length : 0;
+        const attendanceCount = attendanceData ? attendanceData.length : 0;
         
-// }
+        const totalCount = leaveCount + assetCount + attendanceCount;
 
-// document.addEventListener("DOMContentLoaded",loademployees)
+        // Update the HTML
+        const approvalSpan = document.getElementById('pendingApprovalsCount');
+        if (approvalSpan) {
+            approvalSpan.innerHTML = `
+                <a href="../approval/approval.html" class="highlight-pending">
+                    ${totalCount} Pending Approvals
+                </a>
+            `;
+        }
+
+    } catch (error) {
+        console.error("Error loading pending approvals count:", error);
+        const approvalSpan = document.getElementById('pendingApprovalsCount');
+        if (approvalSpan) {
+            approvalSpan.innerHTML = `
+                <a href="../approval/approval.html" class="highlight-pending">
+                    Error loading approvals
+                </a>
+            `;
+        }
+    }
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ==========================================
+  // Call the function to get the dynamic count on page load
+  // ==========================================
+  loadPendingApprovalsCount();
+
   console.log("oppty Dashboard JS Initialized.");
 
   // --- 1. Job Applicants Tab Switching ---
@@ -77,256 +110,93 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="badge react" style="background-color: var(--color-green);">React Developer</span>
         </div>
     `;
-
-  // Initialize the default view based on the image (Applicants selected)
-//   applicantListContainer.innerHTML = APPLICANTS_CONTENT;
-
-//   applicantTabsContainer.addEventListener("click", (e) => {
-//     const tabButton = e.target.closest(".tab-btn");
-//     if (!tabButton) return;
-
-//     // Remove active state from all
-//     document.querySelectorAll("#job-applicants .tab-btn").forEach((btn) => {
-//       btn.classList.remove("active");
-//       btn.style.cssText = ""; // Reset inline styles applied for active state
-//     });
-
-//     // Add active state to clicked tab
-//     tabButton.classList.add("active");
-//     tabButton.style.cssText =
-//       "background: var(--card-bg); box-shadow: 0 1px 3px rgba(0,0,0,0.1); color: var(--color-blue);";
-
-//     const tabType = tabButton.getAttribute("data-tab");
-
-//     if (tabType === "openings") {
-//       applicantListContainer.innerHTML = OPENINGS_CONTENT;
-//     } else {
-//       applicantListContainer.innerHTML = APPLICANTS_CONTENT;
-//     }
-//   });
-
-  // --- 2. Sidebar Menu Submenu Toggle (Simulated) ---
-//   const superAdminItem = document.querySelector(
-//     ".applications-section .active-parent",
-//   );
-//   const submenu = superAdminItem.nextElementSibling;
-
-//   superAdminItem.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     submenu.classList.toggle("hidden");
-//     const icon = superAdminItem.querySelector(
-//       ".fa-chevron-down, .fa-chevron-right",
-//     );
-//     if (icon) {
-//       icon.classList.toggle("fa-chevron-down");
-//       icon.classList.toggle("fa-chevron-right");
-//     }
-//   });
 });
 
-// Attendance Doughnut Chart
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   // Attendance Data
-//   const data = {
-//     present: 90,
-//     late: 30,
-//     absent: 5,
-//     wfh: 25,
-//   };
-
-//   const total = data.present + data.late + data.absent + data.wfh;
-//   document.getElementById("totalCount").textContent = total;
-
-//   // Set percentage text
-//   document.getElementById("pPresent").textContent =
-//     Math.round((data.present / total) * 100) + "%";
-//   document.getElementById("pLate").textContent =
-//     Math.round((data.late / total) * 100) + "%";
-//   document.getElementById("pAbsent").textContent =
-//     Math.round((data.absent / total) * 100) + "%";
-//   document.getElementById("pWFH").textContent =
-//     Math.round((data.wfh / total) * 100) + "%";
-
-//   // Arc settings
-//   const radius = 80;
-//   const centerX = 100;
-//   const centerY = 100;
-
-//   let startAngle = Math.PI; // 180 degrees (left side)
-
-//   function describeArc(startAngle, endAngle) {
-//     const start = polarToCartesian(centerX, centerY, radius, endAngle);
-//     const end = polarToCartesian(centerX, centerY, radius, startAngle);
-
-//     return [
-//       "M",
-//       start.x,
-//       start.y,
-//       "A",
-//       radius,
-//       radius,
-//       0,
-//       0,
-//       0,
-//       end.x,
-//       end.y,
-//     ].join(" ");
-//   }
-
-//   function polarToCartesian(cx, cy, r, angle) {
-//     return {
-//       x: cx + r * Math.cos(angle),
-//       y: cy + r * Math.sin(angle),
-//     };
-//   }
-
-//   function drawArc(value, elementId) {
-//     const angle = (value / total) * Math.PI;
-//     const endAngle = startAngle + angle;
-
-//     const path = describeArc(startAngle, endAngle);
-//     document.getElementById(elementId).setAttribute("d", path);
-
-//     startAngle = endAngle;
-//   }
-
-//   // Draw arcs in order
-//   drawArc(data.present, "arc-present");
-//   drawArc(data.late, "arc-late");
-//   drawArc(data.absent, "arc-absent");
-//   drawArc(data.wfh, "arc-wfh");
-// });
-
-// document.getElementById("dashboardMenu").addEventListener("click", function () {
-//   const submenu = document.getElementById("dashboardSubmenu");
-
-//   submenu.classList.toggle("open");
-//   this.classList.toggle("open");
-// });
-
-
-//attendance details modal
 document.addEventListener("DOMContentLoaded", () => {
-  const detailModal = document.getElementById("detailModal");
-  const modalTableBody = document.getElementById("modalTableBody");
-  const closeBtn = document.querySelector(".close-btn");
 
-  // UPDATED DATA: Removed 'status'
-  const ATTENDANCE_LOG_DATA = [
-    {
-      id: 21918,
-      name: "Dhamodhar Kamini",
-      role: "Graphic Designer",
-      date: "26-02-2026",
-      checkIn: "09:00 AM",
-      checkOut: "07:00 PM",
-      duration: "8h 0m",
-    },
-    {
-      id: 37189,
-      name: "Saleem",
-      role: "IT Support",
-      date: "22-08-2024",
-      checkIn: "08:00 AM",
-      checkOut: "05:00 PM",
-      duration: "9h 0m",
-    },
-    {
-      id: 41521,
-      name: "Manikanta",
-      role: "Product Designer",
-      date: "15-07-2024",
-      checkIn: "09:30 AM",
-      checkOut: "06:00 PM",
-      duration: "8h 30m",
-    },
-    {
-      id: 12781,
-      name: "Siddartha",
-      role: "Customer Support",
-      date: "10-08-2024",
-      checkIn: "08:00 AM",
-      checkOut: "05:30 PM",
-      duration: "9h 30m",
-    },
-  ];
+    const modal = document.getElementById("detailModal");
+    const modalTableBody = document.getElementById("modalTableBody");
+    const trigger = document.querySelector(".attendance-trigger");
+    const closeBtn = document.querySelector(".close-btn");
 
-  function renderAttendanceModal(data) {
-    let html = "";
+    async function loadTodayAttendance(){
 
-    if (!data || data.length === 0) {
-      // Adjusted colspan since the status column is gone
-      modalTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data available</td></tr>';
-      detailModal.style.display = "block";
-      return;
+        try{
+
+            const res = await fetch(`${API_BASE_URL}/api/today-attendance/`);
+            const data = await res.json();
+
+            modalTableBody.innerHTML="";
+
+            if(data.length === 0){
+                modalTableBody.innerHTML =
+                `<tr><td colspan="5">No attendance today</td></tr>`;
+                return;
+            }
+
+            data.forEach(emp=>{
+
+                const row = document.createElement("tr");
+
+                row.innerHTML=`
+                <td>${emp.id}</td>
+                <td>
+                    <strong>${emp.name}</strong>
+                    <br>
+                    <small>${emp.role}</small>
+                </td>
+                <td>${emp.date}</td>
+                <td>
+                    In: ${emp.checkin || "--"} <br>
+                    Out: ${emp.checkout || "--"}
+                </td>
+                <td>${emp.duration || "--"}</td>
+                `;
+
+                modalTableBody.appendChild(row);
+
+            });
+
+        }
+        catch(err){
+            console.error(err);
+        }
+
     }
 
-    data.forEach((item) => {
-      // Fixed color since status is removed (Standard Blue)
-      const colorCode = "42A5F5"; 
-
-      html += `
-                <tr>
-                    <td>#${item.id}</td>
-                    <td class="employee-cell">
-                        <div style="display: flex; align-items: center;">
-                            <img 
-                                src="https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=${colorCode}&color=fff" 
-                                alt="${item.name}"
-                                style="width: 35px; height: 35px; border-radius: 50%; margin-right: 10px;"
-                            >
-                            <div class="employee-info">
-                                <strong style="display: block; font-size: 14px;">${item.name}</strong>
-                                <small style="color: #666; font-size: 12px;">${item.role}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${item.date}</td>
-                    <td>
-                        <div style="font-size: 13px;">In: ${item.checkIn}</div>
-                        <div style="font-size: 13px;">Out: ${item.checkOut}</div>
-                    </td>
-                    <td>${item.duration}</td>
-                </tr>
-            `;
-    });
-    modalTableBody.innerHTML = html;
-    detailModal.style.display = "block";
-  }
-
-  function closeModal() {
-    detailModal.style.display = "none";
-  }
-
-  // Trigger Logic
-  const attendanceLink = document.querySelector(".attendance-trigger");
-
-  if (attendanceLink) {
-    attendanceLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      renderAttendanceModal(ATTENDANCE_LOG_DATA);
-    });
-  } else {
-    console.warn("Element with class '.attendance-trigger' not found.");
-  }
-
-  // Close Button Logic
-  if (closeBtn) closeBtn.onclick = closeModal;
-
-  // Click outside to close
-  window.onclick = (event) => {
-    if (event.target === detailModal) {
-      closeModal();
+    if(trigger) {
+        trigger.addEventListener("click", async (e)=>{
+            e.preventDefault();
+            await loadTodayAttendance();
+            modal.style.display="block";
+        });
     }
-  };
+
+    if(closeBtn) {
+        closeBtn.onclick=()=>modal.style.display="none";
+    }
+
+    function closeModal() {
+        const detailModal = document.getElementById('detailModal');
+        detailModal.style.display = "none";
+    }
+
+    // Close Button Logic
+    if (closeBtn) closeBtn.onclick = closeModal;
+
+    // Click outside to close
+    window.onclick = (event) => {
+        const detailModal = document.getElementById('detailModal');
+        if (event.target === detailModal) {
+        closeModal();
+        }
+    };
 });
 
 
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Initialize Employees Array
-    // We start empty, or you can pre-fill it.
-    // The structure needs a 'type' property that matches: "WFO", "WFH", or "Internship".
     const EMPLOYEES = [];
 
     // --- Selectors ---
@@ -347,54 +217,68 @@ document.addEventListener("DOMContentLoaded", () => {
     const successOkBtn = document.getElementById("successOkBtn");
 
     // =========================================================
-    // 2. DASHBOARD STATS LOGIC (Fixed)
+    // 2. DASHBOARD STATS LOGIC (API DRIVEN)
     // =========================================================
-    function updateDashboardStats() {
-        const total = EMPLOYEES.length;
+    async function loadEmployeeStats() {
+        try {
+            // 1. Fetch data from your backend
+            const response = await fetch(`${API_BASE_URL}/api/employees/`);
+            if (!response.ok) throw new Error("Failed to fetch employees for stats");
+            
+            const data = await response.json();
+            
+            // 2. Get the total number of employees
+            const total = data.length;
+            
+            // 3. Initialize our counters
+            let counts = {
+                "WFO": 0,
+                "WFH": 0,
+                "Internship": 0
+            };
 
-        // Initialize counters keys must match select option values exactly
-        let counts = {
-            "WFO": 0,
-            "WFH": 0,
-            "Internship": 0
-        };
+            // 4. Loop through the backend data and tally them up
+            data.forEach(emp => {
+                const type = emp.full_time; 
+                if (counts.hasOwnProperty(type)) {
+                    counts[type]++;
+                } else if (type) {
+                    const upperType = type.toUpperCase().trim();
+                    if (upperType === "WFO") counts["WFO"]++;
+                    if (upperType === "WFH") counts["WFH"]++;
+                    if (upperType.includes("INTERN")) counts["Internship"]++;
+                }
+            });
 
-        // Count employees
-        EMPLOYEES.forEach(emp => {
-            // Ensure emp.type matches one of the keys
-            if (counts.hasOwnProperty(emp.type)) {
-                counts[emp.type]++;
-            }
-        });
+            // 5. Update the Total Count text in the HTML
+            const totalEl = document.getElementById("totalEmpCount");
+            if (totalEl) totalEl.innerText = total;
 
-        // 1. Update Total Count
-        const totalEl = document.getElementById("totalEmpCount");
-        // if (totalEl) totalEl.innerText = total;
+            // 6. Helper function to update the bars, labels, and values
+            const updateBar = (typeKey, barId, labelId, valId) => {
+                const count = counts[typeKey];
+                const percent = total === 0 ? 0 : Math.round((count / total) * 100);
 
-        // 2. Helper to update bars
-        const updateBar = (typeKey, barId, labelId, valId) => {
-            const count = counts[typeKey];
-            // Calculate percentage (guard against divide by zero)
-            const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+                const barEl = document.getElementById(barId);
+                if (barEl) barEl.style.width = percent + "%";
 
-            // Update Width
-            const barEl = document.getElementById(barId);
-            if (barEl) barEl.style.width = percent + "%";
+                const labelEl = document.getElementById(labelId);
+                if (labelEl) labelEl.innerText = `${typeKey} (${percent}%)`;
 
-            // Update Label Text
-            const labelEl = document.getElementById(labelId);
-            if (labelEl) labelEl.innerText = `${typeKey} (${percent}%)`;
+                const valEl = document.getElementById(valId);
+                if (valEl) valEl.innerText = count < 10 && count > 0 ? "0" + count : count; 
+            };
 
-            // Update Count Value
-            const valEl = document.getElementById(valId);
-            if (valEl) valEl.innerText = count < 10 ? "0" + count : count;
-        };
+            // 7. Apply the updates to all three categories
+            updateBar("WFO", "bar-wfo", "label-wfo", "val-wfo");
+            updateBar("WFH", "bar-wfh", "label-wfh", "val-wfh");
+            updateBar("Internship", "bar-intern", "label-intern", "val-intern");
 
-        // 3. Run updates
-        updateBar("WFO", "bar-wfo", "label-wfo", "val-wfo");
-        updateBar("WFH", "bar-wfh", "label-wfh", "val-wfh");
-        updateBar("Internship", "bar-intern", "label-intern", "val-intern");
+        } catch (error) {
+            console.error("Error loading employee stats:", error);
+        }
     }
+
 
     // =========================================================
     // 3. TABLE FUNCTIONS
@@ -411,21 +295,50 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td>${emp.name}</td>
                         <td>${emp.email}</td>
                         <td>${emp.position}</td>
-                        <td>${emp.salary}</td>
+                        <td>${emp.salary !== null && emp.salary !== undefined ? "₹" + emp.salary : "N/A"}</td>
                     </tr>`;
             });
         }
         if (tableBody) tableBody.innerHTML = html;
     }
 
+    // --- Fetch from backend when clicking "View All Employees" ---
     if (triggerEmployeeBtn) {
-        triggerEmployeeBtn.addEventListener("click", (e) => {
+        triggerEmployeeBtn.addEventListener("click", async (e) => {
             e.preventDefault();
-            renderTable(EMPLOYEES);
+            
+            if (tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading employees...</td></tr>';
             employeeModal.style.display = "block";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/employees/`);
+                if (!response.ok) throw new Error("Failed to fetch employees");
+                
+                const data = await response.json();
+
+                EMPLOYEES.length = 0; 
+                
+                data.forEach(emp => {
+                    EMPLOYEES.push({
+                        emp_id: emp.employee_id || emp.id || "--", 
+                        name: emp.name || "Unknown",
+                        email: emp.email || "--",
+                        position: emp.role || emp.department || "--", 
+                        salary: emp.salary || 0,
+                        type: emp.full_time || "WFO" 
+                    });
+                });
+
+                renderTable(EMPLOYEES);
+
+            } catch (error) {
+                console.error("Error loading employee list:", error);
+                if (tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: red;">Failed to load employees. Please check your server.</td></tr>';
+            }
         });
     }
 
+    // Search bar filter
     if (searchInput) {
         searchInput.addEventListener("keyup", (e) => {
             const term = e.target.value.toLowerCase();
@@ -438,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const closeTableModal = () => {
-        employeeModal.style.display = "none";
+        if (employeeModal) employeeModal.style.display = "none";
         if (searchInput) searchInput.value = "";
     };
     if (closeEmployeeBtn) closeEmployeeBtn.onclick = closeTableModal;
@@ -453,6 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Reset form helper
     function resetForm() {
+        if(!empForm) return;
         empForm.reset();
         const inputs = empForm.querySelectorAll("input, select");
         inputs.forEach((input) => input.classList.remove("input-error"));
@@ -488,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = document.getElementById("nameInput");
         const empId = document.getElementById("empIdInput");
         const email = document.getElementById("emailInput");
-        const type = document.getElementById("typeInput"); // Ensure type is selected
+        const type = document.getElementById("typeInput");
 
         if (name.value.trim() === "") { setError(name, "Name required"); isValid = false; } else { setSuccess(name); }
         if (empId.value.trim() === "") { setError(empId, "ID required"); isValid = false; } else { setSuccess(empId); }
@@ -499,71 +413,61 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // --- FORM SUBMIT HANDLER ---
-    empForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+    if(empForm){
+        empForm.addEventListener("submit", function (e) {
+            e.preventDefault();
 
-        if (validateInputs()) {
-            // 1. Gather Values
-            const nameVal = document.getElementById("nameInput").value;
-            const empIdVal = document.getElementById("empIdInput").value;
-            const emailVal = document.getElementById("emailInput").value;
-            const jobVal = document.getElementById("jobInput").value;
-            const salaryVal = document.getElementById("salaryInput").value;
-            const typeVal = document.getElementById("typeInput").value; // "WFO", "WFH", "Internship"
+            if (validateInputs()) {
+                // Gather Values
+                const nameVal = document.getElementById("nameInput").value;
+                const empIdVal = document.getElementById("empIdInput").value;
+                const emailVal = document.getElementById("emailInput").value;
+                const jobVal = document.getElementById("jobInput").value;
+                const salaryVal = document.getElementById("salaryInput").value;
+                const typeVal = document.getElementById("typeInput").value; 
 
-            const empIdNum = parseInt(empIdVal);
-            const newEmpId = String(empIdNum).padStart(3, "0");
-            // const formattedSalary = salaryVal ? "₹" + parseInt(salaryVal).toLocaleString() : "₹0";
+                const empIdNum = parseInt(empIdVal);
+                const newEmpId = String(empIdNum).padStart(3, "0");
 
-            // 2. Create Object (UI Model)
-            // Note: 'type' property is crucial for the stats logic
-            const uiEmployee = {
-                emp_id: newEmpId,
-                name: nameVal,
-                email: emailVal,
-                position: jobVal || "Not Specified",
-                type: typeVal, 
-                salary: salaryVal
-            };
+                // API Object (Backend Model)
+                const apiEmployee = {
+                    name: nameVal,
+                    employee_id: newEmpId,
+                    email: emailVal,
+                    password: document.getElementById("passwordInput").value,
+                    role: jobVal || "Not Specified",
+                    salary: salaryVal,
+                    joining: document.getElementById("dateInput").value,
+                    department: document.getElementById("deptInput").value, 
+                    manager_employee: document.getElementById("managerInput").value,
+                    location: document.getElementById("locationInput").value,
+                    full_time: typeVal 
+                };
 
-            // 3. API Object (Backend Model)
-            const apiEmployee = {
-                name: nameVal,
-                employee_id: newEmpId,
-                email: emailVal,
-                password: document.getElementById("passwordInput").value,
-                role: jobVal || "Not Specified",
-                salary: salaryVal,
-                joining: document.getElementById("dateInput").value,
-                department: document.getElementById("deptInput").value, 
-                manager_employee: document.getElementById("managerInput").value,
-                location: document.getElementById("locationInput").value,
-                full_time: typeVal // Assuming backend uses 'full_time' to store type
-            };
-
-            // 4. Send to API
-            fetch("http://13.51.167.95:8000/api/create/", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(apiEmployee)
-            })
-            .then(res => res.json())
-            .then(response => {
-                console.log("API Success:", response);
-            })
-            .catch(err => console.error("API Error:", err));
-
-            // 5. Update Local State & UI IMMEDIATELY
-            EMPLOYEES.push(uiEmployee);
-            
-            updateDashboardStats(); // Updates bars and counts
-            renderTable(EMPLOYEES); // Updates table view
-            
-            // 6. Close Modal & Show Success
-            closeAddModal();
-            if (successModal) successModal.style.display = "flex"; 
-        }
-    });
+                // Send to API
+                fetch(`${API_BASE_URL}/api/create/`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(apiEmployee)
+                })
+                .then(res => {
+                    if(!res.ok) throw new Error("Network response was not ok");
+                    return res.json();
+                })
+                .then(response => {
+                    console.log("API Success:", response);
+                    
+                    // Update the stats bars immediately via API refetch
+                    loadEmployeeStats(); 
+                    
+                    // Close Modal & Show Success
+                    closeAddModal();
+                    if (successModal) successModal.style.display = "flex"; 
+                })
+                .catch(err => console.error("API Error:", err));
+            }
+        });
+    }
 
     if (successOkBtn) {
         successOkBtn.onclick = () => {
@@ -574,68 +478,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.onclick = function (e) {
         if (e.target === empModal) { closeAddModal(); resetForm(); }
-        if (e.target === employeeModal && empModal.style.display !== "flex") { closeTableModal(); }
+        if (e.target === employeeModal && (!empModal || empModal.style.display !== "flex")) { closeTableModal(); }
         if (e.target === successModal) { successModal.style.display = "none"; resetForm(); }
     };
 
-    // Initialize stats on load (sets bars to 0%)
-    updateDashboardStats();
+    // Initialize stats on load
+    loadEmployeeStats();
 });
 
 
-// header icons section
-/* --- Toggle the Popup --- */
-function hdr_toggleProfilePopup() {
-    const dropdown = document.getElementById("hdrProfileDropdown");
-    dropdown.classList.toggle("show");
-}
-
-/* --- Logout Logic --- */
-function hdr_logoutUser() {
-    // 1. (Optional) Clear session storage/tokens here
-    // sessionStorage.clear();
-    // localStorage.clear();
-
-    // 2. Redirect to Login Page
-    window.location.href = "../adminlogin/adminlogin.html";
-}
-
-/* --- Close Popup when clicking outside --- */
-window.onclick = function(event) {
-    // If the click is NOT inside the profile wrapper
-    if (!event.target.closest(".hdr-profile-wrapper")) {
-        const dropdown = document.getElementById("hdrProfileDropdown");
-        if (dropdown.classList.contains("show")) {
-            dropdown.classList.remove("show");
-        }
-    }
-}
-
-
+// ====================================================================
 // employee distribution chart
-// 1. DATA CONFIGURATION (With updated var names)
-const dd_departmentData = [
-    { name: "IT & Dev", count: 85, color: "var(--dd-col-it)", class: "dd-bg-it" },
-    { name: "Content Writers", count: 120, color: "var(--dd-col-content)", class: "dd-bg-content" },
-    { name: "HR Team", count: 25, color: "var(--dd-col-hr)", class: "dd-bg-hr" },
-    { name: "Management", count: 15, color: "var(--dd-col-mgmt)", class: "dd-bg-mgmt" }
-];
-
+// ====================================================================
 document.addEventListener("DOMContentLoaded", () => {
 
     const dd_svgChart = document.querySelector('.dd-donut-svg');
     const dd_legendList = document.getElementById('ddLegendList');
     const dd_totalDisplay = document.getElementById('ddTotalDisplay');
+    const totalEmpCountEl = document.getElementById('totalEmpCount');
+    const totalEmployeesEl = document.getElementById("total_employees");
 
-    fetch("http://13.51.167.95:8000/api/employees/")
+    fetch(`${API_BASE_URL}/api/employees/`)
     .then(res => res.json())
     .then(data => {
 
         // 1️⃣ TOTAL EMPLOYEES
         const total = data.length;
-        dd_totalDisplay.innerText = total;
-        document.getElementById('totalEmpCount').innerText = data.length;
-        document.getElementById("total_employees").innerText=data.length;
+        if(dd_totalDisplay) dd_totalDisplay.innerText = total;
+        if(totalEmpCountEl) totalEmpCountEl.innerText = data.length;
+        if(totalEmployeesEl) totalEmployeesEl.innerText = data.length;
 
         // 2️⃣ GROUP BY DEPARTMENT
         const departmentMap = {};
@@ -667,14 +538,14 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Error fetching employees:", err);
     });
 
-
     function renderChart(dd_departmentData, total){
+        if (!dd_svgChart || !dd_legendList) return;
 
         let cumulativePercent = 0;
 
         dd_departmentData.forEach(dept => {
 
-            const percentage = ((dept.count / total) * 100).toFixed(1);
+            const percentage = total > 0 ? ((dept.count / total) * 100).toFixed(1) : 0;
 
             // Legend
             const li = document.createElement('li');
@@ -698,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const radius = 40;
             const circumference = 2 * Math.PI * radius;
-            const segmentLength = (dept.count / total) * circumference;
+            const segmentLength = total > 0 ? (dept.count / total) * circumference : 0;
 
             circle.setAttribute("cx","50");
             circle.setAttribute("cy","50");
@@ -718,207 +589,222 @@ document.addEventListener("DOMContentLoaded", () => {
                 circle.style.strokeDasharray = `${segmentLength} ${circumference}`;
             },100);
 
-            cumulativePercent += (dept.count / total) * 100;
-
+            cumulativePercent += total > 0 ? (dept.count / total) * 100 : 0;
         });
-
     }
-
 });
-//attendance graph and details
+
+// ====================================================================
+// ATTENDANCE GRAPH & DETAILS LOGIC
+// ====================================================================
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. CONFIGURATION ---
-    let da_currentTotalEmployees = 50; 
-    const da_START_HOUR = 10;
-    const da_GRACE_MIN = 10; 
-    
-    // Selectors
-    const da_staffInput = document.getElementById('daStaffCountInput');
+    // --- 1. CONFIGURATION & SELECTORS ---
     const da_monthSelect = document.getElementById('daMonthSelect');
     const da_yAxis = document.getElementById('daYAxisContainer');
     const da_barsContainer = document.getElementById('daBarsContainer');
     const da_xLabelsContainer = document.getElementById('daXLabelsContainer');
     
-    // Stats Elements
-    // Note: daAvgOntimeDisplay might be null if you removed it from HTML, so we handle that below
+    // Stats Elements for daily counts
     const da_statOntime = document.getElementById('daAvgOntimeDisplay');
     const da_statLate = document.getElementById('daAvgLateDisplay');
     const da_statAbsent = document.getElementById('daAvgAbsentDisplay');
+    const da_overviewCount = document.getElementById('attendanceOverviewCount');
 
-    // --- 2. UPDATE Y-AXIS VISUALS ---
-    function da_updateYAxisLabels() {
-        if(!da_yAxis) return;
-        da_yAxis.innerHTML = '';
+    const da_staffInput = document.getElementById('daStaffCountInput');
+
+    const detailModal = document.getElementById("detailModal");
+    const modalTableBody = document.getElementById("modalTableBody");
+    const triggerBtn = document.querySelector(".attendance-trigger");
+    const closeBtn = document.querySelector(".close-btn");
+
+    // --- 2. ASYNC FUNCTION TO RENDER ALL DYNAMIC DATA ---
+    async function da_runSimulation() {
+        if (da_barsContainer) da_barsContainer.innerHTML = '<div class="loading-spinner"></div>';
         
-        for(let i=0; i<=5; i++) {
-            const val = Math.round((da_currentTotalEmployees / 5) * i);
-            const span = document.createElement('span');
-            span.innerText = val;
-            da_yAxis.appendChild(span);
+        // --- A. FETCH AND DISPLAY DAILY STATS CARDS ---
+        try {
+            const statsRes = await fetch(`${API_BASE_URL}/api/attendance-graph/`);
+            const statsData = await statsRes.json();
+            
+            if(da_overviewCount) {
+                da_overviewCount.innerText = `${statsData.present}/${statsData.total}`;
+            }
+            if(da_statOntime) {
+                const ontime = statsData.present - statsData.late;
+                da_statOntime.innerText = `${ontime}/${statsData.total}`;
+            }
+            if(da_statLate) da_statLate.innerText = `${statsData.late}/${statsData.total}`;
+            if(da_statAbsent) da_statAbsent.innerText = `${statsData.absent}/${statsData.total}`;
+
+        } catch (error) {
+            console.error("Failed to load daily stats:", error);
+            if(da_overviewCount) da_overviewCount.innerText = "N/A";
+            if(da_statOntime) da_statOntime.innerText = "N/A";
+            if(da_statLate) da_statLate.innerText = "N/A";
+            if(da_statAbsent) da_statAbsent.innerText = "N/A";
         }
-    }
 
-    // --- 3. DATA GENERATOR ---
-    function da_generateMonthData(monthIndex) {
-        const daysInMonth = new Date(2025, parseInt(monthIndex) + 1, 0).getDate();
-        const dailyData = [];
+        // --- B. FETCH AND RENDER MONTHLY BAR CHART ---
+        try {
+            const monthIndex = da_monthSelect.value;
+            const currentYear = new Date().getFullYear(); 
+            
+            const chartRes = await fetch(`${API_BASE_URL}/api/attendance/monthly-summary/?year=${currentYear}&month=${parseInt(monthIndex) + 1}`);
+            const chartData = await chartRes.json();
+            
+            const totalEmployees = chartData.total_employees;
 
-        for (let day = 1; day <= daysInMonth; day++) {
-            let dayStats = { day: day, late: 0, ontime: 0, absent: 0 };
+            if (da_staffInput) {
+                da_staffInput.value = totalEmployees;
+            }
+            
+            const data = chartData.daily_data;
 
-            for (let emp = 0; emp < da_currentTotalEmployees; emp++) {
-                const rand = Math.random();
-                if (rand < 0.10) { 
-                    dayStats.absent++;
-                } else {
-                    const hour = Math.random() > 0.7 ? 10 : 9; 
-                    const min = Math.floor(Math.random() * 60);
-                    let isLate = false;
-                    if (hour > da_START_HOUR) isLate = true;
-                    if (hour === da_START_HOUR && min > da_GRACE_MIN) isLate = true;
-
-                    if (isLate) dayStats.late++;
-                    else dayStats.ontime++;
+            // Update Y-Axis
+            if(da_yAxis) {
+                da_yAxis.innerHTML = '';
+                for(let i=0; i<=5; i++) {
+                    const val = Math.round((totalEmployees / 5) * i);
+                    const span = document.createElement('span');
+                    span.innerText = val;
+                    da_yAxis.appendChild(span);
                 }
             }
-            dailyData.push(dayStats);
+            
+            if(da_barsContainer) da_barsContainer.innerHTML = "";
+            if(da_xLabelsContainer) da_xLabelsContainer.innerHTML = "";
+
+            data.forEach((dayData, index) => {
+                const hOntime = totalEmployees > 0 ? (dayData.ontime / totalEmployees) * 100 : 0;
+                const hLate = totalEmployees > 0 ? (dayData.late / totalEmployees) * 100 : 0;
+                const hAbsent = totalEmployees > 0 ? (dayData.absent / totalEmployees) * 100 : 0;
+
+                const col = document.createElement('div');
+                col.className = 'da-bar-column';
+                col.setAttribute('data-tooltip', `Day ${dayData.day}\nOn Time: ${dayData.ontime}\nLate: ${dayData.late}\nAbsent: ${dayData.absent}`);
+
+                col.innerHTML = `
+                    <div class="da-bar-segment da-bg-ontime" style="height: ${hOntime}%"></div>
+                    <div class="da-bar-segment da-bg-late" style="height: ${hLate}%"></div>
+                    <div class="da-bar-segment da-bg-absent" style="height: ${hAbsent}%"></div>
+                `;
+                if(da_barsContainer) da_barsContainer.appendChild(col);
+
+                if (index === 0 || (index + 1) % 5 === 0) {
+                    const label = document.createElement('div');
+                    label.className = 'da-x-label-item';
+                    label.innerText = dayData.day;
+                    const leftPos = (index / (data.length - 1)) * 100;
+                    label.style.position = 'absolute';
+                    if (index === 0) label.style.left = '0%';
+                    else if (index === data.length - 1) label.style.right = '0%';
+                    else label.style.left = `${leftPos}%`;
+                    
+                    if(da_xLabelsContainer) da_xLabelsContainer.appendChild(label);
+                }
+            });
+
+        } catch (error) {
+            console.error("Failed to load monthly chart data:", error);
+            if (da_barsContainer) da_barsContainer.innerHTML = '<p class="error-text">Could not load chart data.</p>';
         }
-        return dailyData;
     }
 
-    // --- 4. RENDER LOGIC ---
-    function da_runSimulation() {
-        da_updateYAxisLabels();
+    // --- 3. MODAL LOGIC (for "View Details") ---
+    async function loadTodayAttendanceModal() {
+        if (!modalTableBody) return;
+        modalTableBody.innerHTML = '<tr><td colspan="5" class="loading-spinner"></td></tr>';
 
-        const monthIndex = da_monthSelect.value;
-        const data = da_generateMonthData(monthIndex);
-        
-        if(da_barsContainer) da_barsContainer.innerHTML = "";
-        if(da_xLabelsContainer) da_xLabelsContainer.innerHTML = "";
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/today-attendance/`);
+            const data = await res.json();
+            modalTableBody.innerHTML = ""; 
 
-        let totalLate = 0;
-        let totalAbsent = 0;
-        let totalOntime = 0;
-
-        data.forEach((dayData, index) => {
-            totalLate += dayData.late;
-            totalAbsent += dayData.absent;
-            totalOntime += dayData.ontime;
-
-            const hLate = (dayData.late / da_currentTotalEmployees) * 100;
-            const hOntime = (dayData.ontime / da_currentTotalEmployees) * 100;
-            const hAbsent = (dayData.absent / da_currentTotalEmployees) * 100;
-
-            const col = document.createElement('div');
-            col.className = 'da-bar-column';
-            col.setAttribute('data-tooltip', `Day ${dayData.day}\nOn Time: ${dayData.ontime}\nLate: ${dayData.late}\nAbsent: ${dayData.absent}\nTotal Staff: ${da_currentTotalEmployees}`);
-
-            col.innerHTML = `
-                <div class="da-bar-segment da-bg-late" style="height: ${hLate}%"></div>
-                <div class="da-bar-segment da-bg-ontime" style="height: ${hOntime}%"></div>
-                <div class="da-bar-segment da-bg-absent" style="height: ${hAbsent}%"></div>
-            `;
-            if(da_barsContainer) da_barsContainer.appendChild(col);
-
-            if (index === 0 || (index + 1) % 5 === 0) {
-                const label = document.createElement('div');
-                label.className = 'da-x-label-item';
-                label.innerText = dayData.day;
-                const leftPos = (index / (data.length - 1)) * 100;
-                label.style.position = 'absolute';
-                if (index === 0) label.style.left = '0%';
-                else if (index === data.length - 1) label.style.right = '0%';
-                else label.style.left = `${leftPos}%`;
-                
-                if(da_xLabelsContainer) da_xLabelsContainer.appendChild(label);
+            if (data.length === 0) {
+                modalTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No attendance records for today.</td></tr>`;
+                return;
             }
-        });
 
-        // --- FIX: CHECK IF ELEMENTS EXIST BEFORE UPDATING ---
-        const daysCount = data.length;
-        
-        if(da_statOntime) da_statOntime.innerText = (totalOntime / daysCount).toFixed(0);
-        if(da_statLate) da_statLate.innerText = (totalLate / daysCount).toFixed(0);
-        if(da_statAbsent) da_statAbsent.innerText = (totalAbsent / daysCount).toFixed(0);
+            data.forEach(emp => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${emp.id}</td>
+                    <td class="employee-cell">
+                        <strong>${emp.name}</strong><br>
+                        <small>${emp.role}</small>
+                    </td>
+                    <td>${emp.date}</td>
+                    <td>
+                        <div style="font-size: 13px;">In: ${emp.checkin || "--:--"}</div>
+                        <div style="font-size: 13px;">Out: ${emp.checkout || "--:--"}</div>
+                    </td>
+                    <td>${emp.duration || "N/A"}</td>
+                `;
+                modalTableBody.appendChild(row);
+            });
+        } catch (err) {
+            console.error("Error fetching today's attendance:", err);
+            modalTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Error loading details.</td></tr>`;
+        }
+    }
+    
+    const currentMonthIndex = new Date().getMonth(); 
+    if (da_monthSelect) {
+        da_monthSelect.value = currentMonthIndex;
     }
 
-    // --- 5. EVENT LISTENERS ---
-    if(da_staffInput) {
+    if (da_monthSelect) {
+        da_monthSelect.addEventListener('change', da_runSimulation);
+    }
+    
+    if (da_staffInput) {
         da_staffInput.addEventListener('change', () => {
             const inputVal = da_staffInput.value;
             if(inputVal && inputVal > 0) {
-                da_currentTotalEmployees = parseInt(inputVal);
                 da_runSimulation(); 
             }
         });
     }
 
-    if(da_monthSelect) {
-        da_monthSelect.addEventListener('change', da_runSimulation);
-    }
-
-    // --- 6. MODAL LOGIC (New Addition) ---
-    const detailModal = document.getElementById("detailModal");
-    const triggerBtn = document.querySelector(".attendance-trigger");
-    const closeBtn = document.querySelector(".close-btn");
-
-    if(triggerBtn && detailModal) {
-        triggerBtn.addEventListener("click", (e) => {
+    if (triggerBtn && detailModal) {
+        triggerBtn.addEventListener("click", async (e) => {
             e.preventDefault();
-            // Optional: Populate the modal table here
-            populateModalTable(); 
-            detailModal.style.display = "flex"; // Using flex to center if CSS is set up
+            await loadTodayAttendanceModal();
+            detailModal.style.display = "flex";
         });
     }
 
-    if(closeBtn && detailModal) {
+    if (closeBtn && detailModal) {
         closeBtn.addEventListener("click", () => {
             detailModal.style.display = "none";
         });
     }
 
-    // Close when clicking outside
     window.addEventListener("click", (e) => {
         if (e.target === detailModal) {
             detailModal.style.display = "none";
         }
     });
-
-    // Helper to add fake data to modal (Visual only)
-    function populateModalTable() {
-        const tbody = document.getElementById("modalTableBody");
-        if(!tbody) return;
-        tbody.innerHTML = `
-            <tr><td>001</td><td>Dhamodhar K</td><td>2025-10-24</td><td>09:55 - 18:00</td><td>8h 5m</td></tr>
-            <tr><td>002</td><td>Saleem</td><td>2025-10-24</td><td>10:15 - 18:00</td><td>7h 45m</td></tr>
-            <tr><td>003</td><td>Manikanta</td><td>2025-10-24</td><td>-- : --</td><td>Absent</td></tr>
-            <tr><td>003</td><td>Siddarth</td><td>2025-10-24</td><td>-- : --</td><td>Absent</td></tr>
-        `;
-    }
-
-    // Initial Run
+    
     da_runSimulation();
 });
+// ====================================================================
 
 //birthday wihes
 document.addEventListener("DOMContentLoaded", function () {
-
-    // --- 1. DATA (Added Phone Numbers) ---
-    // IMPORTANT: Add country code without '+' (e.g., 919876543210)
+    
     const birthdays = [
-        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", phone: "8790997602", img: "../assets/profiledp.jpeg" },
-        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", phone: "7075653250", img: "../assets/profiledp.jpeg" },
-        { name: "Balaji", role: "Product Manager", date: "26 Oct", phone: "8309930827", img: "../assets/profiledp.jpeg" },
-        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", phone: "7036084043", img: "../assets/profiledp.jpeg" },
-        { name: "Arjun", role: "HR Manager", date: "02 Nov", phone: "915432109876", img: "../assets/profiledp.jpeg" }
+        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg" },
+        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg" },
+        { name: "Siddarth", role: "Product Manager", date: "26 Oct", rawDate: "2023-10-26", img: "../assets/profiledp.jpeg" },
+        { name: "Manikanta", role: "QA Engineer", date: "28 Oct", rawDate: "2023-10-28", img: "../assets/profiledp.jpeg" },
+        { name: "Arjun", role: "HR Manager", date: "02 Nov", rawDate: "2023-11-02", img: "../assets/profiledp.jpeg" }
     ];
 
     let currentIndex = 0;
     let autoSlideInterval;
-    let currentTargetPhone = ""; // Store phone number of the person being wished
 
-    // --- 2. CAROUSEL ELEMENTS ---
     const imgEl = document.getElementById("bdayImg");
     const nameEl = document.getElementById("bdayName");
     const roleEl = document.getElementById("bdayRole");
@@ -926,26 +812,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("bdayProfileContainer");
     const bdayCard = document.querySelector(".birthday-card");
 
-    // --- 3. CAROUSEL LOGIC ---
     function updateCarousel(index) {
-        if (!container) return;
-        
-        // Fade Animation Reset
+        if(!container) return;
         container.classList.remove("fade-in");
-        void container.offsetWidth; // Trigger reflow
-        
+        void container.offsetWidth; 
         const person = birthdays[index];
-        if (imgEl) imgEl.src = person.img;
-        if (nameEl) nameEl.innerText = person.name;
-        if (roleEl) roleEl.innerText = person.role;
-        if (dateEl) dateEl.innerText = person.date;
-        
+        if(imgEl) imgEl.src = person.img;
+        if(nameEl) nameEl.innerText = person.name;
+        if(roleEl) roleEl.innerText = person.role;
+        if(dateEl) dateEl.innerText = person.date;
         container.classList.add("fade-in");
     }
 
-    // --- 4. AUTO SLIDE LOGIC ---
     function startAutoSlide() {
-        if (autoSlideInterval) clearInterval(autoSlideInterval);
+        clearInterval(autoSlideInterval);
         autoSlideInterval = setInterval(() => {
             currentIndex = (currentIndex + 1) % birthdays.length;
             updateCarousel(currentIndex);
@@ -956,124 +836,89 @@ document.addEventListener("DOMContentLoaded", function () {
         clearInterval(autoSlideInterval);
     }
 
-    if (bdayCard) {
+    if(bdayCard) {
         bdayCard.addEventListener("mouseenter", stopAutoSlide);
         bdayCard.addEventListener("mouseleave", startAutoSlide);
     }
 
-    // --- 5. NAVIGATION BUTTONS ---
     const nextBtn = document.getElementById("nextBdayBtn");
     const prevBtn = document.getElementById("prevBdayBtn");
 
-    if (nextBtn) nextBtn.addEventListener("click", () => {
+    if(nextBtn) nextBtn.addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % birthdays.length;
         updateCarousel(currentIndex);
-        stopAutoSlide();
+        stopAutoSlide(); 
+        if(!bdayCard.matches(':hover')) startAutoSlide();
     });
 
-    if (prevBtn) prevBtn.addEventListener("click", () => {
+    if(prevBtn) prevBtn.addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + birthdays.length) % birthdays.length;
         updateCarousel(currentIndex);
         stopAutoSlide();
+        if(!bdayCard.matches(':hover')) startAutoSlide();
     });
 
-    // --- 6. WISH MODAL LOGIC ---
     const wishModal = document.getElementById("wishModal");
-    const wishTargetNameEl = document.getElementById("wishTargetName");
-    const wishMessageEl = document.getElementById("wishMessage");
-    
-    // Success Modal Elements
-    const successWishModal = document.getElementById("successWishModal");
-    const successNameEl = document.getElementById("successName");
+    const wishTargetName = document.getElementById("wishTargetName");
+    const wishMessage = document.getElementById("wishMessage");
+    const successWishModal = document.getElementById("successWishModal"); 
+    const successName = document.getElementById("successName"); 
 
-    // Open Wish Modal
-    window.openWishModal = function (identifier) {
+    window.openWishModal = function(identifier) {
         stopAutoSlide();
-        let person;
-
+        let name = "";
         if (identifier === 'current') {
-            person = birthdays[currentIndex];
+            name = birthdays[currentIndex].name;
         } else {
-            // Find person by name (identifier passed from View All list)
-            person = birthdays.find(p => p.name === identifier);
+            name = identifier;
         }
 
-        if (person) {
-            if (wishTargetNameEl) wishTargetNameEl.innerText = person.name;
-            currentTargetPhone = person.phone; // Store phone for WhatsApp
-            
-            // Default Message
-            if (wishMessageEl) wishMessageEl.value = `Happy Birthday ${person.name}! 🎂 Hope you have a fantastic year ahead!`;
-            
-            if (wishModal) wishModal.classList.add("active");
-        }
+        if(wishTargetName) wishTargetName.innerText = name;
+        if(wishMessage) wishMessage.value = ""; 
+        if(wishModal) wishModal.classList.add("active");
     };
 
-    window.closeWishModal = function () {
-        if (wishModal) wishModal.classList.remove("active");
-        if (bdayCard && !bdayCard.matches(':hover')) {
+    window.closeWishModal = function() {
+        if(wishModal) wishModal.classList.remove("active");
+        if(bdayCard && !bdayCard.matches(':hover')) {
             startAutoSlide();
         }
     };
 
-    // --- 7. SUBMIT WISH (WHATSAPP INTEGRATION) ---
-    window.submitWish = function () {
+    window.submitWish = function() {
         const btn = document.querySelector(".btn-send-wish");
+        if(!btn) return;
         const originalText = btn.innerHTML;
-        const message = wishMessageEl.value;
-        const name = wishTargetNameEl.innerText;
-
-        // Validation
-        if (!currentTargetPhone) {
-            alert("Phone number not found for this employee.");
-            return;
-        }
-
-        // 1. Loading State
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Opening WhatsApp...';
-
+        
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        
         setTimeout(() => {
-            // 2. Construct WhatsApp URL
-            // Encodes the message to be URL-safe
-            const whatsappUrl = `https://wa.me/${currentTargetPhone}?text=${encodeURIComponent(message)}`;
-
-            // 3. Open WhatsApp in New Tab
-            window.open(whatsappUrl, '_blank');
-
-            // 4. Close Input Modal
+            const currentName = wishTargetName.innerText;
             closeWishModal();
-
-            // 5. Reset Button
             btn.innerHTML = originalText;
-
-            // 6. Show Success Modal (Feedback to Admin)
-            openSuccessWishModal(name);
-            
-        }, 1000);
+            openSuccessWishModal(currentName);
+        }, 800);
     };
 
-    // --- SUCCESS MODAL FUNCTIONS ---
-    window.openSuccessWishModal = function (name) {
-        if (successNameEl) successNameEl.innerText = name;
-        if (successWishModal) successWishModal.classList.add("active");
+    window.openSuccessWishModal = function(name) {
+        if(successName) successName.innerText = name;
+        if(successWishModal) successWishModal.classList.add("active");
     };
 
-    window.closeSuccessWishModal = function () {
-        if (successWishModal) successWishModal.classList.remove("active");
+    window.closeSuccessWishModal = function() {
+        if(successWishModal) successWishModal.classList.remove("active");
     };
 
-    // --- 8. VIEW ALL MODAL LOGIC ---
     const allBdayModal = document.getElementById("allBirthdaysModal");
     const listContainer = document.getElementById("bdayListContainer");
 
-    window.openAllBirthdaysModal = function () {
+    window.openAllBirthdaysModal = function() {
         stopAutoSlide();
-        if (listContainer) {
+        if(listContainer) {
             listContainer.innerHTML = "";
             birthdays.forEach(person => {
                 const item = document.createElement("div");
                 item.className = "bday-item";
-                // Note: passing person.name to openWishModal
                 item.innerHTML = `
                     <div class="bday-left">
                         <img src="${person.img}" alt="${person.name}">
@@ -1089,31 +934,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 listContainer.appendChild(item);
             });
         }
-        if (allBdayModal) allBdayModal.classList.add("active");
+        if(allBdayModal) allBdayModal.classList.add("active");
     };
 
-    window.closeAllBirthdaysModal = function () {
-        if (allBdayModal) allBdayModal.classList.remove("active");
-        if (bdayCard && !bdayCard.matches(':hover')) {
+    window.closeAllBirthdaysModal = function() {
+        if(allBdayModal) allBdayModal.classList.remove("active");
+        if(bdayCard && !bdayCard.matches(':hover')) {
             startAutoSlide();
         }
     };
 
-    // --- 9. CLOSE ON CLICK OUTSIDE ---
-    window.onclick = function (event) {
+    window.onclick = function(event) {
         if (event.target === wishModal) closeWishModal();
         if (event.target === allBdayModal) closeAllBirthdaysModal();
         if (event.target === successWishModal) closeSuccessWishModal();
     };
 
-    // --- INITIALIZATION ---
-    updateCarousel(currentIndex);
-    startAutoSlide();
+    if(birthdays.length > 0) {
+        updateCarousel(currentIndex);
+        startAutoSlide();
+    }
 });
 
 
 //holidays section
-// --- 1. Initial Data ---
 let holidays = [
     { name: 'Republic Day', date: '2025-01-26', type: 'Public Holiday' },
     { name: 'Holi', date: '2025-03-14', type: 'Public Holiday' },
@@ -1122,138 +966,133 @@ let holidays = [
     { name: 'Diwali', date: '2025-10-20', type: 'Public Holiday' }
 ];
 
-// --- 2. Element Selectors ---
-const holidayListModal = document.getElementById('hraHolidayListModal');
-const holidayAddModal = document.getElementById('hraAddHolidayModal');
-const tableBody = document.getElementById('hraHolidayTableBody');
-const successPopup = document.getElementById('hraSuccessPopup');
+document.addEventListener('DOMContentLoaded', () => {
 
-// --- 3. Helper Functions ---
+    const holidayListModal = document.getElementById('hraHolidayListModal');
+    const holidayAddModal = document.getElementById('hraAddHolidayModal');
+    const tableBody = document.getElementById('hraHolidayTableBody');
+    const successPopup = document.getElementById('hraSuccessPopup');
 
-// Format Date for display (e.g., "20 Oct 2025")
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-GB', { 
-        day: 'numeric', month: 'short', year: 'numeric' 
-    });
-}
-
-// Get Day Name (e.g., "Monday")
-function getDayName(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { weekday: 'long' });
-}
-
-// Update the Card to show the *next* upcoming holiday
-function updateCard() {
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Sort array by date
-    const sortedHolidays = holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-    // Find first date >= today
-    const nextHoliday = sortedHolidays.find(h => h.date >= today);
-    
-    const textElement = document.getElementById('hraNextHolidayText');
-    if (nextHoliday) {
-        textElement.textContent = `${nextHoliday.name}, ${formatDate(nextHoliday.date)}`;
-    } else {
-        textElement.textContent = "No upcoming holidays";
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-GB', { 
+            day: 'numeric', month: 'short', year: 'numeric' 
+        });
     }
-}
 
-// Render the table in the "View All" popup
-function renderTable() {
-    tableBody.innerHTML = '';
-    // Sort by date
-    holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+    function getDayName(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { weekday: 'long' });
+    }
 
-    holidays.forEach(h => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td style="font-weight:600;">${formatDate(h.date)}</td>
-            <td style="color: #6b7280;">${getDayName(h.date)}</td>
-            <td>${h.name}</td>
-            <td><span style="background:#f3f4f6; padding:4px 8px; border-radius:4px; font-size:0.8rem;">${h.type}</span></td>
-        `;
-        tableBody.appendChild(row);
+    function updateCard() {
+        const today = new Date().toISOString().split('T')[0];
+        const sortedHolidays = holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const nextHoliday = sortedHolidays.find(h => h.date >= today);
+        
+        const textElement = document.getElementById('hraNextHolidayText');
+        if (textElement) {
+            if (nextHoliday) {
+                textElement.textContent = `${nextHoliday.name}, ${formatDate(nextHoliday.date)}`;
+            } else {
+                textElement.textContent = "No upcoming holidays";
+            }
+        }
+    }
+
+    function renderTable() {
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
+        holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        holidays.forEach(h => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight:600;">${formatDate(h.date)}</td>
+                <td style="color: #6b7280;">${getDayName(h.date)}</td>
+                <td>${h.name}</td>
+                <td><span style="background:#f3f4f6; padding:4px 8px; border-radius:4px; font-size:0.8rem;">${h.type}</span></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function showSuccess() {
+        if (!successPopup) return;
+        successPopup.classList.add('hra-show');
+        setTimeout(() => {
+            successPopup.classList.remove('hra-show');
+        }, 3000);
+    }
+
+    updateCard(); 
+
+    const viewHolidayBtn = document.getElementById('hraViewHolidayBtn');
+    if (viewHolidayBtn) {
+        viewHolidayBtn.addEventListener('click', () => {
+            renderTable();
+            if (holidayListModal) holidayListModal.style.display = 'flex';
+        });
+    }
+
+    const closeHolidayListBtn = document.getElementById('hraCloseHolidayList');
+    if (closeHolidayListBtn) {
+        closeHolidayListBtn.addEventListener('click', () => {
+            if (holidayListModal) holidayListModal.style.display = 'none';
+        });
+    }
+
+    const openAddHolidayBtn = document.getElementById('hraOpenAddHolidayBtn');
+    if (openAddHolidayBtn) {
+        openAddHolidayBtn.addEventListener('click', () => {
+            if (holidayAddModal) holidayAddModal.style.display = 'flex';
+        });
+    }
+
+    const closeAddHolidayBtn = document.getElementById('hraCloseAddHoliday');
+    if (closeAddHolidayBtn) {
+        closeAddHolidayBtn.addEventListener('click', () => {
+            if (holidayAddModal) holidayAddModal.style.display = 'none';
+        });
+    }
+
+    const holidayForm = document.getElementById('hraHolidayForm');
+    if (holidayForm) {
+        holidayForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('hraHolidayName').value;
+            const date = document.getElementById('hraHolidayDate').value;
+            const type = document.getElementById('hraHolidayType').value;
+
+            holidays.push({ name, date, type });
+
+            renderTable(); 
+            updateCard();  
+
+            if (holidayAddModal) holidayAddModal.style.display = 'none';
+            holidayForm.reset();
+
+            showSuccess();
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target == holidayListModal) holidayListModal.style.display = 'none';
+        if (e.target == holidayAddModal) holidayAddModal.style.display = 'none';
     });
-}
-
-// Show Success Toast
-function showSuccess() {
-    successPopup.classList.add('hra-show');
-    setTimeout(() => {
-        successPopup.classList.remove('hra-show');
-    }, 3000);
-}
-
-// --- 4. Event Listeners ---
-
-// Initialize Card on Load
-document.addEventListener('DOMContentLoaded', updateCard);
-
-// OPEN "View All" Modal
-document.getElementById('hraViewHolidayBtn').addEventListener('click', () => {
-    renderTable();
-    holidayListModal.style.display = 'flex';
-});
-
-// CLOSE "View All" Modal
-document.getElementById('hraCloseHolidayList').addEventListener('click', () => {
-    holidayListModal.style.display = 'none';
-});
-
-// OPEN "Add Holiday" Modal (sits on top of list)
-document.getElementById('hraOpenAddHolidayBtn').addEventListener('click', () => {
-    holidayAddModal.style.display = 'flex';
-});
-
-// CLOSE "Add Holiday" Modal
-document.getElementById('hraCloseAddHoliday').addEventListener('click', () => {
-    holidayAddModal.style.display = 'none';
-});
-
-// SUBMIT Form
-document.getElementById('hraHolidayForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    // 1. Get Values
-    const name = document.getElementById('hraHolidayName').value;
-    const date = document.getElementById('hraHolidayDate').value;
-    const type = document.getElementById('hraHolidayType').value;
-
-    // 2. Add to Array
-    holidays.push({ name, date, type });
-
-    // 3. Update UI
-    renderTable(); // Update List Modal
-    updateCard();  // Update Main Card
-
-    // 4. Close Form & Reset
-    holidayAddModal.style.display = 'none';
-    document.getElementById('hraHolidayForm').reset();
-
-    // 5. Show Success
-    showSuccess();
-});
-
-// Close Modals when clicking outside
-window.addEventListener('click', (e) => {
-    if (e.target == holidayListModal) holidayListModal.style.display = 'none';
-    if (e.target == holidayAddModal) holidayAddModal.style.display = 'none';
 });
 
 
 //calender section
 document.addEventListener("DOMContentLoaded", function() {
     
-    // Select Elements
     const btn = document.getElementById("dateTriggerBtn");
     const displaySpan = document.getElementById("dateDisplay");
     const dateInput = document.getElementById("nativeDatePicker");
 
-    // 1. Function to format date as "DD Mon YYYY" (e.g., 14 Feb 2026)
+    if (!btn || !displaySpan || !dateInput) return;
+
     function formatDate(dateObj) {
         return dateObj.toLocaleDateString('en-GB', {
             day: 'numeric',
@@ -1262,26 +1101,19 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 2. Set Initial Date (Today)
     const today = new Date();
     displaySpan.innerText = formatDate(today);
 
-    // 3. Open Calendar when Button is Clicked
     btn.addEventListener("click", function() {
         try {
-            // Modern Browsers
             dateInput.showPicker(); 
         } catch (error) {
-            // Fallback
             dateInput.focus();
             dateInput.click();
         }
     });
 
-    // 4. Update Button Text on Date Selection
     dateInput.addEventListener("change", function() {
-        // Create date object from input value
-        // Note: input.value is YYYY-MM-DD
         if (this.value) {
             const selectedDate = new Date(this.value);
             displaySpan.innerText = formatDate(selectedDate);
@@ -1292,14 +1124,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 /* --- NOTIFICATION LOGIC (nt-) --- */
-
-// 1. Dummy Data (Replace with API data later)
 let notifications = [
     {
         id: 1,
         text: "<strong>Dhamodhar</strong> applied for the UX Designer position.",
         time: "2 mins ago",
-        icon: "👩‍💼", // Using emojis as placeholders for images
+        icon: "👩‍💼", 
         read: false
     },
     {
@@ -1327,28 +1157,25 @@ let notifications = [
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Select Elements
     const bellBtn = document.getElementById('ntBellBtn');
     const dropdown = document.getElementById('ntDropdown');
     const markReadBtn = document.getElementById('ntMarkAllRead');
 
-    // Initialize
+    if (!bellBtn || !dropdown || !markReadBtn) return;
+
     ntRenderList();
 
-    // Toggle Dropdown
     bellBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent immediate closing
+        e.stopPropagation(); 
         const isVisible = dropdown.style.display === 'block';
         dropdown.style.display = isVisible ? 'none' : 'block';
     });
 
-    // Mark All as Read
     markReadBtn.addEventListener('click', () => {
         notifications.forEach(n => n.read = true);
         ntRenderList();
     });
 
-    // Close Dropdown when clicking outside
     window.addEventListener('click', (e) => {
         if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
             dropdown.style.display = 'none';
@@ -1356,18 +1183,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Render Function
 function ntRenderList() {
     const listContainer = document.getElementById('ntList');
     const badge = document.getElementById('ntBadge');
     
-    // Clear current list
+    if(!listContainer || !badge) return;
+
     listContainer.innerHTML = '';
 
-    // Count unread
     const unreadCount = notifications.filter(n => !n.read).length;
 
-    // Update Badge
     if (unreadCount > 0) {
         badge.style.display = 'flex';
         badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
@@ -1375,16 +1200,13 @@ function ntRenderList() {
         badge.style.display = 'none';
     }
 
-    // Check if empty
     if (notifications.length === 0) {
         listContainer.innerHTML = '<div class="nt-empty">No notifications</div>';
         return;
     }
 
-    // Build List
     notifications.forEach(item => {
         const itemDiv = document.createElement('div');
-        // Add class 'nt-unread' if not read
         itemDiv.className = `nt-item ${!item.read ? 'nt-unread' : ''}`;
         
         itemDiv.innerHTML = `
@@ -1395,7 +1217,6 @@ function ntRenderList() {
             </div>
         `;
 
-        // Click individual item to mark as read
         itemDiv.addEventListener('click', () => {
             item.read = true;
             ntRenderList();
@@ -1407,42 +1228,37 @@ function ntRenderList() {
 
 
 //logout section
-/* --- Toggle Profile Dropdown --- */
 function hdr_toggleProfilePopup() {
     const dropdown = document.getElementById("hdrProfileDropdown");
-    dropdown.classList.toggle("show");
+    if(dropdown) dropdown.classList.toggle("show");
 }
 
-/* --- Show Logout Modal --- */
 function hdr_showLogoutModal() {
-    // 1. Hide the dropdown menu first (optional UI polish)
     const dropdown = document.getElementById("hdrProfileDropdown");
     if (dropdown) dropdown.classList.remove("show");
 
-    // 2. Show the modal
     const modal = document.getElementById("hdrLogoutModal");
     if (modal) modal.classList.add("show-modal");
 }
 
-/* --- Hide Logout Modal --- */
 function hdr_hideLogoutModal() {
     const modal = document.getElementById("hdrLogoutModal");
     if (modal) modal.classList.remove("show-modal");
 }
 
-/* --- Perform Actual Logout --- */
 function hdr_confirmLogout() {
-    // 1. Clear session/local storage
     sessionStorage.clear();
     localStorage.clear();
 
+<<<<<<< HEAD
     // 2. Redirect to Login Page
     window.location.href = "../index.html";
+=======
+    window.location.href = "../adminlogin/adminlogin.html";
+>>>>>>> 3585dd4282d771afb69de8a4731d1179711c654c
 }
 
-/* --- Close Dropdown when clicking outside --- */
-window.onclick = function(event) {
-    // If click is NOT on the profile wrapper
+window.addEventListener('click', function(event) {
     if (!event.target.closest(".hdr-profile-wrapper")) {
         const dropdown = document.getElementById("hdrProfileDropdown");
         if (dropdown && dropdown.classList.contains("show")) {
@@ -1450,9 +1266,8 @@ window.onclick = function(event) {
         }
     }
 
-    // Optional: Close modal if clicking on the overlay background
     const modal = document.getElementById("hdrLogoutModal");
     if (event.target === modal) {
         hdr_hideLogoutModal();
     }
-}
+});
