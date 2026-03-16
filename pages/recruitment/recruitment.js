@@ -1,7 +1,22 @@
-/* 
-   INTERVIEW MANAGER SCRIPT 
-   Prefix: im- (to avoid conflicts with Admin JS)
-*/
+
+// --- PRELOADER LOGIC ---
+window.addEventListener("load", function () {
+    const preloader = document.getElementById("page-preloader");
+    
+    // Minimum wait time of 800ms for a smooth experience, 
+    // even if the page loads instantly.
+    setTimeout(() => {
+        if (preloader) {
+            preloader.classList.add("loaded");
+            
+            // Optional: Remove it from DOM entirely after fade out ends
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 500); // Matches CSS transition time
+        }
+    }, 800);
+});
+
 
 // 1. State
 let imMeetings = [];
