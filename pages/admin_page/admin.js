@@ -1,3 +1,23 @@
+
+// --- PRELOADER LOGIC ---
+window.addEventListener("load", function () {
+    const preloader = document.getElementById("page-preloader");
+    
+    // Minimum wait time of 800ms for a smooth experience, 
+    // even if the page loads instantly.
+    setTimeout(() => {
+        if (preloader) {
+            preloader.classList.add("loaded");
+            
+            // Optional: Remove it from DOM entirely after fade out ends
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 500); // Matches CSS transition time
+        }
+    }, 800);
+});
+
+
 // ==========================================
 // NEW: Define API Base URL at the top
 // ==========================================
@@ -1272,7 +1292,8 @@ function hdr_confirmLogout() {
     sessionStorage.clear();
     localStorage.clear();
 
-    window.location.href = "../adminlogin/adminlogin.html";
+    // 2. Redirect to Login Page
+    window.location.href = "../index.html";
 }
 
 window.addEventListener('click', function(event) {
