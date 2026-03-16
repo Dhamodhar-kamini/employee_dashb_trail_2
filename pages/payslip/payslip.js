@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         net: document.getElementById('prevNet'),
         words: document.getElementById('amountWords')
     };  
-
+  
     const PF_RATE = 0.12;
 
 
@@ -104,6 +104,63 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+fetch("http://127.0.0.1:8000/api/employees/")
+.then(res => res.json())
+.then(data => {
+    const empSelect = document.getElementById("empSelect");
+console.log(data)
+    data.forEach(emp => {
+        
+        const option = document.createElement("option");
+        option.value = emp.id;  // important
+        option.textContent = `${emp.name} (${emp.employee_id})`;
+        empSelect.appendChild(option);
+    });
+});
+const bas = Number(document.getElementById("basicSalary").value);
+const lop_A = Number(document.getElementById("lopAmount").value);
+
+
+const gr = bas - lop_A;
+
+const pf_a = Number(document.getElementById("pfAmount").value);
+
+const pt = Number(document.getElementById("taxAmount").value);
+const n = gr -pf_a - pt 
+
+document.getElementById("generateBtn").addEventListener("click", function(e){
+    e.preventDefault();
+
+    const employeeId = document.getElementById("empSelect").value;
+    console.log(employeeId)
+    const payload = {
+        month: document.getElementById("monthSelect").value,
+        basic_salary: document.getElementById("basicSalary").value,
+        lop_days: document.getElementById("lopDays").value,
+        lop_amount: document.getElementById("lopAmount").value,
+        pf_amount: document.getElementById("pfAmount").value,
+        professional_tax: document.getElementById("taxAmount").value,
+        gross_salary:gr,
+        net_salary:n
+        
+    };
+
+    fetch(`http://127.0.0.1:8000/api/create-payslip/${employeeId}/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        alert("Payslip created successfully");
+    })
+    .catch(error => console.error(error));
+});
+ const employeeId = document.getElementById("empSelect").value;
+ console.log(employeeId)
         // Days in Month Calculation
         const startDate = new Date(prevYear, prevMonthIndex, 26);
         const endDate = new Date(selYear, selMonth, 25);
