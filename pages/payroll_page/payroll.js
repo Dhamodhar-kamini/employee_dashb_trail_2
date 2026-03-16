@@ -142,9 +142,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial Stats Load
     updateDashboard(currentYear);
     
-    fetch(`http://127.0.0.1:8000/api/salary`)
+    fetch(`http://13.51.167.95:8000/api/salary`)
         .then(res => res.json())
         .then(data => {
+          console.log('data:',data)
             document.getElementById("totalPayout").innerText = data.total_annual_salary;
             document.getElementById("avgPayout").innerText = data.total_monthly_salary;
             

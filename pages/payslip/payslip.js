@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-fetch("http://127.0.0.1:8000/api/employees/")
+fetch("http://13.51.167.95:8000/api/employees/")
 .then(res => res.json())
 .then(data => {
     const empSelect = document.getElementById("empSelect");
@@ -117,22 +117,21 @@ console.log(data)
         empSelect.appendChild(option);
     });
 });
-const bas = Number(document.getElementById("basicSalary").value);
-const lop_A = Number(document.getElementById("lopAmount").value);
 
-
-const gr = bas - lop_A;
-
-const pf_a = Number(document.getElementById("pfAmount").value);
-
-const pt = Number(document.getElementById("taxAmount").value);
-const n = gr -pf_a - pt 
 
 document.getElementById("generateBtn").addEventListener("click", function(e){
     e.preventDefault();
 
     const employeeId = document.getElementById("empSelect").value;
     console.log(employeeId)
+     const bas = Number(document.getElementById("basicSalary").value) || 0;
+    const lop_A = Number(document.getElementById("lopAmount").value) || 0;
+    const pf_a = Number(document.getElementById("pfAmount").value) || 0;
+    const pt = Number(document.getElementById("taxAmount").value) || 0;
+
+    // Calculate gross and net salary
+    const gr = bas - lop_A;         // gross salary after LOP
+    const n = gr - pf_a - pt; 
     const payload = {
         month: document.getElementById("monthSelect").value,
         basic_salary: document.getElementById("basicSalary").value,
@@ -144,8 +143,9 @@ document.getElementById("generateBtn").addEventListener("click", function(e){
         net_salary:n
         
     };
+    console.log(payload)
 
-    fetch(`http://127.0.0.1:8000/api/create-payslip/${employeeId}/`, {
+    fetch(`http://13.51.167.95:8000/api/create-payslip/${employeeId}/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -155,7 +155,6 @@ document.getElementById("generateBtn").addEventListener("click", function(e){
     .then(res => res.json())
     .then(data => {
         console.log(data);
-        alert("Payslip created successfully");
     })
     .catch(error => console.error(error));
 });
