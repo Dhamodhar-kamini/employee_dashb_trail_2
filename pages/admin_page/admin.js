@@ -1250,12 +1250,8 @@ function hdr_confirmLogout() {
     sessionStorage.clear();
     localStorage.clear();
 
-<<<<<<< HEAD
     // 2. Redirect to Login Page
     window.location.href = "../index.html";
-=======
-    window.location.href = "../adminlogin/adminlogin.html";
->>>>>>> 3585dd4282d771afb69de8a4731d1179711c654c
 }
 
 window.addEventListener('click', function(event) {
