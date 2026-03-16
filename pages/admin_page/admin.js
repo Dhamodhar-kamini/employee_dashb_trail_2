@@ -839,8 +839,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Updated data with phone numbers (Use real numbers in production)
     const birthdays = [
-        { name: "Dhamodhar", role: "IOS Developer", date: "Today, 24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg", phone: "8790997602" },
-        { name: "Saleem", role: "UI Designer", date: "Tomorrow, 25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg", phone: "7075653250" },
+        { name: "Dhamodhar", role: "IOS Developer", date: "24 Oct", rawDate: "2023-10-24", img: "../assets/profiledp.jpeg", phone: "8790997602" },
+        { name: "Saleem", role: "UI Designer", date: "25 Oct", rawDate: "2023-10-25", img: "../assets/profiledp.jpeg", phone: "7075653250" },
         { name: "Balaji", role: "Product Manager", date: "26 Oct", rawDate: "2023-10-26", img: "../assets/profiledp.jpeg", phone: "8309930827" },
         { name: "Manikanta", role: "QA Engineer", date: "28 Oct", rawDate: "2023-10-28", img: "../assets/profiledp.jpeg", phone: "7036084043" },
         { name: "Arjun", role: "HR Manager", date: "02 Nov", rawDate: "2023-11-02", img: "../assets/profiledp.jpeg", phone: "919876543214" }
