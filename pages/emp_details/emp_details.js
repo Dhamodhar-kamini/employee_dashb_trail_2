@@ -22,12 +22,25 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==================================================
   // 2. FETCH MAIN DASHBOARD INFO
   // ==================================================
+  // ==================================================
+  // 2. FETCH MAIN DASHBOARD INFO
+  // ==================================================
   function loadOverviewData() {
       fetch(`${API_BASE_URL}/api/employee/dashboard/${emp_id}/`)
         .then(res => res.json())
         .then(data => {
           currentEmpData = data; 
           
+          // Helper to safely handle data whether it's an Array, Object, or Empty
+          const getSafeData = (dataField) => {
+              if (!dataField) return {};
+              return Array.isArray(dataField) ? (dataField[0] || {}) : dataField;
+          };
+
+          const stat = getSafeData(data.statutory_details);
+          const bank = getSafeData(data.bank_details);
+          const other = getSafeData(data.other_details);
+
           // Header & Quick Stats
           document.getElementById('p_name').innerText = data.name || "N/A";
           document.getElementById('p_role').innerText = data.role || "N/A";
@@ -38,41 +51,33 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById('p_join').innerText = data.joining || "N/A";
           document.getElementById('p_salary').innerText = data.salary ? `₹${data.salary}` : "N/A";
           document.getElementById('p_email').innerText = data.email || "N/A";
-          document.getElementById('pan').innerText = data.statutory_details[0].pan
-          document.getElementById('uan').innerText = data.statutory_details[0].pf_uan
-          document.getElementById('pt').innerText=data.statutory_details[0].profesional_tax
-          document.getElementById('lwf').innerText=data.statutory_details[0].lwf_status
-          document.getElementById('esic').innerText=data.statutory_details[0].esic_status
-          document.getElementById('esic_ip').innerText=data.statutory_details[0].esic_ip_number
-
-
-
-
-          document.getElementById('bank_name').innerText = data.bank_details[0].bank_name;
-          document.getElementById('bank_acc').innerText = data.bank_details[0].acc_no;
-          document.getElementById('bank_ifsc').innerText = data.bank_details[0].ifsc_code;
-
           
           const initials = data.name ? data.name.substring(0, 2).toUpperCase() : "EM";
           document.getElementById('p_initials').innerText = initials;
 
-          // Personal Details - Bulletproof check for Arrays or Objects
-          let otherDetailsObj = null;
-          if (data.other_details) {
-              otherDetailsObj = Array.isArray(data.other_details) ? data.other_details[0] : data.other_details;
-          }
+          // Statutory Details (Safely injected)
+          document.getElementById('pan').innerText = stat.pan || "-NA-";
+          document.getElementById('uan').innerText = stat.pf_uan || "-NA-";
+          document.getElementById('pt').innerText = stat.profesional_tax || "-NA-";
+          document.getElementById('lwf').innerText = stat.lwf_status || "-NA-";
+          document.getElementById('esic').innerText = stat.esic_status || "-NA-";
+          document.getElementById('esic_ip').innerText = stat.esic_ip_number || "-NA-";
 
-          if (otherDetailsObj) {
-            document.getElementById('p_phone').innerText = otherDetailsObj.mobile || "N/A";
-            document.getElementById('p_location').innerText = otherDetailsObj.address || "N/A";
-            
-            const maritalEl = document.getElementById('p_marital');
-            if(maritalEl) {
-                const status = otherDetailsObj.marital_status || "Unmarried";
-                maritalEl.innerText = status;
-                maritalEl.style.backgroundColor = status.toLowerCase() === 'unmarried' ? '#e6ffe6' : '#e6f2ff';
-                maritalEl.style.color = status.toLowerCase() === 'unmarried' ? '#008000' : '#0066cc';
-            }
+          // Bank Details (Safely injected)
+          document.getElementById('bank_name').innerText = bank.bank_name || "-NA-";
+          document.getElementById('bank_acc').innerText = bank.acc_no || "-NA-";
+          document.getElementById('bank_ifsc').innerText = bank.ifsc_code || "-NA-";
+
+          // Personal Details (Safely injected)
+          document.getElementById('p_phone').innerText = other.mobile || "N/A";
+          document.getElementById('p_location').innerText = other.address || "N/A";
+          
+          const maritalEl = document.getElementById('p_marital');
+          if(maritalEl) {
+              const status = other.marital_status || "Unmarried";
+              maritalEl.innerText = status;
+              maritalEl.style.backgroundColor = status.toLowerCase() === 'unmarried' ? '#e6ffe6' : '#e6f2ff';
+              maritalEl.style.color = status.toLowerCase() === 'unmarried' ? '#008000' : '#0066cc';
           }
         })
         .catch(err => console.error("Error fetching main data:", err));
