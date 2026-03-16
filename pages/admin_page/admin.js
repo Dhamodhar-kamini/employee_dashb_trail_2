@@ -1,7 +1,49 @@
+
+// --- PRELOADER LOGIC ---
+window.addEventListener("load", function () {
+    const preloader = document.getElementById("page-preloader");
+    
+    // Minimum wait time of 800ms for a smooth experience, 
+    // even if the page loads instantly.
+    setTimeout(() => {
+        if (preloader) {
+            preloader.classList.add("loaded");
+            
+            // Optional: Remove it from DOM entirely after fade out ends
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 500); // Matches CSS transition time
+        }
+    }, 800);
+});
+
+
 // ==========================================
 // NEW: Define API Base URL at the top
 // ==========================================
-const API_BASE_URL = "http://13.51.167.95:8000/"; // Use your server's address
+const API_BASE_URL = "http://13.51.167.95:8000"; // Use your server's address
+
+// ==========================================
+// NEW: Helper function to force UTC time display
+// ==========================================
+function formatTimeUTC(timeStr) {
+    if (!timeStr) return null;
+    
+    // If the backend is already sending a short string like "06:24 AM", just return it as-is
+    if (timeStr.length < 10 && !timeStr.includes("T")) return timeStr; 
+
+    try {
+        const dateObj = new Date(timeStr);
+        return dateObj.toLocaleTimeString('en-US', { 
+            timeZone: 'UTC', 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+        });
+    } catch (error) {
+        return timeStr; // Fallback to raw string if parsing fails
+    }
+}
 
 
 // ==========================================
@@ -148,8 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 </td>
                 <td>${emp.date}</td>
                 <td>
-                    In: ${emp.checkin || "--"} <br>
-                    Out: ${emp.checkout || "--"}
+                    In: ${formatTimeUTC(emp.checkin) || "--"} <br>
+                    Out: ${formatTimeUTC(emp.checkout) || "--"}
                 </td>
                 <td>${emp.duration || "--"}</td>
                 `;
@@ -736,8 +778,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </td>
                     <td>${emp.date}</td>
                     <td>
-                        <div style="font-size: 13px;">In: ${emp.checkin || "--:--"}</div>
-                        <div style="font-size: 13px;">Out: ${emp.checkout || "--:--"}</div>
+                        <div style="font-size: 13px;">In: ${formatTimeUTC(emp.checkin) || "--:--"}</div>
+                        <div style="font-size: 13px;">Out: ${formatTimeUTC(emp.checkout) || "--:--"}</div>
                     </td>
                     <td>${emp.duration || "N/A"}</td>
                 `;
@@ -1250,7 +1292,8 @@ function hdr_confirmLogout() {
     sessionStorage.clear();
     localStorage.clear();
 
-    window.location.href = "../adminlogin/adminlogin.html";
+    // 2. Redirect to Login Page
+    window.location.href = "../index.html";
 }
 
 window.addEventListener('click', function(event) {

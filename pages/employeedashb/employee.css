@@ -16,12 +16,7 @@
   --status-remote-text: #2196f3;
 }
 
-/* body {
-  background-color: var(--bg-body);
-  font-family: "DM Sans", sans-serif;
-  color: var(--text-dark);
-  margin: 0;
-} */
+
 
 .main-content {
   padding: 20px;
@@ -30,7 +25,7 @@
 /* --- HEADER --- */
 .page-header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 100px;
   align-items: center;
   margin-bottom: 30px;
