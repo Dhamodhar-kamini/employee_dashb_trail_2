@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const pt = Number(inputs.tax.value) || 0;
             const lop_d = Number(inputs.lopDays.value) || 0;
 
-            const gr = bas - lop_A;         
+            const gr = bas ;         
             const n = gr - pf_a - pt; 
 
             const payload = {
